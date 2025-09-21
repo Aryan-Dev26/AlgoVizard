@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,6 +51,220 @@
             text-decoration: none;
         }
 
+        /* Theme Selection Section */
+        .theme-selection-section {
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .theme-selection-title {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .theme-selection-subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            opacity: 0.8;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .theme-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .theme-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-card.selected {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.2);
+        }
+
+        .theme-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .theme-icon {
+            font-size: 2.5rem;
+        }
+
+        .theme-card h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+        }
+
+        .theme-description {
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        /* Animated Theme Previews */
+        .theme-preview {
+            height: 120px;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .preview-bg {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 15px;
+            transition: all 0.4s ease;
+        }
+
+        .college-preview {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #3498db 100%);
+            position: relative;
+        }
+
+        .college-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .school-preview {
+            background: linear-gradient(135deg, #1e4d3d 0%, #2d5a47 100%);
+            position: relative;
+        }
+
+        .school-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(245, 245, 220, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 80% 60%, rgba(245, 245, 220, 0.02) 1px, transparent 1px);
+            background-size: 30px 30px, 45px 45px;
+            pointer-events: none;
+        }
+
+        .preview-bars {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+            z-index: 2;
+            position: relative;
+        }
+
+        .preview-bar {
+            width: 25px;
+            border-radius: 4px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding-bottom: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .college-bar {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .school-bar {
+            background: rgba(245, 245, 220, 0.9);
+            border: 1px solid #f5f5dc;
+            color: #1e4d3d;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Hover animations for previews */
+        .theme-card:hover .preview-bar {
+            animation: barBounce 0.6s ease infinite alternate;
+        }
+
+        .theme-card:hover .preview-bar:nth-child(1) { animation-delay: 0s; }
+        .theme-card:hover .preview-bar:nth-child(2) { animation-delay: 0.1s; }
+        .theme-card:hover .preview-bar:nth-child(3) { animation-delay: 0.2s; }
+        .theme-card:hover .preview-bar:nth-child(4) { animation-delay: 0.3s; }
+
+        @keyframes barBounce {
+            0% { transform: scaleY(1); }
+            100% { transform: scaleY(1.1); }
+        }
+
+        /* Special hover effect for school theme */
+        .theme-card:hover .school-bar {
+            box-shadow: 0 0 8px rgba(245, 245, 220, 0.4);
+        }
+
+        .theme-card:hover .college-bar {
+            box-shadow: 0 0 8px rgba(79, 172, 254, 0.4);
+        }
+
+        .theme-select-btn {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-select-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .theme-card.selected .theme-select-btn {
+            background: #4CAF50;
+            border-color: #4CAF50;
+            color: white;
+        }
+
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -88,7 +301,7 @@
         }
 
         .feature-description {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.95);
             line-height: 1.6;
         }
 
@@ -112,13 +325,13 @@
         .stat-number {
             font-size: 2.5rem;
             font-weight: bold;
-            color: #4CAF50;
+            color: white;
             display: block;
             margin-bottom: 10px;
         }
 
         .stat-label {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.95);
             font-size: 1rem;
         }
 
@@ -143,102 +356,97 @@
             margin-right: auto;
         }
 
-        .floating-shapes {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .shape {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .shape:nth-child(1) {
-            width: 80px;
-            height: 80px;
-            top: 20%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .shape:nth-child(2) {
-            width: 120px;
-            height: 120px;
-            top: 60%;
-            right: 10%;
-            animation-delay: 2s;
-        }
-
-        .shape:nth-child(3) {
-            width: 60px;
-            height: 60px;
-            bottom: 20%;
-            left: 20%;
-            animation-delay: 4s;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-20px);
-            }
-        }
-
         @media (max-width: 768px) {
             .hero-title {
                 font-size: 2.5rem;
             }
-
+            
             .hero-subtitle {
                 font-size: 1.1rem;
             }
-
+            
             .hero-buttons {
                 flex-direction: column;
                 align-items: center;
             }
-
+            
             .hero-btn {
                 width: 250px;
             }
-
+            
+            .theme-cards {
+                grid-template-columns: 1fr;
+            }
+            
             .features-grid {
                 grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
-
 <body>
-    <div class="floating-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
-
     <section class="hero-section">
         <div class="hero-content">
             <h1 class="hero-title">Algorithm Visualizer</h1>
             <p class="hero-subtitle">
-                Master sorting algorithms through interactive visualizations. Watch step-by-step how algorithms work,
-                understand their complexity, and build your computer science foundation.
+                Master sorting algorithms through interactive visualizations. Watch step-by-step how algorithms work, understand their complexity, and build your computer science foundation.
             </p>
-
+            
             <div class="hero-buttons">
                 <a href="/algorithms" class="btn btn-primary hero-btn">Start Learning</a>
                 <a href="/algorithms/bubble-sort" class="btn btn-secondary hero-btn">Try Bubble Sort</a>
+            </div>
+
+            <!-- Theme Selection Cards -->
+            <div class="theme-selection-section">
+                <h2 class="theme-selection-title">Choose Your Learning Experience</h2>
+                <p class="theme-selection-subtitle">Select the interface that best suits your learning style</p>
+                
+                <div class="theme-cards">
+                    <div class="theme-card" data-theme="college">
+                        <div class="theme-header">
+                            <span class="theme-icon">🎓</span>
+                            <h3>College Mode</h3>
+                        </div>
+                        <p class="theme-description">Professional dark theme for university students and developers</p>
+                        
+                        <!-- Animated preview -->
+                        <div class="theme-preview">
+                            <div class="preview-bg college-preview">
+                                <div class="preview-bars">
+                                    <div class="preview-bar college-bar" style="height: 40px;">64</div>
+                                    <div class="preview-bar college-bar" style="height: 60px;">34</div>
+                                    <div class="preview-bar college-bar" style="height: 30px;">25</div>
+                                    <div class="preview-bar college-bar" style="height: 50px;">12</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="theme-select-btn">Use College Mode</button>
+                    </div>
+                    
+                    <div class="theme-card" data-theme="school">
+                        <div class="theme-header">
+                            <span class="theme-icon">🏫</span>
+                            <h3>School Mode</h3>
+                        </div>
+                        <p class="theme-description">Traditional greenboard chalk theme with nostalgic classroom feel</p>
+                        
+                        <!-- Animated preview -->
+                        <div class="theme-preview">
+                            <div class="preview-bg school-preview">
+                                <div class="preview-bars">
+                                    <div class="preview-bar school-bar" style="height: 40px;">64</div>
+                                    <div class="preview-bar school-bar" style="height: 60px;">34</div>
+                                    <div class="preview-bar school-bar" style="height: 30px;">25</div>
+                                    <div class="preview-bar school-bar" style="height: 50px;">12</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="theme-select-btn">Use School Mode</button>
+                    </div>
+                </div>
             </div>
 
             <div class="features-grid">
@@ -246,8 +454,7 @@
                     <span class="feature-icon">👁️</span>
                     <div class="feature-title">Visual Learning</div>
                     <div class="feature-description">
-                        Watch algorithms in action with step-by-step animations that make complex concepts easy to
-                        understand.
+                        Watch algorithms in action with step-by-step animations that make complex concepts easy to understand.
                     </div>
                 </div>
 
@@ -255,8 +462,7 @@
                     <span class="feature-icon">⚡</span>
                     <div class="feature-title">Interactive Controls</div>
                     <div class="feature-description">
-                        Control the speed, pause, reset, and explore at your own pace with intuitive visualization
-                        controls.
+                        Control the speed, pause, reset, and explore at your own pace with intuitive visualization controls.
                     </div>
                 </div>
 
@@ -264,16 +470,15 @@
                     <span class="feature-icon">🎓</span>
                     <div class="feature-title">Educational Focus</div>
                     <div class="feature-description">
-                        Designed for students and developers with clear explanations, complexity analysis, and best
-                        practices.
+                        Designed for students and developers with clear explanations, complexity analysis, and best practices.
                     </div>
                 </div>
 
                 <div class="feature-card">
                     <span class="feature-icon">📱</span>
-                    <div class="feature-title">Modern Design</div>
+                    <div class="feature-title">Dual Themes</div>
                     <div class="feature-description">
-                        Beautiful, responsive interface that works perfectly on desktop, tablet, and mobile devices.
+                        Choose between professional college mode or fun school mode with chalk-board visualizations.
                     </div>
                 </div>
             </div>
@@ -305,8 +510,7 @@
     <section class="cta-section glass">
         <h2 class="cta-title">Ready to Master Algorithms?</h2>
         <p class="cta-description">
-            Join thousands of students and developers who are learning algorithms through visualization. Start with
-            bubble sort or explore our full collection of sorting algorithms.
+            Join thousands of students and developers who are learning algorithms through visualization. Start with bubble sort or explore our full collection of sorting algorithms.
         </p>
         <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
             <a href="/algorithms" class="btn btn-primary">View All Algorithms</a>
@@ -314,84 +518,7 @@
         </div>
     </section>
 
-    <footer style="text-align: center; padding: 40px; opacity: 0.7;">
-        <p>&copy; 2025 Algorithm Visualizer. Created by Aryan Pravin Sahu for educational purposes.</p>
-    </footer>
-
-    <script>
-        // Load analytics for stats
-        async function loadStats() {
-            try {
-                const response = await fetch('/api/analytics');
-                const data = await response.json();
-
-                if (data.total_interactions) {
-                    document.getElementById('totalInteractions').textContent = data.total_interactions;
-                }
-            } catch (error) {
-                console.log('Analytics not available:', error);
-            }
-        }
-
-        // Add smooth scrolling for better UX
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        // Load stats when page loads
-        loadStats();
-        let currentArray = [64, 34, 25, 12, 22, 11, 90];
-        let isSchoolTheme = false;
-
-        function generateRandomArray() {
-            currentArray = [];
-            for (let i = 0; i < 7; i++) {
-                currentArray.push(Math.floor(Math.random() * 90) + 10);
-            }
-            displayArray(currentArray);
-            document.getElementById('stepDescription').textContent = 'Random array generated! Click "Start Sorting" to begin.';
-        }
-
-        function toggleCustomInput() {
-            const section = document.getElementById('customInputSection');
-            section.style.display = section.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function setCustomArray() {
-            const input = document.getElementById('customArrayInput').value;
-            const numbers = input.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
-
-            if (numbers.length > 0 && numbers.length <= 10) {
-                currentArray = numbers;
-                displayArray(currentArray);
-                document.getElementById('stepDescription').textContent = 'Custom array set! Click "Start Sorting" to begin.';
-                toggleCustomInput();
-            } else {
-                alert('Please enter 1-10 valid numbers separated by commas');
-            }
-        }
-
-        function toggleTheme() {
-            isSchoolTheme = !isSchoolTheme;
-            const body = document.body;
-            const button = document.getElementById('themeToggle');
-
-            if (isSchoolTheme) {
-                body.style.background = 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%)';
-                button.textContent = '🎓 College Mode';
-            } else {
-                body.style.background = 'linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #3498db 100%)';
-                button.textContent = '🎨 School Mode';
-            }
-        }
-
-
-    </script>
+    <!-- Floating programming symbols -->
     <div class="floating-symbols">
         <div class="code-symbol symbol-1">{}</div>
         <div class="code-symbol symbol-2">&lt;/&gt;</div>
@@ -400,6 +527,102 @@
         <div class="code-symbol symbol-5">;</div>
         <div class="code-symbol symbol-6">=&gt;</div>
     </div>
-</body>
 
+    <footer style="text-align: center; padding: 40px; opacity: 0.7;">
+        <p>&copy; 2025 Algorithm Visualizer. Created by Aryan Pravin Sahu for educational purposes.</p>
+    </footer>
+
+    <script>
+        // CLEAN THEME SYSTEM - NO POPUP CODE
+        let selectedTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
+
+        function applyTheme(theme) {
+            console.log('Applying theme:', theme);
+            
+            // Remove existing school theme
+            const existingSchoolTheme = document.getElementById('school-theme');
+            if (existingSchoolTheme) {
+                existingSchoolTheme.remove();
+            }
+            
+            if (theme === 'school') {
+                // Add school theme CSS
+                const schoolThemeLink = document.createElement('link');
+                schoolThemeLink.rel = 'stylesheet';
+                schoolThemeLink.href = '/static/css/school-theme.css';
+                schoolThemeLink.id = 'school-theme';
+                document.head.appendChild(schoolThemeLink);
+            }
+            
+            // Update body class
+            document.body.classList.remove('college-theme', 'school-theme');
+            document.body.classList.add(theme + '-theme');
+        }
+
+        function selectTheme(theme) {
+            console.log('Theme selected:', theme);
+            selectedTheme = theme;
+            
+            // Save theme
+            localStorage.setItem('algorithmVisualizerTheme', theme);
+            
+            // Apply theme immediately
+            applyTheme(theme);
+            
+            // Update UI
+            document.querySelectorAll('.theme-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            document.querySelector(`[data-theme="${theme}"]`).classList.add('selected');
+            
+            // Update button
+            const selectedCard = document.querySelector(`[data-theme="${theme}"]`);
+            const button = selectedCard.querySelector('.theme-select-btn');
+            const originalText = button.textContent;
+            button.textContent = '✓ Theme Applied!';
+            button.style.background = '#4CAF50';
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = '';
+            }, 2000);
+        }
+
+        // Load analytics for stats
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/analytics');
+                const data = await response.json();
+                
+                if (data.total_interactions) {
+                    document.getElementById('totalInteractions').textContent = data.total_interactions;
+                }
+            } catch (error) {
+                console.log('Analytics not available:', error);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing theme system...');
+            
+            // Apply saved theme
+            applyTheme(selectedTheme);
+            
+            // Show selected card
+            document.querySelector(`[data-theme="${selectedTheme}"]`).classList.add('selected');
+            
+            // Set up click events
+            document.querySelectorAll('.theme-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    selectTheme(this.dataset.theme);
+                });
+            });
+            
+            // Load stats
+            loadStats();
+        });
+    </script>
+</body>
 </html>
