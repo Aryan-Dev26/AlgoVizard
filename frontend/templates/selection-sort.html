@@ -4,35 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bubble Sort Visualizer</title>
+    <title>Selection Sort Visualizer</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
     <style>
-        .visualizer-page {
-            padding: 120px 20px 40px;
-            min-height: 100vh;
-        }
-
         .visualizer-container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
+            padding: 40px 20px;
         }
 
-        .visualizer-header {
+        .algorithm-header {
             text-align: center;
             margin-bottom: 40px;
         }
 
-        .visualizer-header h1 {
+        .algorithm-header h1 {
             font-size: 2.5rem;
-            font-weight: 700;
-            color: white;
             margin-bottom: 10px;
         }
 
-        .visualizer-header p {
-            color: rgba(255, 255, 255, 0.95);
+        .algorithm-header p {
             font-size: 1.1rem;
+            opacity: 0.8;
         }
 
         .navigation-buttons {
@@ -57,6 +51,158 @@
             margin-bottom: 20px;
         }
 
+        .btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .speed-slider {
+            width: 200px;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            appearance: none;
+        }
+
+        .speed-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .visualization-area {
+            padding: 40px;
+            margin-bottom: 30px;
+            min-height: 350px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .array-bar {
+            min-width: 45px;
+            border-radius: 8px 8px 0 0;
+            color: white;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            font-weight: 600;
+            padding-bottom: 10px;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        /* Selection sort specific styling */
+        .array-bar.sorted {
+            background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%) !important;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .array-bar.current-min {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%) !important;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+            transform: scale(1.1);
+        }
+
+        .array-bar.comparing {
+            background: linear-gradient(135deg, #FFA726 0%, #FFB74D 100%) !important;
+            transform: scale(1.05);
+            animation: pulse 1s ease-in-out infinite alternate;
+        }
+
+        .array-bar.swapped {
+            animation: swapAnimation 0.6s ease;
+        }
+
+        .sorted-boundary {
+            position: absolute;
+            height: 100%;
+            width: 2px;
+            background: linear-gradient(180deg, #4CAF50, transparent);
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
+            z-index: 10;
+            transition: left 0.4s ease;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 6px 20px rgba(255, 167, 38, 0.4);
+            }
+
+            100% {
+                box-shadow: 0 8px 25px rgba(255, 167, 38, 0.8);
+            }
+        }
+
+        @keyframes swapAnimation {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .step-info {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .step-description {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+            min-height: 50px;
+        }
+
+        .step-counter {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .algorithm-info {
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .algorithm-complexity {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .complexity-item {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .complexity-value {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
         .array-controls {
             margin-top: 20px;
         }
@@ -75,67 +221,6 @@
             color: rgba(255, 255, 255, 0.6);
         }
 
-        .speed-control {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            color: rgba(255, 255, 255, 0.95);
-        }
-
-        .speed-slider {
-            width: 200px;
-            height: 6px;
-            border-radius: 3px;
-            background: rgba(255, 255, 255, 0.2);
-            outline: none;
-            appearance: none;
-        }
-
-        .visualization-area {
-            padding: 40px;
-            margin-bottom: 30px;
-            min-height: 350px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: 8px;
-            position: relative;
-        }
-
-        .array-bar.swapped {
-            animation: swapPulse 0.5s ease;
-        }
-
-        @keyframes swapPulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-        }
-
-        .step-info {
-            padding: 25px;
-            text-align: center;
-        }
-
-        .algorithm-info {
-            padding: 20px;
-            margin-bottom: 30px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .algorithm-complexity {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-
         .sound-controls {
             position: fixed;
             top: 20px;
@@ -144,10 +229,6 @@
         }
 
         @media (max-width: 768px) {
-            .visualizer-page {
-                padding: 80px 20px 40px;
-            }
-
             .navigation-buttons {
                 flex-direction: column;
                 align-items: center;
@@ -180,76 +261,63 @@
         <button class="btn btn-secondary" onclick="toggleSound()" id="soundToggle">🔊</button>
     </div>
 
-    <div class="visualizer-page">
-        <div class="visualizer-container">
-            <div class="visualizer-header">
-                <div class="navigation-buttons">
-                    <a href="/" class="btn btn-secondary">🏠 Back to Home</a>
-                    <a href="/algorithms" class="btn btn-secondary">📚 All Algorithms</a>
-                </div>
-                <h1>Bubble Sort Visualizer</h1>
-                <p>Watch how bubble sort compares and swaps adjacent elements to sort the array</p>
+    <div class="visualizer-container">
+        <div class="algorithm-header">
+            <div class="navigation-buttons">
+                <a href="/" class="btn btn-secondary">🏠 Back to Home</a>
+                <a href="/algorithms" class="btn btn-secondary">📚 All Algorithms</a>
             </div>
+            <h1>Selection Sort Visualizer</h1>
+            <p>Watch how selection sort finds the minimum element and places it in the correct position</p>
+        </div>
 
-            <div class="algorithm-info glass">
-                <h3>How Bubble Sort Works</h3>
-                <p>Bubble sort repeatedly steps through the list, compares adjacent elements and swaps them if they're
-                    in the wrong order. The largest elements "bubble" to the end like air bubbles rising to the surface.
-                </p>
-                <div class="algorithm-complexity">
-                    <div class="complexity-item">Time: <span class="complexity-value">O(n²)</span></div>
-                    <div class="complexity-item">Space: <span class="complexity-value">O(1)</span></div>
-                    <div class="complexity-item">Stability: <span class="complexity-value">Yes</span></div>
-                </div>
-            </div>
-
-            <div class="controls-panel glass">
-                <div class="control-buttons">
-                    <button class="btn btn-primary" id="startBtn" onclick="startVisualization()">Start Sorting</button>
-                    <button class="btn btn-warning" id="stopBtn" onclick="stopVisualization()" disabled>Stop</button>
-                    <button class="btn btn-secondary" onclick="resetVisualization()">Reset</button>
-                </div>
-
-                <div class="speed-control">
-                    <span>Speed:</span>
-                    <input type="range" id="speedSlider" class="speed-slider" min="100" max="2000" value="800"
-                        step="100">
-                    <span id="speedValue">800ms</span>
-                </div>
-
-                <div class="array-controls">
-                    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px;">
-                        <button class="btn btn-secondary" onclick="generateRandomArray()">Random Array</button>
-                        <button class="btn btn-secondary" onclick="toggleCustomInput()">Custom Input</button>
-                    </div>
-
-                    <div id="customInputSection" style="display: none;">
-                        <input type="text" id="customArrayInput" placeholder="Enter numbers: 5,3,8,1,9">
-                        <button class="btn btn-primary" onclick="setCustomArray()">Set Array</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="visualization-area glass" id="arrayContainer">
-                <div class="eraser" id="eraser"></div>
-                <!-- Array bars will be generated here -->
-            </div>
-
-            <div class="step-info glass">
-                <div class="step-description" id="stepDescription">Click "Start Sorting" to begin visualization</div>
-                <div class="step-counter" id="stepCounter">Step: 0</div>
+        <div class="algorithm-info glass">
+            <h3>How Selection Sort Works</h3>
+            <p>Selection sort divides the array into sorted and unsorted regions. It repeatedly finds the minimum
+                element from the unsorted region and moves it to the end of the sorted region.</p>
+            <div class="algorithm-complexity">
+                <div class="complexity-item">Time: <span class="complexity-value">O(n²)</span></div>
+                <div class="complexity-item">Space: <span class="complexity-value">O(1)</span></div>
+                <div class="complexity-item">Stability: <span class="complexity-value">No</span></div>
             </div>
         </div>
-    </div>
 
-    <!-- Floating programming symbols -->
-    <div class="floating-symbols">
-        <div class="code-symbol symbol-1">{}</div>
-        <div class="code-symbol symbol-2">&lt;/&gt;</div>
-        <div class="code-symbol symbol-3">[ ]</div>
-        <div class="code-symbol symbol-4">( )</div>
-        <div class="code-symbol symbol-5">;</div>
-        <div class="code-symbol symbol-6">=&gt;</div>
+        <div class="controls-panel glass">
+            <div class="control-buttons">
+                <button class="btn btn-primary" id="startBtn" onclick="startVisualization()">Start Sorting</button>
+                <button class="btn btn-warning" id="stopBtn" onclick="stopVisualization()" disabled>Stop</button>
+                <button class="btn btn-secondary" onclick="resetVisualization()">Reset</button>
+            </div>
+
+            <div class="speed-control">
+                <span>Speed:</span>
+                <input type="range" id="speedSlider" class="speed-slider" min="200" max="2000" value="800" step="100">
+                <span id="speedValue">800ms</span>
+            </div>
+
+            <div class="array-controls">
+                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px;">
+                    <button class="btn btn-secondary" onclick="generateRandomArray()">Random Array</button>
+                    <button class="btn btn-secondary" onclick="toggleCustomInput()">Custom Input</button>
+                </div>
+
+                <div id="customInputSection" style="display: none;">
+                    <input type="text" id="customArrayInput" placeholder="Enter numbers: 5,3,8,1,9">
+                    <button class="btn btn-primary" onclick="setCustomArray()">Set Array</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="visualization-area glass" id="arrayContainer">
+            <div class="sorted-boundary" id="sortedBoundary" style="left: 0px; opacity: 0;"></div>
+            <div class="eraser" id="eraser"></div>
+            <!-- Array bars will be generated here -->
+        </div>
+
+        <div class="step-info glass">
+            <div class="step-description" id="stepDescription">Click "Start Sorting" to begin visualization</div>
+            <div class="step-counter" id="stepCounter">Step: 0</div>
+        </div>
     </div>
 
     <script>
@@ -314,7 +382,13 @@
             for (let i = 0; i < 7; i++) {
                 currentArray.push(Math.floor(Math.random() * 90) + 10);
             }
-            displayArray(currentArray);
+            displayArray({
+                array: currentArray,
+                comparing: [],
+                current_min: -1,
+                sorted_boundary: 0,
+                swapped: false
+            });
             document.getElementById('stepDescription').textContent = 'Random array generated! Click "Start Sorting" to begin.';
         }
 
@@ -329,7 +403,13 @@
 
             if (numbers.length > 0 && numbers.length <= 10) {
                 currentArray = numbers;
-                displayArray(currentArray);
+                displayArray({
+                    array: currentArray,
+                    comparing: [],
+                    current_min: -1,
+                    sorted_boundary: 0,
+                    swapped: false
+                });
                 document.getElementById('stepDescription').textContent = 'Custom array set! Click "Start Sorting" to begin.';
                 toggleCustomInput();
                 document.getElementById('customArrayInput').value = '';
@@ -338,35 +418,56 @@
             }
         }
 
-        function displayArray(arrayData, comparing = [], swapped = false) {
+        function displayArray(stepData) {
             const container = document.getElementById('arrayContainer');
+            const boundary = document.getElementById('sortedBoundary');
             const eraser = document.getElementById('eraser');
-            
-            // Clear existing bars but keep eraser
-            const existingBars = container.querySelectorAll('.array-bar');
-            existingBars.forEach(bar => bar.remove());
 
-            arrayData.forEach((value, index) => {
+            // Clear existing bars (keep boundary and eraser)
+            container.querySelectorAll('.array-bar').forEach(bar => bar.remove());
+
+            const barWidth = 45;
+            const barGap = 8;
+
+            stepData.array.forEach((value, index) => {
                 const bar = document.createElement('div');
                 bar.className = 'array-bar';
                 bar.style.height = `${Math.max(value * 2.5, 30)}px`;
                 bar.textContent = value;
                 bar.setAttribute('data-index', index);
 
-                if (comparing.includes(index)) {
+                // Apply styling based on step data
+                if (stepData.sorted_boundary > index) {
+                    bar.classList.add('sorted');
+                }
+
+                if (stepData.current_min === index && stepData.current_min !== -1) {
+                    bar.classList.add('current-min');
+                }
+
+                if (stepData.comparing && stepData.comparing.includes(index)) {
                     bar.classList.add('comparing');
                 }
 
-                if (swapped && comparing.includes(index)) {
+                if (stepData.swapped && stepData.comparing && stepData.comparing.includes(index)) {
                     bar.classList.add('swapped');
                 }
 
                 container.appendChild(bar);
             });
+
+            // Update sorted boundary position
+            if (stepData.sorted_boundary > 0) {
+                const boundaryPosition = stepData.sorted_boundary * (barWidth + barGap) - barGap / 2;
+                boundary.style.left = `${boundaryPosition}px`;
+                boundary.style.opacity = '1';
+            } else {
+                boundary.style.opacity = '0';
+            }
         }
 
-        // Enhanced swap animation with eraser effect
-        async function animateSwap(arrayData, index1, index2) {
+        // Enhanced swap animation with eraser effect for selection sort
+        async function animateSwap(stepData, index1, index2) {
             const bars = document.querySelectorAll('.array-bar');
             const bar1 = bars[index1];
             const bar2 = bars[index2];
@@ -406,8 +507,8 @@
             await sleep(400);
 
             // Clean up
-            bar1.classList.remove('rewriting', 'comparing');
-            bar2.classList.remove('rewriting', 'comparing');
+            bar1.classList.remove('rewriting', 'comparing', 'current-min');
+            bar2.classList.remove('rewriting', 'comparing', 'current-min');
             eraser.classList.remove('active');
         }
 
@@ -423,7 +524,7 @@
             document.getElementById('stepDescription').textContent = 'Loading algorithm steps...';
 
             try {
-                const response = await fetch('/api/bubble-sort', {
+                const response = await fetch('/api/selection-sort', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -436,13 +537,12 @@
                 }
 
                 algorithmSteps = await response.json();
-                let workingArray = [...currentArray];
 
                 for (let i = 0; i < algorithmSteps.length && !shouldStop; i++) {
                     const step = algorithmSteps[i];
 
-                    // Display comparison
-                    displayArray(workingArray, step.comparing, false);
+                    // Display current step
+                    displayArray(step);
                     document.getElementById('stepDescription').textContent = step.description;
                     document.getElementById('stepCounter').textContent = `Step: ${step.step} of ${algorithmSteps.length - 1}`;
 
@@ -457,15 +557,12 @@
                         // Use enhanced swap animation for school theme
                         const currentTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
                         if (currentTheme === 'school') {
-                            await animateSwap(workingArray, step.comparing[0], step.comparing[1]);
+                            await animateSwap(step, step.comparing[0], step.comparing[1]);
                         } else {
                             // Regular animation for college theme
-                            displayArray(step.array, step.comparing, true);
                             await sleep(getSpeed() / 2);
                         }
 
-                        // Update working array to match the swap
-                        workingArray = [...step.array];
                         playSwapSound();
                     }
 
@@ -474,22 +571,19 @@
 
                 if (!shouldStop) {
                     playCompleteSound();
-                    document.getElementById('stepDescription').textContent = 'Sorting complete! All elements are now in their correct positions.';
+                    document.getElementById('stepDescription').textContent = 'Selection sort complete! All elements are in their correct positions.';
                     
                     // Mark all as sorted
                     const bars = document.querySelectorAll('.array-bar');
-                    bars.forEach(bar => bar.classList.add('sorted'));
+                    bars.forEach(bar => {
+                        bar.classList.remove('comparing', 'current-min');
+                        bar.classList.add('sorted');
+                    });
                 }
 
             } catch (error) {
                 console.error('Error:', error);
-                try {
-                    const response = await fetch('/api/bubble-sort');
-                    algorithmSteps = await response.json();
-                    // Continue with fallback logic...
-                } catch (fallbackError) {
-                    document.getElementById('stepDescription').textContent = `Error loading algorithm: ${error.message}`;
-                }
+                document.getElementById('stepDescription').textContent = `Error loading algorithm: ${error.message}`;
             }
 
             isRunning = false;
@@ -511,7 +605,15 @@
                 stopVisualization();
             }
 
-            displayArray(currentArray);
+            const initialStep = {
+                array: currentArray,
+                comparing: [],
+                current_min: -1,
+                sorted_boundary: 0,
+                swapped: false
+            };
+
+            displayArray(initialStep);
             document.getElementById('stepDescription').textContent = 'Click "Start Sorting" to begin visualization';
             document.getElementById('stepCounter').textContent = 'Step: 0';
             currentStep = 0;

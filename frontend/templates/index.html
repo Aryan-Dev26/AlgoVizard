@@ -1,25 +1,405 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Algorithm Visualizer</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <title>Algorithm Visualizer - Learn Through Interactive Visualization</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
+    <style>
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .hero-btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            padding: 30px;
+            text-align: center;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .feature-description {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .stats-section {
+            margin-top: 80px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4CAF50;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+
+        .cta-section {
+            margin-top: 80px;
+            padding: 50px;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .cta-description {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-btn {
+                width: 250px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <h1>Algorithm Visualizer</h1>
-            <p>Interactive Algorithm Learning Platform</p>
-        </header>
-        
-        <main>
-            <div class="hero">
-                <h2>Learn Algorithms Visually</h2>
-                <p>Master data structures and algorithms through interactive visualizations</p>
-                <a href="/algorithms" class="btn-primary">Start Learning</a>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Algorithm Visualizer</h1>
+            <p class="hero-subtitle">
+                Master sorting algorithms through interactive visualizations. Watch step-by-step how algorithms work,
+                understand their complexity, and build your computer science foundation.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="/algorithms" class="btn btn-primary hero-btn">Start Learning</a>
+                <a href="/algorithms/bubble-sort" class="btn btn-secondary hero-btn">Try Bubble Sort</a>
             </div>
-        </main>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">👁️</span>
+                    <div class="feature-title">Visual Learning</div>
+                    <div class="feature-description">
+                        Watch algorithms in action with step-by-step animations that make complex concepts easy to
+                        understand.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <div class="feature-title">Interactive Controls</div>
+                    <div class="feature-description">
+                        Control the speed, pause, reset, and explore at your own pace with intuitive visualization
+                        controls.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">🎓</span>
+                    <div class="feature-title">Educational Focus</div>
+                    <div class="feature-description">
+                        Designed for students and developers with clear explanations, complexity analysis, and best
+                        practices.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">📱</span>
+                    <div class="feature-title">Modern Design</div>
+                    <div class="feature-description">
+                        Beautiful, responsive interface that works perfectly on desktop, tablet, and mobile devices.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section glass">
+        <h2>Platform Impact</h2>
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="stat-number">2</span>
+                <span class="stat-label">Algorithms Available</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="totalInteractions">0</span>
+                <span class="stat-label">Visualizations Run</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">∞</span>
+                <span class="stat-label">Learning Opportunities</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">Available Access</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section glass">
+        <h2 class="cta-title">Ready to Master Algorithms?</h2>
+        <p class="cta-description">
+            Join thousands of students and developers who are learning algorithms through visualization. Start with
+            bubble sort or explore our full collection of sorting algorithms.
+        </p>
+        <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+            <a href="/algorithms" class="btn btn-primary">View All Algorithms</a>
+            <a href="/algorithms/selection-sort" class="btn btn-secondary">Try Selection Sort</a>
+        </div>
+    </section>
+
+    <footer style="text-align: center; padding: 40px; opacity: 0.7;">
+        <p>&copy; 2025 Algorithm Visualizer. Created by Aryan Pravin Sahu for educational purposes.</p>
+    </footer>
+
+    <script>
+        // Load analytics for stats
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/analytics');
+                const data = await response.json();
+
+                if (data.total_interactions) {
+                    document.getElementById('totalInteractions').textContent = data.total_interactions;
+                }
+            } catch (error) {
+                console.log('Analytics not available:', error);
+            }
+        }
+
+        // Add smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Load stats when page loads
+        loadStats();
+        let currentArray = [64, 34, 25, 12, 22, 11, 90];
+        let isSchoolTheme = false;
+
+        function generateRandomArray() {
+            currentArray = [];
+            for (let i = 0; i < 7; i++) {
+                currentArray.push(Math.floor(Math.random() * 90) + 10);
+            }
+            displayArray(currentArray);
+            document.getElementById('stepDescription').textContent = 'Random array generated! Click "Start Sorting" to begin.';
+        }
+
+        function toggleCustomInput() {
+            const section = document.getElementById('customInputSection');
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function setCustomArray() {
+            const input = document.getElementById('customArrayInput').value;
+            const numbers = input.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+
+            if (numbers.length > 0 && numbers.length <= 10) {
+                currentArray = numbers;
+                displayArray(currentArray);
+                document.getElementById('stepDescription').textContent = 'Custom array set! Click "Start Sorting" to begin.';
+                toggleCustomInput();
+            } else {
+                alert('Please enter 1-10 valid numbers separated by commas');
+            }
+        }
+
+        function toggleTheme() {
+            isSchoolTheme = !isSchoolTheme;
+            const body = document.body;
+            const button = document.getElementById('themeToggle');
+
+            if (isSchoolTheme) {
+                body.style.background = 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%)';
+                button.textContent = '🎓 College Mode';
+            } else {
+                body.style.background = 'linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #3498db 100%)';
+                button.textContent = '🎨 School Mode';
+            }
+        }
+
+
+    </script>
+    <div class="floating-symbols">
+        <div class="code-symbol symbol-1">{}</div>
+        <div class="code-symbol symbol-2">&lt;/&gt;</div>
+        <div class="code-symbol symbol-3">[ ]</div>
+        <div class="code-symbol symbol-4">( )</div>
+        <div class="code-symbol symbol-5">;</div>
+        <div class="code-symbol symbol-6">=&gt;</div>
     </div>
 </body>
+
 </html>
