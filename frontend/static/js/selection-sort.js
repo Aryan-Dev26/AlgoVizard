@@ -1,7 +1,7 @@
 /**
  * AlgoVizard - Selection Sort Visualizer
  * Author: Aryan Pravin Sahu
- * Selection sort specific visualization logic
+ * Selection sort specific visualization logic with enhanced chalk effects
  */
 
 class SelectionSortVisualizer {
@@ -66,6 +66,38 @@ class SelectionSortVisualizer {
         }
     }
 
+    // ==================== SELECTION SORT SPECIFIC ANIMATIONS ====================
+    
+    async animateMinimumHighlight(index) {
+        const bars = document.querySelectorAll('.array-bar');
+        const bar = bars[index];
+        const eraser = document.getElementById('eraser');
+
+        if (!bar) return;
+
+        // Check if school theme is active
+        const currentTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
+        
+        if (currentTheme === 'school' && eraser) {
+            // Position eraser near the new minimum element
+            const barRect = bar.getBoundingClientRect();
+            const containerRect = document.getElementById('arrayContainer').getBoundingClientRect();
+            
+            const eraserX = barRect.left - containerRect.left - 30;
+            const eraserY = barRect.top - containerRect.top - 25;
+
+            eraser.style.left = `${eraserX}px`;
+            eraser.style.top = `${eraserY}px`;
+            eraser.classList.add('active');
+
+            // Brief eraser effect for highlighting new minimum
+            await this.shared.sleep(200);
+
+            // Clean up
+            eraser.classList.remove('active');
+        }
+    }
+
     // ==================== ALGORITHM EXECUTION ====================
     
     async startVisualization() {
@@ -94,12 +126,18 @@ class SelectionSortVisualizer {
                     this.shared.playCompareSound();
                 }
 
+                // Special animation for new minimum found
+                if (step.description && step.description.includes('New minimum found')) {
+                    await this.animateMinimumHighlight(step.current_min);
+                }
+
                 await this.shared.sleep(this.shared.getSpeed());
 
                 if (step.swapped && step.comparing && step.comparing.length === 2) {
-                    // Use enhanced swap animation for school theme
+                    // Enhanced eraser animation for school theme
                     const currentTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
                     if (currentTheme === 'school') {
+                        // Use eraser animation for school theme during swaps
                         await this.shared.animateSwap(step.comparing[0], step.comparing[1]);
                     } else {
                         // Regular animation for college theme
@@ -123,6 +161,12 @@ class SelectionSortVisualizer {
                     bar.classList.add('sorted');
                 });
                 
+                // Final chalk dust celebration effect for school theme
+                const currentTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
+                if (currentTheme === 'school') {
+                    await this.celebrateCompletion();
+                }
+                
                 this.shared.logInteraction(this.algorithmName, 'visualization_completed');
             }
 
@@ -132,6 +176,24 @@ class SelectionSortVisualizer {
         }
 
         this.shared.setButtonStates(false);
+    }
+
+    async celebrateCompletion() {
+        const bars = document.querySelectorAll('.array-bar');
+        
+        // Add chalk dust effect to all bars
+        bars.forEach((bar, index) => {
+            setTimeout(() => {
+                bar.style.animation = 'chalkCelebration 1s ease-in-out';
+            }, index * 100);
+        });
+
+        await this.shared.sleep(1000);
+
+        // Clean up animations
+        bars.forEach(bar => {
+            bar.style.animation = '';
+        });
     }
 
     stopVisualization() {
@@ -196,6 +258,7 @@ class SelectionSortVisualizer {
         const customBtn = document.getElementById('customBtn');
         if (customBtn) {
             customBtn.addEventListener('click', () => {
+                console.log('Custom button clicked'); // Debug log
                 this.shared.toggleCustomInput();
             });
         }
@@ -204,6 +267,7 @@ class SelectionSortVisualizer {
         const setArrayBtn = document.getElementById('setArrayBtn');
         if (setArrayBtn) {
             setArrayBtn.addEventListener('click', () => {
+                console.log('Set array button clicked'); // Debug log
                 if (this.shared.setCustomArray()) {
                     this.resetVisualization();
                     this.shared.logInteraction(this.algorithmName, 'custom_array_set', { 
@@ -225,7 +289,7 @@ class SelectionSortVisualizer {
         // Display initial array
         this.resetVisualization();
         
-        console.log('Selection Sort Visualizer ready');
+        console.log('Selection Sort Visualizer ready with enhanced chalk effects');
     }
 }
 

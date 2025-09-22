@@ -1,7 +1,7 @@
 /**
- * AlgoVizard - Shared Visualizer Functions
+ * AlgoVizard - Shared Visualizer Functions (Updated)
  * Author: Aryan Pravin Sahu
- * Common functionality used across all algorithm visualizations
+ * Common functionality with improved theme management
  */
 
 class AlgoVizardShared {
@@ -157,8 +157,31 @@ class AlgoVizardShared {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    // ==================== THEME MANAGEMENT ====================
+    // ==================== IMPROVED THEME MANAGEMENT ====================
     
+    async setTheme(theme) {
+        if (!['college', 'school'].includes(theme)) return;
+
+        // Update localStorage
+        localStorage.setItem('algorithmVisualizerTheme', theme);
+
+        // Send to server to set cookie
+        try {
+            await fetch('/api/set-theme', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ theme: theme })
+            });
+        } catch (error) {
+            console.log('Theme sync to server failed:', error);
+        }
+
+        // Apply theme immediately
+        this.applyTheme(theme);
+    }
+
     applyTheme(theme) {
         const head = document.head;
 
@@ -169,12 +192,14 @@ class AlgoVizardShared {
         }
 
         if (theme === 'school') {
-            // Add school theme CSS
-            const schoolThemeLink = document.createElement('link');
-            schoolThemeLink.rel = 'stylesheet';
-            schoolThemeLink.href = '/static/css/school-theme.css';
-            schoolThemeLink.id = 'school-theme';
-            head.appendChild(schoolThemeLink);
+            // Add school theme CSS only if not already loaded by server
+            if (!document.querySelector('link[href*="school-theme.css"]')) {
+                const schoolThemeLink = document.createElement('link');
+                schoolThemeLink.rel = 'stylesheet';
+                schoolThemeLink.href = '/static/css/school-theme.css';
+                schoolThemeLink.id = 'school-theme';
+                head.appendChild(schoolThemeLink);
+            }
         }
 
         // Update body class
@@ -183,8 +208,28 @@ class AlgoVizardShared {
     }
 
     initializeTheme() {
+        // Get theme from localStorage
         const savedTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
+        
+        // Apply theme without flash (server should have loaded correct CSS)
         this.applyTheme(savedTheme);
+        
+        // Sync with server if needed
+        this.syncThemeWithServer(savedTheme);
+    }
+
+    async syncThemeWithServer(theme) {
+        try {
+            await fetch('/api/set-theme', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ theme: theme })
+            });
+        } catch (error) {
+            console.log('Theme sync failed:', error);
+        }
     }
 
     // ==================== ERASER ANIMATION (SCHOOL THEME) ====================
@@ -328,35 +373,32 @@ class AlgoVizardShared {
         }
 
         // Random array button
-        const randomBtn = document.querySelector('[onclick="generateRandomArray()"]');
+        const randomBtn = document.getElementById('randomBtn');
         if (randomBtn) {
-            randomBtn.onclick = () => {
+            randomBtn.addEventListener('click', () => {
                 this.generateRandomArray();
                 this.logInteraction(algorithmName, 'random_array_generated');
-                return false;
-            };
+            });
         }
 
         // Custom input button
-        const customBtn = document.querySelector('[onclick="toggleCustomInput()"]');
+        const customBtn = document.getElementById('customBtn');
         if (customBtn) {
-            customBtn.onclick = () => {
+            customBtn.addEventListener('click', () => {
                 this.toggleCustomInput();
-                return false;
-            };
+            });
         }
 
         // Set array button
-        const setArrayBtn = document.querySelector('[onclick="setCustomArray()"]');
+        const setArrayBtn = document.getElementById('setArrayBtn');
         if (setArrayBtn) {
-            setArrayBtn.onclick = () => {
+            setArrayBtn.addEventListener('click', () => {
                 if (this.setCustomArray()) {
                     this.logInteraction(algorithmName, 'custom_array_set', { 
                         array_size: this.currentArray.length 
                     });
                 }
-                return false;
-            };
+            });
         }
     }
 }
@@ -366,7 +408,6 @@ window.algoVizard = new AlgoVizardShared();
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Algorithm name should be set by individual algorithm pages
     const algorithmName = document.body.getAttribute('data-algorithm') || 'unknown';
     window.algoVizard.initialize(algorithmName);
 });
