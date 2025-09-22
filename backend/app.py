@@ -1,5 +1,5 @@
 """
-Algorithm Visualizer - Main Flask Application
+AlgoVizard - Main Flask Application
 Author: Aryan Pravin Sahu
 """
 
@@ -146,7 +146,7 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 if __name__ == '__main__':
-    print("Algorithm Visualizer starting...")
+    print("AlgoVizard starting...")
     print("Available algorithms:")
     print("- Bubble Sort: http://localhost:5000/algorithms/bubble-sort")
     print("- Selection Sort: http://localhost:5000/algorithms/selection-sort")

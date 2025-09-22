@@ -1,4 +1,4 @@
-# Algorithm Visualizer - Daily Development Diary
+# AlgoVizard - Daily Development Diary
 
 ## Day 1 - September 17, 2025
 
@@ -56,7 +56,7 @@
 
 ---
 
-# Algorithm Visualizer - Daily Development Diary
+# AlgoVizard - Daily Development Diary
 
 ## Day 3 - September 19, 2025
 
@@ -108,7 +108,7 @@
 4. Theme switching mechanism development
 
 ---
-# Algorithm Visualizer - Daily Development Diary
+# AlgoVizard - Daily Development Diary
 
 ## Day 4 - September 20, 2025
 

@@ -1,6 +1,6 @@
 """
 User Interaction Capture System
-Adapted from NetworkCapture for algorithm visualization
+Adapted from NetworkCapture for AlgoVizard
 Author: Aryan Pravin Sahu
 """
 
@@ -11,7 +11,7 @@ import uuid
 
 class UserInteractionCapture:
     """
-    Captures user interactions with algorithm visualizer
+    Captures user interactions with AlgoVizard
     Adapted from network packet capture concept
     """
     
