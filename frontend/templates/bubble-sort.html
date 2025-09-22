@@ -6,7 +6,20 @@
     <title>Bubble Sort - AlgoVizard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
+    {% if theme == 'school' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
+    {% endif %}
     <style>
+        /* Prevent flash of unstyled content */
+        body {
+            visibility: hidden;
+        }
+        
+        body.theme-loaded {
+            visibility: visible;
+        }
+        
+        /* Rest of your existing styles... */
         .visualizer-page {
             padding: 120px 20px 40px;
             min-height: 100vh;
@@ -161,7 +174,7 @@
     </style>
 </head>
 
-<body data-algorithm="bubble-sort">
+<body data-algorithm="bubble-sort" data-theme="{{ theme }}">
     <div class="sound-controls">
         <button class="btn btn-secondary" id="soundToggle">🔊</button>
     </div>
@@ -242,5 +255,15 @@
     <script src="{{ url_for('static', filename='js/shared-visualizer.js') }}"></script>
     <!-- Include bubble sort specific JavaScript -->
     <script src="{{ url_for('static', filename='js/bubble-sort.js') }}"></script>
+    
+    <script>
+        // Show page once theme is ready to prevent flash
+        document.addEventListener('DOMContentLoaded', function() {
+            // Small delay to ensure CSS is fully loaded
+            setTimeout(() => {
+                document.body.classList.add('theme-loaded');
+            }, 50);
+        });
+    </script>
 </body>
 </html>
