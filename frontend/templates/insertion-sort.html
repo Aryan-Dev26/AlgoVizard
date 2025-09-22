@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insertion Sort - AlgoVizard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
+    {% if theme == 'school' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
+    {% endif %}
+    <style>
+        /* Prevent flash of unstyled content */
+        body {
+            visibility: hidden;
+        }
+        
+        body.theme-loaded {
+            visibility: visible;
+        }
+        
+        .visualizer-page {
+            padding: 120px 20px 40px;
+            min-height: 100vh;
+        }
+
+        .visualizer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .visualizer-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .visualizer-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .visualizer-header p {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.1rem;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .controls-panel {
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .array-controls {
+            margin-top: 20px;
+        }
+
+        .array-controls input {
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 300px;
+            margin-right: 10px;
+        }
+
+        .array-controls input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .speed-slider {
+            width: 200px;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            appearance: none;
+        }
+
+        .visualization-area {
+            padding: 40px;
+            margin-bottom: 30px;
+            min-height: 350px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .step-info {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .algorithm-info {
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .algorithm-complexity {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .sound-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        /* Insertion sort specific styles */
+        .array-bar.current-element {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%) !important;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+            transform: scale(1.1);
+        }
+
+        .array-bar.sorted {
+            background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%) !important;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .array-bar.comparing {
+            background: linear-gradient(135deg, #FFA726 0%, #FFB74D 100%) !important;
+            transform: scale(1.05);
+            animation: pulse 1s ease-in-out infinite alternate;
+        }
+
+        .sorted-boundary {
+            position: absolute;
+            height: 100%;
+            width: 2px;
+            background: linear-gradient(180deg, #4CAF50, transparent);
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
+            z-index: 10;
+            transition: left 0.4s ease;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 6px 20px rgba(255, 167, 38, 0.4);
+            }
+            100% {
+                box-shadow: 0 8px 25px rgba(255, 167, 38, 0.8);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .visualizer-page {
+                padding: 80px 20px 40px;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .control-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 200px;
+            }
+
+            .algorithm-complexity {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .array-controls input {
+                width: 250px;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body data-algorithm="insertion-sort" data-theme="{{ theme }}">
+    <div class="sound-controls">
+        <button class="btn btn-secondary" id="soundToggle">🔊</button>
+    </div>
+
+    <div class="visualizer-page">
+        <div class="visualizer-container">
+            <div class="visualizer-header">
+                <div class="navigation-buttons">
+                    <a href="/" class="btn btn-secondary">🏠 Back to Home</a>
+                    <a href="/algorithms" class="btn btn-secondary">📚 All Algorithms</a>
+                </div>
+                <h1>Insertion Sort Visualizer</h1>
+                <p>Watch how insertion sort builds the sorted array one element at a time</p>
+            </div>
+
+            <div class="algorithm-info glass">
+                <h3>How Insertion Sort Works</h3>
+                <p>Insertion sort builds the final sorted array one item at a time. It takes each element from the unsorted portion and inserts it into its correct position in the sorted portion, shifting elements as needed.</p>
+                <div class="algorithm-complexity">
+                    <div class="complexity-item">Time: <span class="complexity-value">O(n²)</span></div>
+                    <div class="complexity-item">Space: <span class="complexity-value">O(1)</span></div>
+                    <div class="complexity-item">Stability: <span class="complexity-value">Yes</span></div>
+                </div>
+            </div>
+
+            <div class="controls-panel glass">
+                <div class="control-buttons">
+                    <button class="btn btn-primary" id="startBtn">Start Sorting</button>
+                    <button class="btn btn-warning" id="stopBtn" disabled>Stop</button>
+                    <button class="btn btn-secondary" id="resetBtn">Reset</button>
+                </div>
+
+                <div class="speed-control">
+                    <span>Speed:</span>
+                    <input type="range" id="speedSlider" class="speed-slider" min="100" max="2000" value="800" step="100">
+                    <span id="speedValue">800ms</span>
+                </div>
+
+                <div class="array-controls">
+                    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px;">
+                        <button class="btn btn-secondary" id="randomBtn">Random Array</button>
+                        <button class="btn btn-secondary" id="customBtn">Custom Input</button>
+                    </div>
+
+                    <div id="customInputSection" style="display: none;">
+                        <input type="text" id="customArrayInput" placeholder="Enter numbers: 5,3,8,1,9">
+                        <button class="btn btn-primary" id="setArrayBtn">Set Array</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="visualization-area glass" id="arrayContainer">
+                <div class="sorted-boundary" id="sortedBoundary" style="left: 0px; opacity: 0;"></div>
+                <div class="eraser" id="eraser"></div>
+                <!-- Array bars will be generated here -->
+            </div>
+
+            <div class="step-info glass">
+                <div class="step-description" id="stepDescription">Click "Start Sorting" to begin visualization</div>
+                <div class="step-counter" id="stepCounter">Step: 0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating programming symbols -->
+    <div class="floating-symbols">
+        <div class="code-symbol symbol-1">{}</div>
+        <div class="code-symbol symbol-2">&lt;/&gt;</div>
+        <div class="code-symbol symbol-3">[ ]</div>
+        <div class="code-symbol symbol-4">( )</div>
+        <div class="code-symbol symbol-5">;</div>
+        <div class="code-symbol symbol-6">=&gt;</div>
+    </div>
+
+    <!-- Include shared JavaScript -->
+    <script src="{{ url_for('static', filename='js/shared-visualizer.js') }}"></script>
+    <!-- Include insertion sort specific JavaScript -->
+    <script src="{{ url_for('static', filename='js/insertion-sort.js') }}"></script>
+    
+    <script>
+        // CRITICAL: Apply theme immediately to prevent flash
+        (function() {
+            const savedTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
+            console.log('Pre-load theme detection:', savedTheme);
+            
+            if (savedTheme === 'school') {
+                // Add school theme CSS immediately if not already present
+                if (!document.querySelector('link[href*="school-theme.css"]')) {
+                    const schoolThemeLink = document.createElement('link');
+                    schoolThemeLink.rel = 'stylesheet';
+                    schoolThemeLink.href = '/static/css/school-theme.css';
+                    schoolThemeLink.id = 'school-theme-preload';
+                    document.head.appendChild(schoolThemeLink);
+                }
+            }
+            
+            // Update body class immediately
+            document.body.classList.remove('college-theme', 'school-theme');
+            document.body.classList.add(savedTheme + '-theme');
+        })();
+        
+        // Show page once theme is ready to prevent flash
+        document.addEventListener('DOMContentLoaded', function() {
+            // Small delay to ensure CSS is fully loaded
+            setTimeout(() => {
+                document.body.classList.add('theme-loaded');
+            }, 50);
+        });
+    </script>
+</body>
+</html>
