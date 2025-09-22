@@ -6,7 +6,19 @@
     <title>AlgoVizard - Learn Through Interactive Visualization</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
+    {% if theme == 'school' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
+    {% endif %}
     <style>
+        /* Prevent flash of unstyled content */
+        body {
+            visibility: hidden;
+        }
+        
+        body.theme-loaded {
+            visibility: visible;
+        }
+
         .hero-section {
             min-height: 100vh;
             display: flex;
@@ -384,7 +396,7 @@
         }
     </style>
 </head>
-<body>
+<body data-theme="{{ theme }}">
     <section class="hero-section">
         <div class="hero-content">
             <h1 class="hero-title">AlgoVizard</h1>
@@ -489,7 +501,7 @@
         <h2>Platform Impact</h2>
         <div class="stats-container">
             <div class="stat-item">
-                <span class="stat-number">2</span>
+                <span class="stat-number">3</span>
                 <span class="stat-label">Algorithms Available</span>
             </div>
             <div class="stat-item">
@@ -514,7 +526,7 @@
         </p>
         <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
             <a href="/algorithms" class="btn btn-primary">View All Algorithms</a>
-            <a href="/algorithms/selection-sort" class="btn btn-secondary">Try Selection Sort</a>
+            <a href="/algorithms/insertion-sort" class="btn btn-secondary">Try Insertion Sort</a>
         </div>
     </section>
 
@@ -532,96 +544,37 @@
         <p>&copy; 2025 AlgoVizard. Created by Aryan Pravin Sahu for educational purposes.</p>
     </footer>
 
+    <!-- Include homepage JavaScript -->
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+    
     <script>
-        // CLEAN THEME SYSTEM - NO POPUP CODE
-        let selectedTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
-
-        function applyTheme(theme) {
-            console.log('Applying theme:', theme);
+        // CRITICAL: Apply theme immediately to prevent flash
+        (function() {
+            const savedTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
+            console.log('Pre-load theme detection:', savedTheme);
             
-            // Remove existing school theme
-            const existingSchoolTheme = document.getElementById('school-theme');
-            if (existingSchoolTheme) {
-                existingSchoolTheme.remove();
-            }
-            
-            if (theme === 'school') {
-                // Add school theme CSS
-                const schoolThemeLink = document.createElement('link');
-                schoolThemeLink.rel = 'stylesheet';
-                schoolThemeLink.href = '/static/css/school-theme.css';
-                schoolThemeLink.id = 'school-theme';
-                document.head.appendChild(schoolThemeLink);
-            }
-            
-            // Update body class
-            document.body.classList.remove('college-theme', 'school-theme');
-            document.body.classList.add(theme + '-theme');
-        }
-
-        function selectTheme(theme) {
-            console.log('Theme selected:', theme);
-            selectedTheme = theme;
-            
-            // Save theme
-            localStorage.setItem('algorithmVisualizerTheme', theme);
-            
-            // Apply theme immediately
-            applyTheme(theme);
-            
-            // Update UI
-            document.querySelectorAll('.theme-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            
-            document.querySelector(`[data-theme="${theme}"]`).classList.add('selected');
-            
-            // Update button
-            const selectedCard = document.querySelector(`[data-theme="${theme}"]`);
-            const button = selectedCard.querySelector('.theme-select-btn');
-            const originalText = button.textContent;
-            button.textContent = '✓ Theme Applied!';
-            button.style.background = '#4CAF50';
-            
-            setTimeout(() => {
-                button.textContent = originalText;
-                button.style.background = '';
-            }, 2000);
-        }
-
-        // Load analytics for stats
-        async function loadStats() {
-            try {
-                const response = await fetch('/api/analytics');
-                const data = await response.json();
-                
-                if (data.total_interactions) {
-                    document.getElementById('totalInteractions').textContent = data.total_interactions;
+            if (savedTheme === 'school') {
+                // Add school theme CSS immediately if not already present
+                if (!document.querySelector('link[href*="school-theme.css"]')) {
+                    const schoolThemeLink = document.createElement('link');
+                    schoolThemeLink.rel = 'stylesheet';
+                    schoolThemeLink.href = '/static/css/school-theme.css';
+                    schoolThemeLink.id = 'school-theme-preload';
+                    document.head.appendChild(schoolThemeLink);
                 }
-            } catch (error) {
-                console.log('Analytics not available:', error);
             }
-        }
-
-        // Initialize when page loads
+            
+            // Update body class immediately
+            document.body.classList.remove('college-theme', 'school-theme');
+            document.body.classList.add(savedTheme + '-theme');
+        })();
+        
+        // Show page once theme is ready to prevent flash
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Initializing theme system...');
-            
-            // Apply saved theme
-            applyTheme(selectedTheme);
-            
-            // Show selected card
-            document.querySelector(`[data-theme="${selectedTheme}"]`).classList.add('selected');
-            
-            // Set up click events
-            document.querySelectorAll('.theme-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    selectTheme(this.dataset.theme);
-                });
-            });
-            
-            // Load stats
-            loadStats();
+            // Small delay to ensure CSS is fully loaded
+            setTimeout(() => {
+                document.body.classList.add('theme-loaded');
+            }, 50);
         });
     </script>
 </body>

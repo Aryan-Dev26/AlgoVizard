@@ -7,7 +7,19 @@
     <title>Algorithm Selection - AlgoVizard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
+    {% if theme == 'school' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
+    {% endif %}
     <style>
+        /* Prevent flash of unstyled content */
+        body {
+            visibility: hidden;
+        }
+        
+        body.theme-loaded {
+            visibility: visible;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -215,7 +227,7 @@
     </style>
 </head>
 
-<body>
+<body data-theme="{{ theme }}">
     <div class="container">
         <div class="page-header">
             <div class="navigation-section">
@@ -301,13 +313,13 @@
                 <a href="/algorithms/selection-sort" class="btn btn-primary algorithm-btn">Visualize Selection Sort</a>
             </div>
 
-            <!-- Insertion Sort - Coming Soon -->
-            <div class="algorithm-card glass coming-soon">
+            <!-- Insertion Sort - Now Available -->
+            <div class="algorithm-card glass">
                 <div class="algorithm-icon">📝</div>
                 <h3>Insertion Sort</h3>
                 <p class="algorithm-description">
                     Builds the final sorted array one item at a time. Much more efficient than bubble sort for small
-                    datasets.
+                    datasets and works well with nearly sorted data.
                 </p>
                 <div class="algorithm-complexity">
                     <div class="complexity-item">
@@ -323,7 +335,7 @@
                         <span class="complexity-value">Yes</span>
                     </div>
                 </div>
-                <button class="btn btn-secondary algorithm-btn">Visualize Insertion Sort</button>
+                <a href="/algorithms/insertion-sort" class="btn btn-primary algorithm-btn">Visualize Insertion Sort</a>
             </div>
 
             <!-- Merge Sort - Coming Soon -->
@@ -408,69 +420,48 @@
         </div>
     </div>
 
+    <!-- Floating programming symbols -->
+    <div class="floating-symbols">
+        <div class="code-symbol symbol-1">{}</div>
+        <div class="code-symbol symbol-2">&lt;/&gt;</div>
+        <div class="code-symbol symbol-3">[ ]</div>
+        <div class="code-symbol symbol-4">( )</div>
+        <div class="code-symbol symbol-5">;</div>
+        <div class="code-symbol symbol-6">=&gt;</div>
+    </div>
+
+    <!-- Include algorithms page JavaScript -->
+    <script src="{{ url_for('static', filename='js/algorithms.js') }}"></script>
+    
     <script>
-        // Load and display analytics
-        async function loadAnalytics() {
-            try {
-                const response = await fetch('/api/analytics');
-                const data = await response.json();
-
-                if (data.total_interactions) {
-                    document.getElementById('totalVisualizations').textContent = data.total_interactions;
-                }
-
-                // Count unique users
-                const uniqueUsers = new Set();
-                if (data.recent_activity) {
-                    data.recent_activity.forEach(activity => {
-                        if (activity.ip_address) {
-                            uniqueUsers.add(activity.ip_address);
-                        }
-                    });
-                    document.getElementById('totalUsers').textContent = uniqueUsers.size;
-                }
-            } catch (error) {
-                console.log('Analytics not available:', error);
-            }
-        }
-
-        // Add click tracking for algorithm cards
-        document.querySelectorAll('.algorithm-btn').forEach(btn => {
-            btn.addEventListener('click', function (e) {
-                const algorithmName = this.closest('.algorithm-card').querySelector('h3').textContent;
-                console.log(`User clicked on: ${algorithmName}`);
-            });
-        });
-
-        // Theme management
-        function applyTheme(theme) {
-            const head = document.head;
-
-            const existingSchoolTheme = document.getElementById('school-theme');
-            if (existingSchoolTheme) {
-                existingSchoolTheme.remove();
-            }
-
-            if (theme === 'school') {
-                const schoolThemeLink = document.createElement('link');
-                schoolThemeLink.rel = 'stylesheet';
-                schoolThemeLink.href = '/static/css/school-theme.css';
-                schoolThemeLink.id = 'school-theme';
-                head.appendChild(schoolThemeLink);
-            }
-
-            document.body.classList.remove('college-theme', 'school-theme');
-            document.body.classList.add(theme + '-theme');
-        }
-
-        function initTheme() {
+        // CRITICAL: Apply theme immediately to prevent flash
+        (function() {
             const savedTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
-            applyTheme(savedTheme);
-        }
-
-        // Initialize
-        loadAnalytics();
-        document.addEventListener('DOMContentLoaded', initTheme);
+            console.log('Pre-load theme detection:', savedTheme);
+            
+            if (savedTheme === 'school') {
+                // Add school theme CSS immediately if not already present
+                if (!document.querySelector('link[href*="school-theme.css"]')) {
+                    const schoolThemeLink = document.createElement('link');
+                    schoolThemeLink.rel = 'stylesheet';
+                    schoolThemeLink.href = '/static/css/school-theme.css';
+                    schoolThemeLink.id = 'school-theme-preload';
+                    document.head.appendChild(schoolThemeLink);
+                }
+            }
+            
+            // Update body class immediately
+            document.body.classList.remove('college-theme', 'school-theme');
+            document.body.classList.add(savedTheme + '-theme');
+        })();
+        
+        // Show page once theme is ready to prevent flash
+        document.addEventListener('DOMContentLoaded', function() {
+            // Small delay to ensure CSS is fully loaded
+            setTimeout(() => {
+                document.body.classList.add('theme-loaded');
+            }, 50);
+        });
     </script>
 </body>
 
