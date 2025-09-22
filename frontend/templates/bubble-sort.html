@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bubble Sort Visualizer</title>
+    <title>Bubble Sort - AlgoVizard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
     <style>
@@ -103,19 +102,6 @@
             position: relative;
         }
 
-        .array-bar.swapped {
-            animation: swapPulse 0.5s ease;
-        }
-
-        @keyframes swapPulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-        }
-
         .step-info {
             padding: 25px;
             text-align: center;
@@ -175,9 +161,9 @@
     </style>
 </head>
 
-<body>
+<body data-algorithm="bubble-sort">
     <div class="sound-controls">
-        <button class="btn btn-secondary" onclick="toggleSound()" id="soundToggle">🔊</button>
+        <button class="btn btn-secondary" id="soundToggle">🔊</button>
     </div>
 
     <div class="visualizer-page">
@@ -205,9 +191,9 @@
 
             <div class="controls-panel glass">
                 <div class="control-buttons">
-                    <button class="btn btn-primary" id="startBtn" onclick="startVisualization()">Start Sorting</button>
-                    <button class="btn btn-warning" id="stopBtn" onclick="stopVisualization()" disabled>Stop</button>
-                    <button class="btn btn-secondary" onclick="resetVisualization()">Reset</button>
+                    <button class="btn btn-primary" id="startBtn">Start Sorting</button>
+                    <button class="btn btn-warning" id="stopBtn" disabled>Stop</button>
+                    <button class="btn btn-secondary" id="resetBtn">Reset</button>
                 </div>
 
                 <div class="speed-control">
@@ -219,13 +205,13 @@
 
                 <div class="array-controls">
                     <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px;">
-                        <button class="btn btn-secondary" onclick="generateRandomArray()">Random Array</button>
-                        <button class="btn btn-secondary" onclick="toggleCustomInput()">Custom Input</button>
+                        <button class="btn btn-secondary" id="randomBtn">Random Array</button>
+                        <button class="btn btn-secondary" id="customBtn">Custom Input</button>
                     </div>
 
                     <div id="customInputSection" style="display: none;">
                         <input type="text" id="customArrayInput" placeholder="Enter numbers: 5,3,8,1,9">
-                        <button class="btn btn-primary" onclick="setCustomArray()">Set Array</button>
+                        <button class="btn btn-primary" id="setArrayBtn">Set Array</button>
                     </div>
                 </div>
             </div>
@@ -252,320 +238,9 @@
         <div class="code-symbol symbol-6">=&gt;</div>
     </div>
 
-    <script>
-        let algorithmSteps = [];
-        let currentStep = 0;
-        let isRunning = false;
-        let shouldStop = false;
-        let currentArray = [64, 34, 25, 12, 22, 11, 90];
-
-        // Sound effects
-        let audioContext;
-        let isAudioEnabled = true;
-
-        function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
-
-        function playSound(frequency, duration) {
-            if (!isAudioEnabled || !audioContext) return;
-
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-
-            oscillator.frequency.value = frequency;
-            oscillator.type = 'sine';
-
-            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + duration);
-        }
-
-        function playCompareSound() {
-            playSound(800, 0.1);
-        }
-
-        function playSwapSound() {
-            playSound(400, 0.2);
-        }
-
-        function playCompleteSound() {
-            setTimeout(() => playSound(523, 0.2), 0);
-            setTimeout(() => playSound(659, 0.2), 200);
-            setTimeout(() => playSound(784, 0.4), 400);
-        }
-
-        function toggleSound() {
-            initAudio();
-            isAudioEnabled = !isAudioEnabled;
-            document.getElementById('soundToggle').textContent = isAudioEnabled ? '🔊' : '🔇';
-        }
-
-        // Array management functions
-        function generateRandomArray() {
-            currentArray = [];
-            for (let i = 0; i < 7; i++) {
-                currentArray.push(Math.floor(Math.random() * 90) + 10);
-            }
-            displayArray(currentArray);
-            document.getElementById('stepDescription').textContent = 'Random array generated! Click "Start Sorting" to begin.';
-        }
-
-        function toggleCustomInput() {
-            const section = document.getElementById('customInputSection');
-            section.style.display = section.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function setCustomArray() {
-            const input = document.getElementById('customArrayInput').value;
-            const numbers = input.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
-
-            if (numbers.length > 0 && numbers.length <= 10) {
-                currentArray = numbers;
-                displayArray(currentArray);
-                document.getElementById('stepDescription').textContent = 'Custom array set! Click "Start Sorting" to begin.';
-                toggleCustomInput();
-                document.getElementById('customArrayInput').value = '';
-            } else {
-                alert('Please enter 1-10 valid numbers separated by commas');
-            }
-        }
-
-        function displayArray(arrayData, comparing = [], swapped = false) {
-            const container = document.getElementById('arrayContainer');
-            const eraser = document.getElementById('eraser');
-            
-            // Clear existing bars but keep eraser
-            const existingBars = container.querySelectorAll('.array-bar');
-            existingBars.forEach(bar => bar.remove());
-
-            arrayData.forEach((value, index) => {
-                const bar = document.createElement('div');
-                bar.className = 'array-bar';
-                bar.style.height = `${Math.max(value * 2.5, 30)}px`;
-                bar.textContent = value;
-                bar.setAttribute('data-index', index);
-
-                if (comparing.includes(index)) {
-                    bar.classList.add('comparing');
-                }
-
-                if (swapped && comparing.includes(index)) {
-                    bar.classList.add('swapped');
-                }
-
-                container.appendChild(bar);
-            });
-        }
-
-        // Enhanced swap animation with eraser effect
-        async function animateSwap(arrayData, index1, index2) {
-            const bars = document.querySelectorAll('.array-bar');
-            const bar1 = bars[index1];
-            const bar2 = bars[index2];
-            const eraser = document.getElementById('eraser');
-
-            if (!bar1 || !bar2) return;
-
-            // Position eraser between the two bars
-            const bar1Rect = bar1.getBoundingClientRect();
-            const bar2Rect = bar2.getBoundingClientRect();
-            const containerRect = document.getElementById('arrayContainer').getBoundingClientRect();
-            
-            const eraserX = ((bar1Rect.left + bar2Rect.left) / 2) - containerRect.left - 30;
-            const eraserY = Math.min(bar1Rect.top, bar2Rect.top) - containerRect.top - 30;
-
-            eraser.style.left = `${eraserX}px`;
-            eraser.style.top = `${eraserY}px`;
-            eraser.classList.add('active');
-
-            // Erase animation
-            bar1.classList.add('erasing');
-            bar2.classList.add('erasing');
-
-            await sleep(400);
-
-            // Swap the values
-            const temp = bar1.textContent;
-            bar1.textContent = bar2.textContent;
-            bar2.textContent = temp;
-
-            // Rewrite animation
-            bar1.classList.remove('erasing');
-            bar2.classList.remove('erasing');
-            bar1.classList.add('rewriting');
-            bar2.classList.add('rewriting');
-
-            await sleep(400);
-
-            // Clean up
-            bar1.classList.remove('rewriting', 'comparing');
-            bar2.classList.remove('rewriting', 'comparing');
-            eraser.classList.remove('active');
-        }
-
-        async function startVisualization() {
-            if (isRunning) return;
-
-            isRunning = true;
-            shouldStop = false;
-
-            document.getElementById('startBtn').disabled = true;
-            document.getElementById('stopBtn').disabled = false;
-
-            document.getElementById('stepDescription').textContent = 'Loading algorithm steps...';
-
-            try {
-                const response = await fetch('/api/bubble-sort', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ array: currentArray })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                algorithmSteps = await response.json();
-                let workingArray = [...currentArray];
-
-                for (let i = 0; i < algorithmSteps.length && !shouldStop; i++) {
-                    const step = algorithmSteps[i];
-
-                    // Display comparison
-                    displayArray(workingArray, step.comparing, false);
-                    document.getElementById('stepDescription').textContent = step.description;
-                    document.getElementById('stepCounter').textContent = `Step: ${step.step} of ${algorithmSteps.length - 1}`;
-
-                    // Play sounds
-                    if (step.comparing && step.comparing.length > 0) {
-                        playCompareSound();
-                    }
-
-                    await sleep(getSpeed());
-
-                    if (step.swapped && step.comparing && step.comparing.length === 2) {
-                        // Use enhanced swap animation for school theme
-                        const currentTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
-                        if (currentTheme === 'school') {
-                            await animateSwap(workingArray, step.comparing[0], step.comparing[1]);
-                        } else {
-                            // Regular animation for college theme
-                            displayArray(step.array, step.comparing, true);
-                            await sleep(getSpeed() / 2);
-                        }
-
-                        // Update working array to match the swap
-                        workingArray = [...step.array];
-                        playSwapSound();
-                    }
-
-                    currentStep = i;
-                }
-
-                if (!shouldStop) {
-                    playCompleteSound();
-                    document.getElementById('stepDescription').textContent = 'Sorting complete! All elements are now in their correct positions.';
-                    
-                    // Mark all as sorted
-                    const bars = document.querySelectorAll('.array-bar');
-                    bars.forEach(bar => bar.classList.add('sorted'));
-                }
-
-            } catch (error) {
-                console.error('Error:', error);
-                try {
-                    const response = await fetch('/api/bubble-sort');
-                    algorithmSteps = await response.json();
-                    // Continue with fallback logic...
-                } catch (fallbackError) {
-                    document.getElementById('stepDescription').textContent = `Error loading algorithm: ${error.message}`;
-                }
-            }
-
-            isRunning = false;
-            document.getElementById('startBtn').disabled = false;
-            document.getElementById('stopBtn').disabled = true;
-        }
-
-        function stopVisualization() {
-            shouldStop = true;
-            isRunning = false;
-
-            document.getElementById('startBtn').disabled = false;
-            document.getElementById('stopBtn').disabled = true;
-            document.getElementById('stepDescription').textContent = 'Visualization stopped';
-        }
-
-        function resetVisualization() {
-            if (isRunning) {
-                stopVisualization();
-            }
-
-            displayArray(currentArray);
-            document.getElementById('stepDescription').textContent = 'Click "Start Sorting" to begin visualization';
-            document.getElementById('stepCounter').textContent = 'Step: 0';
-            currentStep = 0;
-        }
-
-        function getSpeed() {
-            const slider = document.getElementById('speedSlider');
-            return parseInt(slider.value);
-        }
-
-        function updateSpeedDisplay() {
-            const slider = document.getElementById('speedSlider');
-            const speedValue = document.getElementById('speedValue');
-            speedValue.textContent = slider.value + 'ms';
-        }
-
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-
-        // Theme management
-        function applyTheme(theme) {
-            const head = document.head;
-
-            const existingSchoolTheme = document.getElementById('school-theme');
-            if (existingSchoolTheme) {
-                existingSchoolTheme.remove();
-            }
-
-            if (theme === 'school') {
-                const schoolThemeLink = document.createElement('link');
-                schoolThemeLink.rel = 'stylesheet';
-                schoolThemeLink.href = '/static/css/school-theme.css';
-                schoolThemeLink.id = 'school-theme';
-                head.appendChild(schoolThemeLink);
-            }
-
-            document.body.classList.remove('college-theme', 'school-theme');
-            document.body.classList.add(theme + '-theme');
-        }
-
-        function initTheme() {
-            const savedTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
-            applyTheme(savedTheme);
-        }
-
-        // Initialize
-        resetVisualization();
-        updateSpeedDisplay();
-        initAudio();
-
-        document.getElementById('speedSlider').addEventListener('input', updateSpeedDisplay);
-        document.addEventListener('DOMContentLoaded', initTheme);
-    </script>
+    <!-- Include shared JavaScript -->
+    <script src="{{ url_for('static', filename='js/shared-visualizer.js') }}"></script>
+    <!-- Include bubble sort specific JavaScript -->
+    <script src="{{ url_for('static', filename='js/bubble-sort.js') }}"></script>
 </body>
-
 </html>
