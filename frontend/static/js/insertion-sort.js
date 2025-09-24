@@ -238,12 +238,12 @@ class InsertionSortVisualizer {
         }
 
         // Custom input button
-        const customBtn = document.getElementById('customBtn');
-        if (customBtn) {
-            customBtn.addEventListener('click', () => {
-                this.shared.toggleCustomInput();
-            });
-        }
+        // const customBtn = document.getElementById('customBtn');
+        // if (customBtn) {
+        //     customBtn.addEventListener('click', () => {
+        //         this.shared.toggleCustomInput();
+        //     });
+        // }
 
         // Set array button
         const setArrayBtn = document.getElementById('setArrayBtn');

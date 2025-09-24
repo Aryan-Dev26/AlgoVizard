@@ -41,10 +41,16 @@ class UserBehaviorModeler:
         """Load and parse interaction data from JSON log file"""
         try:
             interactions = []
-            with open(self.interactions_file, 'r') as f:
-                for line in f:
-                    if line.strip():
-                        interactions.append(json.loads(line.strip()))
+            with open(self.interactions_file, 'r', encoding='utf-8') as f:
+                for line_num, line in enumerate(f, 1):
+                    line = line.strip()
+                    if line:
+                        try:
+                            interactions.append(json.loads(line))
+                        except json.JSONDecodeError as e:
+                            print(f"Warning: Skipping invalid JSON on line {line_num}: {e}")
+                            continue
+            print(f"Loaded {len(interactions)} interactions successfully")
             return interactions
         except FileNotFoundError:
             print(f"Warning: {self.interactions_file} not found. Using empty dataset.")

@@ -254,14 +254,14 @@ class SelectionSortVisualizer {
             });
         }
 
-        // Custom input button
-        const customBtn = document.getElementById('customBtn');
-        if (customBtn) {
-            customBtn.addEventListener('click', () => {
-                console.log('Custom button clicked'); // Debug log
-                this.shared.toggleCustomInput();
-            });
-        }
+        // // Custom input button
+        // const customBtn = document.getElementById('customBtn');
+        // if (customBtn) {
+        //     customBtn.addEventListener('click', () => {
+        //         console.log('Custom button clicked'); // Debug log
+        //         this.shared.toggleCustomInput();
+        //     });
+        // }
 
         // Set array button
         const setArrayBtn = document.getElementById('setArrayBtn');

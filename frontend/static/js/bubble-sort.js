@@ -164,12 +164,12 @@ class BubbleSortVisualizer {
         }
 
         // Custom input button
-        const customBtn = document.getElementById('customBtn');
-        if (customBtn) {
-            customBtn.addEventListener('click', () => {
-                this.shared.toggleCustomInput();
-            });
-        }
+        // const customBtn = document.getElementById('customBtn');
+        // if (customBtn) {
+        //     customBtn.addEventListener('click', () => {
+        //         this.shared.toggleCustomInput();
+        //     });
+        // }
 
         // Set array button
         const setArrayBtn = document.getElementById('setArrayBtn');
@@ -197,6 +197,46 @@ class BubbleSortVisualizer {
         this.displayArray(this.shared.currentArray);
         
         console.log('Bubble Sort Visualizer ready');
+    }
+}
+function showCustomInput() {
+    const customSection = document.getElementById('customInputSection');
+    customSection.style.display = customSection.style.display === 'none' ? 'block' : 'none';
+}
+
+function setCustomArray() {
+    const input = document.getElementById('customArrayInput');
+    const arrayStr = input.value.trim();
+    
+    if (!arrayStr) {
+        alert('Please enter some numbers');
+        return;
+    }
+    
+    try {
+        // Parse the input (expecting comma-separated numbers)
+        const customArray = arrayStr.split(',').map(num => {
+            const parsed = parseInt(num.trim());
+            if (isNaN(parsed)) throw new Error('Invalid number');
+            return parsed;
+        });
+        
+        if (customArray.length < 1 || customArray.length > 10) {
+            alert('Please enter between 1 and 10 numbers');
+            return;
+        }
+        
+        // Update the global array and reset visualization
+        currentArray = customArray;
+        currentStep = 0;
+        resetVisualization();
+        
+        // Hide the input section
+        document.getElementById('customInputSection').style.display = 'none';
+        input.value = '';
+        
+    } catch (error) {
+        alert('Please enter valid numbers separated by commas (e.g., 5,3,8,1,9)');
     }
 }
 

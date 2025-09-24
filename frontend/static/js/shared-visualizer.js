@@ -1,7 +1,7 @@
 /**
  * AlgoVizard - Shared Visualizer Functions (Updated)
  * Author: Aryan Pravin Sahu
- * Common functionality with improved theme management
+ * Common functionality with improved theme management and fixed event handling
  */
 
 class AlgoVizardShared {
@@ -71,6 +71,10 @@ class AlgoVizardShared {
             this.currentArray.push(Math.floor(Math.random() * 90) + 10);
         }
         this.updateStepDescription('Random array generated! Click "Start Sorting" to begin.');
+        
+        // Reset the current algorithm visualization
+        this.resetCurrentAlgorithm();
+        
         return this.currentArray;
     }
 
@@ -94,10 +98,27 @@ class AlgoVizardShared {
             this.updateStepDescription('Custom array set! Click "Start Sorting" to begin.');
             this.toggleCustomInput();
             input.value = '';
+            
+            // Reset the current algorithm visualization
+            this.resetCurrentAlgorithm();
+            
             return true;
         } else {
             alert('Please enter 1-10 valid numbers separated by commas');
             return false;
+        }
+    }
+
+    resetCurrentAlgorithm() {
+        // Reset whichever algorithm visualizer is currently active
+        if (window.bubbleSortVisualizer) {
+            window.bubbleSortVisualizer.resetVisualization();
+        }
+        if (window.selectionSortVisualizer) {
+            window.selectionSortVisualizer.resetVisualization();
+        }
+        if (window.insertionSortVisualizer) {
+            window.insertionSortVisualizer.resetVisualization();
         }
     }
 
@@ -126,6 +147,7 @@ class AlgoVizardShared {
         
         this.isRunning = isRunning;
     }
+    
 
     // ==================== SPEED CONTROL ====================
     
@@ -359,39 +381,41 @@ class AlgoVizardShared {
         // Log page view
         this.logInteraction(algorithmName, 'page_view');
         
-        // Set up event listeners for common controls
-        this.setupEventListeners(algorithmName);
+        // Set up event listeners for shared controls
+        this.setupSharedEventListeners(algorithmName);
         
         console.log('AlgoVizard initialization complete');
     }
 
-    setupEventListeners(algorithmName) {
+    setupSharedEventListeners(algorithmName) {
         // Sound toggle
         const soundToggle = document.getElementById('soundToggle');
         if (soundToggle) {
             soundToggle.addEventListener('click', () => this.toggleSound());
         }
 
-        // Random array button
+        // Random array button - only set up once
         const randomBtn = document.getElementById('randomBtn');
-        if (randomBtn) {
+        if (randomBtn && !randomBtn.hasAttribute('data-listener-added')) {
             randomBtn.addEventListener('click', () => {
                 this.generateRandomArray();
                 this.logInteraction(algorithmName, 'random_array_generated');
             });
+            randomBtn.setAttribute('data-listener-added', 'true');
         }
 
-        // Custom input button
+        // Custom input button - only set up once
         const customBtn = document.getElementById('customBtn');
-        if (customBtn) {
+        if (customBtn && !customBtn.hasAttribute('data-listener-added')) {
             customBtn.addEventListener('click', () => {
                 this.toggleCustomInput();
             });
+            customBtn.setAttribute('data-listener-added', 'true');
         }
 
-        // Set array button
+        // Set array button - only set up once
         const setArrayBtn = document.getElementById('setArrayBtn');
-        if (setArrayBtn) {
+        if (setArrayBtn && !setArrayBtn.hasAttribute('data-listener-added')) {
             setArrayBtn.addEventListener('click', () => {
                 if (this.setCustomArray()) {
                     this.logInteraction(algorithmName, 'custom_array_set', { 
@@ -399,6 +423,7 @@ class AlgoVizardShared {
                     });
                 }
             });
+            setArrayBtn.setAttribute('data-listener-added', 'true');
         }
     }
 }
