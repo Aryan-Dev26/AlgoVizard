@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +9,15 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
     {% if theme == 'school' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cursors.css') }}">
+    <script src="{{ url_for('static', filename='js/theme-manager.js') }}"></script>
     {% endif %}
     <style>
         /* Prevent flash of unstyled content */
         body {
             visibility: hidden;
         }
-        
+
         body.theme-loaded {
             visibility: visible;
         }
@@ -170,7 +173,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: 
+            background:
                 radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
             pointer-events: none;
@@ -188,7 +191,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: 
+            background:
                 radial-gradient(circle at 20% 30%, rgba(245, 245, 220, 0.03) 1px, transparent 1px),
                 radial-gradient(circle at 80% 60%, rgba(245, 245, 220, 0.02) 1px, transparent 1px);
             background-size: 30px 30px, 45px 45px;
@@ -234,14 +237,30 @@
             animation: barBounce 0.6s ease infinite alternate;
         }
 
-        .theme-card:hover .preview-bar:nth-child(1) { animation-delay: 0s; }
-        .theme-card:hover .preview-bar:nth-child(2) { animation-delay: 0.1s; }
-        .theme-card:hover .preview-bar:nth-child(3) { animation-delay: 0.2s; }
-        .theme-card:hover .preview-bar:nth-child(4) { animation-delay: 0.3s; }
+        .theme-card:hover .preview-bar:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .theme-card:hover .preview-bar:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .theme-card:hover .preview-bar:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .theme-card:hover .preview-bar:nth-child(4) {
+            animation-delay: 0.3s;
+        }
 
         @keyframes barBounce {
-            0% { transform: scaleY(1); }
-            100% { transform: scaleY(1.1); }
+            0% {
+                transform: scaleY(1);
+            }
+
+            100% {
+                transform: scaleY(1.1);
+            }
         }
 
         /* Special hover effect for school theme */
@@ -372,38 +391,40 @@
             .hero-title {
                 font-size: 2.5rem;
             }
-            
+
             .hero-subtitle {
                 font-size: 1.1rem;
             }
-            
+
             .hero-buttons {
                 flex-direction: column;
                 align-items: center;
             }
-            
+
             .hero-btn {
                 width: 250px;
             }
-            
+
             .theme-cards {
                 grid-template-columns: 1fr;
             }
-            
+
             .features-grid {
                 grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
+
 <body data-theme="{{ theme }}">
     <section class="hero-section">
         <div class="hero-content">
             <h1 class="hero-title">AlgoVizard</h1>
             <p class="hero-subtitle">
-                Master sorting algorithms through interactive visualizations. Watch step-by-step how algorithms work, understand their complexity, and build your computer science foundation.
+                Master sorting algorithms through interactive visualizations. Watch step-by-step how algorithms work,
+                understand their complexity, and build your computer science foundation.
             </p>
-            
+
             <div class="hero-buttons">
                 <a href="/algorithms" class="btn btn-primary hero-btn">Start Learning</a>
                 <a href="/algorithms/bubble-sort" class="btn btn-secondary hero-btn">Try Bubble Sort</a>
@@ -413,7 +434,7 @@
             <div class="theme-selection-section">
                 <h2 class="theme-selection-title">Choose Your Learning Experience</h2>
                 <p class="theme-selection-subtitle">Select the interface that best suits your learning style</p>
-                
+
                 <div class="theme-cards">
                     <div class="theme-card" data-theme="college">
                         <div class="theme-header">
@@ -421,7 +442,7 @@
                             <h3>College Mode</h3>
                         </div>
                         <p class="theme-description">Professional dark theme for university students and developers</p>
-                        
+
                         <!-- Animated preview -->
                         <div class="theme-preview">
                             <div class="preview-bg college-preview">
@@ -433,17 +454,18 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <button class="theme-select-btn">Use College Mode</button>
                     </div>
-                    
+
                     <div class="theme-card" data-theme="school">
                         <div class="theme-header">
                             <span class="theme-icon">🏫</span>
                             <h3>School Mode</h3>
                         </div>
-                        <p class="theme-description">Traditional greenboard chalk theme with nostalgic classroom feel</p>
-                        
+                        <p class="theme-description">Traditional greenboard chalk theme with nostalgic classroom feel
+                        </p>
+
                         <!-- Animated preview -->
                         <div class="theme-preview">
                             <div class="preview-bg school-preview">
@@ -455,7 +477,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <button class="theme-select-btn">Use School Mode</button>
                     </div>
                 </div>
@@ -466,7 +488,8 @@
                     <span class="feature-icon">👁️</span>
                     <div class="feature-title">Visual Learning</div>
                     <div class="feature-description">
-                        Watch algorithms in action with step-by-step animations that make complex concepts easy to understand.
+                        Watch algorithms in action with step-by-step animations that make complex concepts easy to
+                        understand.
                     </div>
                 </div>
 
@@ -474,7 +497,8 @@
                     <span class="feature-icon">⚡</span>
                     <div class="feature-title">Interactive Controls</div>
                     <div class="feature-description">
-                        Control the speed, pause, reset, and explore at your own pace with intuitive visualization controls.
+                        Control the speed, pause, reset, and explore at your own pace with intuitive visualization
+                        controls.
                     </div>
                 </div>
 
@@ -482,7 +506,8 @@
                     <span class="feature-icon">🎓</span>
                     <div class="feature-title">Educational Focus</div>
                     <div class="feature-description">
-                        Designed for students and developers with clear explanations, complexity analysis, and best practices.
+                        Designed for students and developers with clear explanations, complexity analysis, and best
+                        practices.
                     </div>
                 </div>
 
@@ -522,7 +547,8 @@
     <section class="cta-section glass">
         <h2 class="cta-title">Ready to Master Algorithms?</h2>
         <p class="cta-description">
-            Join thousands of students and developers who are learning algorithms through visualization. Start with bubble sort or explore our full collection of sorting algorithms.
+            Join thousands of students and developers who are learning algorithms through visualization. Start with
+            bubble sort or explore our full collection of sorting algorithms.
         </p>
         <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
             <a href="/algorithms" class="btn btn-primary">View All Algorithms</a>
@@ -546,13 +572,13 @@
 
     <!-- Include homepage JavaScript -->
     <script src="{{ url_for('static', filename='js/home.js') }}"></script>
-    
+
     <script>
         // CRITICAL: Apply theme immediately to prevent flash
-        (function() {
+        (function () {
             const savedTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
             console.log('Pre-load theme detection:', savedTheme);
-            
+
             if (savedTheme === 'school') {
                 // Add school theme CSS immediately if not already present
                 if (!document.querySelector('link[href*="school-theme.css"]')) {
@@ -563,14 +589,14 @@
                     document.head.appendChild(schoolThemeLink);
                 }
             }
-            
+
             // Update body class immediately
             document.body.classList.remove('college-theme', 'school-theme');
             document.body.classList.add(savedTheme + '-theme');
         })();
-        
+
         // Show page once theme is ready to prevent flash
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Small delay to ensure CSS is fully loaded
             setTimeout(() => {
                 document.body.classList.add('theme-loaded');
@@ -578,4 +604,5 @@
         });
     </script>
 </body>
+
 </html>

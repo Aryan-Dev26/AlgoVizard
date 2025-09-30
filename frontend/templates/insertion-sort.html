@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,17 +9,19 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
     {% if theme == 'school' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cursors.css') }}">
+    <script src="{{ url_for('static', filename='js/theme-manager.js') }}"></script>
     {% endif %}
     <style>
         /* Prevent flash of unstyled content */
         body {
             visibility: hidden;
         }
-        
+
         body.theme-loaded {
             visibility: visible;
         }
-        
+
         .visualizer-page {
             padding: 120px 20px 40px;
             min-height: 100vh;
@@ -173,6 +176,7 @@
             0% {
                 box-shadow: 0 6px 20px rgba(255, 167, 38, 0.4);
             }
+
             100% {
                 box-shadow: 0 8px 25px rgba(255, 167, 38, 0.8);
             }
@@ -228,7 +232,9 @@
 
             <div class="algorithm-info glass">
                 <h3>How Insertion Sort Works</h3>
-                <p>Insertion sort builds the final sorted array one item at a time. It takes each element from the unsorted portion and inserts it into its correct position in the sorted portion, shifting elements as needed.</p>
+                <p>Insertion sort builds the final sorted array one item at a time. It takes each element from the
+                    unsorted portion and inserts it into its correct position in the sorted portion, shifting elements
+                    as needed.</p>
                 <div class="algorithm-complexity">
                     <div class="complexity-item">Time: <span class="complexity-value">O(n²)</span></div>
                     <div class="complexity-item">Space: <span class="complexity-value">O(1)</span></div>
@@ -245,12 +251,14 @@
 
                 <div class="speed-control">
                     <span>Speed:</span>
-                    <input type="range" id="speedSlider" class="speed-slider" min="100" max="2000" value="800" step="100">
+                    <input type="range" id="speedSlider" class="speed-slider" min="100" max="2000" value="800"
+                        step="100">
                     <span id="speedValue">800ms</span>
                 </div>
 
                 <div class="array-controls">
-                    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px;">
+                    <div
+                        style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px;">
                         <button class="btn btn-secondary" id="randomBtn">Random Array</button>
                         <button class="btn btn-secondary" id="customBtn">Custom Input</button>
                     </div>
@@ -289,13 +297,13 @@
     <script src="{{ url_for('static', filename='js/shared-visualizer.js') }}"></script>
     <!-- Include insertion sort specific JavaScript -->
     <script src="{{ url_for('static', filename='js/insertion-sort.js') }}"></script>
-    
+
     <script>
         // CRITICAL: Apply theme immediately to prevent flash
-        (function() {
+        (function () {
             const savedTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
             console.log('Pre-load theme detection:', savedTheme);
-            
+
             if (savedTheme === 'school') {
                 // Add school theme CSS immediately if not already present
                 if (!document.querySelector('link[href*="school-theme.css"]')) {
@@ -306,14 +314,14 @@
                     document.head.appendChild(schoolThemeLink);
                 }
             }
-            
+
             // Update body class immediately
             document.body.classList.remove('college-theme', 'school-theme');
             document.body.classList.add(savedTheme + '-theme');
         })();
-        
+
         // Show page once theme is ready to prevent flash
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Small delay to ensure CSS is fully loaded
             setTimeout(() => {
                 document.body.classList.add('theme-loaded');
@@ -321,4 +329,5 @@
         });
     </script>
 </body>
+
 </html>

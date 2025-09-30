@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +9,15 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
     {% if theme == 'school' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cursors.css') }}">
+    <script src="{{ url_for('static', filename='js/theme-manager.js') }}"></script>
     {% endif %}
     <style>
         /* Prevent flash of unstyled content */
         body {
             visibility: hidden;
         }
-        
+
         body.theme-loaded {
             visibility: visible;
         }
@@ -164,15 +167,19 @@
             0% {
                 box-shadow: 0 6px 20px rgba(255, 167, 38, 0.4);
             }
+
             100% {
                 box-shadow: 0 8px 25px rgba(255, 167, 38, 0.8);
             }
         }
 
         @keyframes swapAnimation {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0);
             }
+
             50% {
                 transform: translateY(-10px);
             }
@@ -249,7 +256,7 @@
             min-width: 80px !important;
             border-radius: 50px !important;
             padding: 8px 12px !important;
-            box-shadow: 
+            box-shadow:
                 0 0 15px rgba(245, 245, 220, 0.4),
                 inset 0 4px 8px rgba(255, 255, 255, 0.6),
                 inset 0 -4px 8px rgba(0, 0, 0, 0.2),
@@ -259,65 +266,65 @@
 
         /* Colored chalk pieces */
         body.school-theme .array-bar:nth-child(1):not(.comparing):not(.sorted):not(.current-min):not(.current-element) {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.9) 0%,
-                rgba(245, 245, 220, 0.95) 30%,
-                rgba(245, 245, 220, 0.95) 70%,
-                rgba(220, 220, 200, 0.8) 100%) !important;
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.9) 0%,
+                    rgba(245, 245, 220, 0.95) 30%,
+                    rgba(245, 245, 220, 0.95) 70%,
+                    rgba(220, 220, 200, 0.8) 100%) !important;
             border-color: #f5f5dc !important;
         }
 
         body.school-theme .array-bar:nth-child(2):not(.comparing):not(.sorted):not(.current-min):not(.current-element) {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 150, 0.9) 0%,
-                rgba(255, 215, 0, 0.95) 30%,
-                rgba(255, 215, 0, 0.95) 70%,
-                rgba(200, 170, 0, 0.8) 100%) !important;
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 150, 0.9) 0%,
+                    rgba(255, 215, 0, 0.95) 30%,
+                    rgba(255, 215, 0, 0.95) 70%,
+                    rgba(200, 170, 0, 0.8) 100%) !important;
             border-color: #ffd700 !important;
         }
 
         body.school-theme .array-bar:nth-child(3):not(.comparing):not(.sorted):not(.current-min):not(.current-element) {
-            background: linear-gradient(135deg, 
-                rgba(255, 220, 220, 0.9) 0%,
-                rgba(255, 182, 193, 0.95) 30%,
-                rgba(255, 182, 193, 0.95) 70%,
-                rgba(200, 150, 160, 0.8) 100%) !important;
+            background: linear-gradient(135deg,
+                    rgba(255, 220, 220, 0.9) 0%,
+                    rgba(255, 182, 193, 0.95) 30%,
+                    rgba(255, 182, 193, 0.95) 70%,
+                    rgba(200, 150, 160, 0.8) 100%) !important;
             border-color: #ffb6c1 !important;
         }
 
         body.school-theme .array-bar:nth-child(4):not(.comparing):not(.sorted):not(.current-min):not(.current-element) {
-            background: linear-gradient(135deg, 
-                rgba(200, 230, 250, 0.9) 0%,
-                rgba(173, 216, 230, 0.95) 30%,
-                rgba(173, 216, 230, 0.95) 70%,
-                rgba(130, 180, 200, 0.8) 100%) !important;
+            background: linear-gradient(135deg,
+                    rgba(200, 230, 250, 0.9) 0%,
+                    rgba(173, 216, 230, 0.95) 30%,
+                    rgba(173, 216, 230, 0.95) 70%,
+                    rgba(130, 180, 200, 0.8) 100%) !important;
             border-color: #add8e6 !important;
         }
 
         body.school-theme .array-bar:nth-child(5):not(.comparing):not(.sorted):not(.current-min):not(.current-element) {
-            background: linear-gradient(135deg, 
-                rgba(180, 255, 180, 0.9) 0%,
-                rgba(144, 238, 144, 0.95) 30%,
-                rgba(144, 238, 144, 0.95) 70%,
-                rgba(100, 200, 100, 0.8) 100%) !important;
+            background: linear-gradient(135deg,
+                    rgba(180, 255, 180, 0.9) 0%,
+                    rgba(144, 238, 144, 0.95) 30%,
+                    rgba(144, 238, 144, 0.95) 70%,
+                    rgba(100, 200, 100, 0.8) 100%) !important;
             border-color: #90ee90 !important;
         }
 
         body.school-theme .array-bar:nth-child(6):not(.comparing):not(.sorted):not(.current-min):not(.current-element) {
-            background: linear-gradient(135deg, 
-                rgba(255, 200, 150, 0.9) 0%,
-                rgba(255, 165, 0, 0.95) 30%,
-                rgba(255, 165, 0, 0.95) 70%,
-                rgba(200, 130, 0, 0.8) 100%) !important;
+            background: linear-gradient(135deg,
+                    rgba(255, 200, 150, 0.9) 0%,
+                    rgba(255, 165, 0, 0.95) 30%,
+                    rgba(255, 165, 0, 0.95) 70%,
+                    rgba(200, 130, 0, 0.8) 100%) !important;
             border-color: #ffa500 !important;
         }
 
         body.school-theme .array-bar:nth-child(7):not(.comparing):not(.sorted):not(.current-min):not(.current-element) {
-            background: linear-gradient(135deg, 
-                rgba(240, 200, 240, 0.9) 0%,
-                rgba(221, 160, 221, 0.95) 30%,
-                rgba(221, 160, 221, 0.95) 70%,
-                rgba(180, 120, 180, 0.8) 100%) !important;
+            background: linear-gradient(135deg,
+                    rgba(240, 200, 240, 0.9) 0%,
+                    rgba(221, 160, 221, 0.95) 30%,
+                    rgba(221, 160, 221, 0.95) 70%,
+                    rgba(180, 120, 180, 0.8) 100%) !important;
             border-color: #dda0dd !important;
         }
 
@@ -328,7 +335,7 @@
             left: -12px;
             right: -12px;
             bottom: -12px;
-            background: 
+            background:
                 radial-gradient(circle at 30% 30%, rgba(245, 245, 220, 0.6) 1px, transparent 2px),
                 radial-gradient(circle at 70% 60%, rgba(245, 245, 220, 0.4) 1px, transparent 2px);
             background-size: 8px 8px, 12px 12px;
@@ -339,13 +346,16 @@
         }
 
         @keyframes chalkDustFloat {
-            0%, 100% { 
-                transform: translateY(0px) scale(1); 
-                opacity: 0.3; 
+
+            0%,
+            100% {
+                transform: translateY(0px) scale(1);
+                opacity: 0.3;
             }
-            50% { 
-                transform: translateY(-2px) scale(1.1); 
-                opacity: 0.7; 
+
+            50% {
+                transform: translateY(-2px) scale(1.1);
+                opacity: 0.7;
             }
         }
 
@@ -357,10 +367,10 @@
             transform: translateX(-50%);
             width: 80%;
             height: 40%;
-            background: linear-gradient(180deg, 
-                rgba(255, 255, 255, 0.8) 0%,
-                rgba(255, 255, 255, 0.4) 50%,
-                transparent 100%);
+            background: linear-gradient(180deg,
+                    rgba(255, 255, 255, 0.8) 0%,
+                    rgba(255, 255, 255, 0.4) 50%,
+                    transparent 100%);
             border-radius: 40px 40px 20px 20px;
             pointer-events: none;
         }
@@ -439,12 +449,14 @@
 
                 <div class="speed-control">
                     <span>Speed:</span>
-                    <input type="range" id="speedSlider" class="speed-slider" min="200" max="2000" value="800" step="100">
+                    <input type="range" id="speedSlider" class="speed-slider" min="200" max="2000" value="800"
+                        step="100">
                     <span id="speedValue">800ms</span>
                 </div>
 
                 <div class="array-controls">
-                    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px;">
+                    <div
+                        style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px;">
                         <button class="btn btn-secondary" id="randomBtn">Random Array</button>
                         <button class="btn btn-secondary" id="customBtn">Custom Input</button>
                     </div>
@@ -483,13 +495,13 @@
     <script src="{{ url_for('static', filename='js/shared-visualizer.js') }}"></script>
     <!-- Include selection sort specific JavaScript -->
     <script src="{{ url_for('static', filename='js/selection-sort.js') }}"></script>
-    
+
     <script>
         // CRITICAL: Apply theme immediately to prevent flash
-        (function() {
+        (function () {
             const savedTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
             console.log('Pre-load theme detection:', savedTheme);
-            
+
             if (savedTheme === 'school') {
                 // Add school theme CSS immediately if not already present
                 if (!document.querySelector('link[href*="school-theme.css"]')) {
@@ -500,14 +512,14 @@
                     document.head.appendChild(schoolThemeLink);
                 }
             }
-            
+
             // Update body class immediately
             document.body.classList.remove('college-theme', 'school-theme');
             document.body.classList.add(savedTheme + '-theme');
         })();
-        
+
         // Show page once theme is ready to prevent flash
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Small delay to ensure CSS is fully loaded
             setTimeout(() => {
                 document.body.classList.add('theme-loaded');
@@ -515,16 +527,17 @@
         });
     </script>
     <script>
-// Diagnostic test
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('=== DIAGNOSTIC TEST ===');
-    console.log('algoVizard exists:', !!window.algoVizard);
-    console.log('toggleCustomInput exists:', !!(window.algoVizard && window.algoVizard.toggleCustomInput));
-    console.log('setCustomArray exists:', !!(window.algoVizard && window.algoVizard.setCustomArray));
-    console.log('Custom button found:', !!document.getElementById('customBtn'));
-    console.log('Set array button found:', !!document.getElementById('setArrayBtn'));
-    console.log('Selection sort visualizer exists:', !!window.selectionSortVisualizer);
-});
-</script>
+        // Diagnostic test
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('=== DIAGNOSTIC TEST ===');
+            console.log('algoVizard exists:', !!window.algoVizard);
+            console.log('toggleCustomInput exists:', !!(window.algoVizard && window.algoVizard.toggleCustomInput));
+            console.log('setCustomArray exists:', !!(window.algoVizard && window.algoVizard.setCustomArray));
+            console.log('Custom button found:', !!document.getElementById('customBtn'));
+            console.log('Set array button found:', !!document.getElementById('setArrayBtn'));
+            console.log('Selection sort visualizer exists:', !!window.selectionSortVisualizer);
+        });
+    </script>
 </body>
+
 </html>

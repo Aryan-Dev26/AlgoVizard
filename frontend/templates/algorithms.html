@@ -9,13 +9,15 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
     {% if theme == 'school' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cursors.css') }}">
+    <script src="{{ url_for('static', filename='js/theme-manager.js') }}"></script>
     {% endif %}
     <style>
         /* Prevent flash of unstyled content */
         body {
             visibility: hidden;
         }
-        
+
         body.theme-loaded {
             visibility: visible;
         }
@@ -432,13 +434,13 @@
 
     <!-- Include algorithms page JavaScript -->
     <script src="{{ url_for('static', filename='js/algorithms.js') }}"></script>
-    
+
     <script>
         // CRITICAL: Apply theme immediately to prevent flash
-        (function() {
+        (function () {
             const savedTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
             console.log('Pre-load theme detection:', savedTheme);
-            
+
             if (savedTheme === 'school') {
                 // Add school theme CSS immediately if not already present
                 if (!document.querySelector('link[href*="school-theme.css"]')) {
@@ -449,14 +451,14 @@
                     document.head.appendChild(schoolThemeLink);
                 }
             }
-            
+
             // Update body class immediately
             document.body.classList.remove('college-theme', 'school-theme');
             document.body.classList.add(savedTheme + '-theme');
         })();
-        
+
         // Show page once theme is ready to prevent flash
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Small delay to ensure CSS is fully loaded
             setTimeout(() => {
                 document.body.classList.add('theme-loaded');
