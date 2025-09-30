@@ -448,3 +448,46 @@ The platform now includes sophisticated machine learning capabilities for unders
 ### Key Takeaway:
 Proper code organization and avoiding duplication in shared modules is essential for maintainable applications.
 ---
+
+## Day 9 - September 30, 2025
+
+### What I Did Today:
+- Implemented custom cursor system with theme-specific designs
+- Created chalk cursor for school theme with natural angled appearance
+- Developed code-style cursors for college professional theme
+- Set up theme manager for dynamic theme switching with localStorage persistence
+- Added algorithm-specific cursor variations for different visualizations
+
+### What I Learned:
+- SVG-based cursors can be embedded inline using data URIs for better performance
+- Text-based SVG cursors have browser compatibility issues - shape-based cursors work better
+- CSS transform (rotation) creates more natural-looking cursor designs
+- Cursor hotspot positioning is critical for accurate user interaction
+- Theme classes on body element enable cascading cursor styles throughout the application
+
+### Technical Issues Resolved:
+- **Text Cursor Rendering**: Initial college theme used text-based SVG cursors that didn't render properly - replaced with shape-based SVG paths
+- **Chalk Appearance**: First iteration looked like vertical stick - fixed by adding -45° rotation for natural writing angle
+- **Theme Persistence**: Implemented localStorage to remember user's theme preference across sessions
+- **Cursor Visibility**: Adjusted canvas sizes and colors to ensure cursors are visible on both theme backgrounds
+
+### Challenges Faced:
+- Understanding SVG cursor syntax and data URI encoding
+- Getting the chalk cursor to look natural and realistic (required rotation transform)
+- Ensuring browser compatibility with custom cursor implementations
+- Balancing cursor size - visible but not distracting
+- Testing cursor appearance across different algorithm visualization contexts
+
+### Tomorrow's Plan:
+- Test cursor behavior across all algorithm pages (bubble sort, insertion sort, selection sort)
+- Gather user feedback on cursor designs and make refinements if needed
+- Add more algorithm-specific cursor variations if necessary
+- Consider adding cursor animation effects for enhanced interactivity
+- Document cursor customization guidelines for future theme additions
+
+### Time Spent:
+2 hours
+
+### Key Takeaway:
+Small UI details like custom cursors significantly enhance theme immersion and user experience. Shape-based SVG cursors provide better cross-browser compatibility than text-based approaches.
+---
