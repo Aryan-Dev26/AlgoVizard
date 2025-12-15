@@ -218,6 +218,13 @@ def queue_operations_page():
     return render_template('queue-operations.html', theme=theme)
 
 
+@app.route('/algorithms/heap-sort')
+def heap_sort_page():
+    theme = get_user_theme()
+    log_interaction('heap_sort', 'page_view')
+    return render_template('heap-sort.html', theme=theme)
+
+
 @app.route('/api/bubble-sort', methods=['GET', 'POST'])
 def bubble_sort_api():
     log_interaction('bubble_sort', 'api_request')
@@ -437,6 +444,27 @@ def queue_operations_api():
     operations = get_sample_queue_operations()
     steps = queue.operations_steps(operations)
     return jsonify(steps)
+
+
+@app.route('/api/heap-sort', methods=['GET', 'POST'])
+def heap_sort_api():
+    log_interaction('heap_sort', 'api_request')
+
+    if request.method == 'POST':
+        data = request.get_json(silent=True)
+        if data and 'array' in data:
+            array = data['array']
+            if isinstance(array, list) and len(array) <= 15:
+                from backend.algorithms.sorting.heap_sort import heap_sort_steps
+                steps = heap_sort_steps(array)
+                log_interaction('heap_sort', 'custom_array_sorted', {'array_size': len(array)})
+                return jsonify({'steps': steps})
+
+    # Default array for demonstration
+    default_array = [64, 34, 25, 12, 22, 11, 90]
+    from backend.algorithms.sorting.heap_sort import heap_sort_steps
+    steps = heap_sort_steps(default_array)
+    return jsonify({'steps': steps})
 
 
 @app.route('/api/analytics')
