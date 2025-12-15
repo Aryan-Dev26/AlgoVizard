@@ -100,6 +100,163 @@
             margin-bottom: 30px;
         }
 
+        /* Dual View Layout */
+        .dual-view-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+            min-height: 500px;
+        }
+
+        .tree-view, .array-view {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .view-header {
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .view-header h3 {
+            font-size: 1.2rem;
+            color: white;
+            margin: 0 0 5px 0;
+        }
+
+        .view-subtitle {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+        }
+
+        .tree-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        .array-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px 0;
+        }
+
+        .array-visualization {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+
+        .array-element {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .array-element:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4);
+        }
+
+        .array-element.highlighted {
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            border-color: rgba(255, 107, 107, 0.8);
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.5);
+        }
+
+        .empty-array {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+            padding: 40px;
+        }
+
+        .traversal-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .traversal-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .traversal-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .traversal-btn.active {
+            background: rgba(79, 172, 254, 0.3);
+            border-color: rgba(79, 172, 254, 0.6);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dual-view-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .tree-view, .array-view {
+                min-height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .array-element {
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
+            }
+            
+            .traversal-controls {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .traversal-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+
         .tree-container {
             display: flex;
             justify-content: center;
@@ -429,10 +586,38 @@
                     <div class="info-value" id="lastOperation">None</div>
                 </div>
             </div>
-            
-            <div class="tree-container" id="treeContainer">
-                <div class="tree-visualization" id="treeVisualization">
-                    <div class="empty-tree" id="emptyMessage">Tree is empty - Insert values to build the BST</div>
+
+            <!-- Dual View Layout -->
+            <div class="dual-view-container">
+                <!-- Tree Structure View -->
+                <div class="tree-view">
+                    <div class="view-header">
+                        <h3>🌳 Tree Structure</h3>
+                        <div class="view-subtitle">Interactive Binary Search Tree</div>
+                    </div>
+                    <div class="tree-container" id="treeContainer">
+                        <div class="tree-visualization" id="treeVisualization">
+                            <div class="empty-tree" id="emptyMessage">Tree is empty - Insert values to build the BST</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Array Representation View -->
+                <div class="array-view">
+                    <div class="view-header">
+                        <h3>📊 Array Representation</h3>
+                        <div class="view-subtitle">In-Order Traversal Sequence</div>
+                    </div>
+                    <div class="array-container" id="arrayContainer">
+                        <div class="array-visualization" id="arrayVisualization">
+                            <div class="empty-array">No elements to display</div>
+                        </div>
+                    </div>
+                    <div class="traversal-controls">
+                        <button class="traversal-btn" data-type="inorder">In-Order</button>
+                        <button class="traversal-btn" data-type="preorder">Pre-Order</button>
+                        <button class="traversal-btn" data-type="postorder">Post-Order</button>
+                    </div>
                 </div>
             </div>
 

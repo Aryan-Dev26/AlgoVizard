@@ -49,6 +49,14 @@ class BSTVisualizer {
         this.traversalTitle = document.getElementById('traversalTitle');
         this.traversalValues = document.getElementById('traversalValues');
         
+        // Array visualization elements
+        this.arrayVisualization = document.getElementById('arrayVisualization');
+        this.arrayContainer = document.getElementById('arrayContainer');
+        
+        // Current traversal state
+        this.currentTraversal = 'inorder';
+        this.traversalArray = [];
+        
         // Info elements
         this.treeSize = document.getElementById('treeSize');
         this.treeHeight = document.getElementById('treeHeight');
@@ -72,6 +80,14 @@ class BSTVisualizer {
             if (e.key === 'Enter' && !this.isAnimating) {
                 this.insert();
             }
+        });
+
+        // Traversal button event listeners
+        document.querySelectorAll('.traversal-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const traversalType = e.target.dataset.type;
+                this.setTraversalType(traversalType);
+            });
         });
     }
 
@@ -604,6 +620,143 @@ class BSTVisualizer {
         this.inorderBtn.disabled = !hasNodes;
         this.preorderBtn.disabled = !hasNodes;
         this.postorderBtn.disabled = !hasNodes;
+        
+        // Update array visualization
+        this.updateArrayVisualization();
+    }
+
+    updateArrayVisualization() {
+        // Get current traversal
+        this.traversalArray = this.getTraversalArray(this.currentTraversal);
+        
+        // Clear previous array visualization
+        this.arrayVisualization.innerHTML = '';
+        
+        if (this.traversalArray.length === 0) {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'empty-array';
+            emptyDiv.textContent = 'No elements to display';
+            this.arrayVisualization.appendChild(emptyDiv);
+            return;
+        }
+        
+        // Create array elements
+        this.traversalArray.forEach((value, index) => {
+            const element = document.createElement('div');
+            element.className = 'array-element';
+            element.textContent = value;
+            element.dataset.value = value;
+            element.dataset.index = index;
+            
+            // Add click handler to highlight corresponding tree node
+            element.addEventListener('click', () => {
+                this.highlightNodeInTree(value);
+                this.highlightArrayElement(index);
+            });
+            
+            this.arrayVisualization.appendChild(element);
+        });
+    }
+
+    getTraversalArray(type) {
+        const result = [];
+        
+        switch (type) {
+            case 'inorder':
+                this.inorderTraversal(this.root, result);
+                break;
+            case 'preorder':
+                this.preorderTraversal(this.root, result);
+                break;
+            case 'postorder':
+                this.postorderTraversal(this.root, result);
+                break;
+        }
+        
+        return result;
+    }
+
+    inorderTraversal(node, result) {
+        if (node) {
+            this.inorderTraversal(node.left, result);
+            result.push(node.value);
+            this.inorderTraversal(node.right, result);
+        }
+    }
+
+    preorderTraversal(node, result) {
+        if (node) {
+            result.push(node.value);
+            this.preorderTraversal(node.left, result);
+            this.preorderTraversal(node.right, result);
+        }
+    }
+
+    postorderTraversal(node, result) {
+        if (node) {
+            this.postorderTraversal(node.left, result);
+            this.postorderTraversal(node.right, result);
+            result.push(node.value);
+        }
+    }
+
+    highlightNodeInTree(value) {
+        // Remove previous highlights
+        document.querySelectorAll('.tree-node').forEach(node => {
+            node.classList.remove('highlighted');
+        });
+        
+        // Find and highlight the node with the given value
+        const nodeElement = document.querySelector(`[data-value="${value}"]`);
+        if (nodeElement && nodeElement.classList.contains('tree-node')) {
+            nodeElement.classList.add('highlighted');
+            
+            // Remove highlight after 2 seconds
+            setTimeout(() => {
+                nodeElement.classList.remove('highlighted');
+            }, 2000);
+        }
+    }
+
+    highlightArrayElement(index) {
+        // Remove previous highlights
+        document.querySelectorAll('.array-element').forEach(element => {
+            element.classList.remove('highlighted');
+        });
+        
+        // Highlight selected element
+        const element = document.querySelector(`[data-index="${index}"]`);
+        if (element) {
+            element.classList.add('highlighted');
+            
+            // Remove highlight after 2 seconds
+            setTimeout(() => {
+                element.classList.remove('highlighted');
+            }, 2000);
+        }
+    }
+
+    setTraversalType(type) {
+        this.currentTraversal = type;
+        
+        // Update button states
+        document.querySelectorAll('.traversal-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-type="${type}"]`).classList.add('active');
+        
+        // Update array visualization
+        this.updateArrayVisualization();
+        
+        // Update step info
+        const descriptions = {
+            'inorder': 'In-Order Traversal: Left → Root → Right',
+            'preorder': 'Pre-Order Traversal: Root → Left → Right', 
+            'postorder': 'Post-Order Traversal: Left → Right → Root'
+        };
+        
+        this.updateStepInfo(descriptions[type], 
+                           `Showing ${type} traversal sequence. Click array elements to highlight corresponding tree nodes.`);
     }
 
     updateStepInfo(description, details) {
