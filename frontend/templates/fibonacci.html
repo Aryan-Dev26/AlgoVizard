@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fibonacci DP Visualization - AlgoVizard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
+    {% if theme == 'school' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
+    {% endif %}
+    <style>
+        /* Prevent flash of unstyled content */
+        body {
+            visibility: hidden;
+        }
+
+        body.theme-loaded {
+            visibility: visible;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .algorithm-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .algorithm-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .algorithm-description {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        .controls-section {
+            margin-bottom: 30px;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            padding: 20px;
+        }
+
+        .control-group h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .visualization-section {
+            margin-bottom: 30px;
+        }
+
+        .dp-table-container {
+            display: flex;
+            justify-content: center;
+            padding: 30px 20px;
+            overflow-x: auto;
+        }
+
+        .dp-table {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            min-width: fit-content;
+        }
+
+        .dp-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 80px;
+            padding: 15px 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            transition: all 0.4s ease;
+        }
+
+        .dp-cell.calculating {
+            background: rgba(245, 158, 11, 0.3);
+            border-color: rgba(245, 158, 11, 0.6);
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .dp-cell.calculated {
+            background: rgba(16, 185, 129, 0.3);
+            border-color: rgba(16, 185, 129, 0.6);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .dp-cell.base-case {
+            background: rgba(99, 102, 241, 0.3);
+            border-color: rgba(99, 102, 241, 0.6);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .dp-index {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .dp-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+        }
+
+        .dp-formula {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        .fibonacci-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .step-info {
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .step-description {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .step-details {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+
+        .recursion-tree {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+        }
+
+        .tree-title {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .tree-visualization {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            overflow-x: auto;
+        }
+
+        .tree-level {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tree-node {
+            width: 60px;
+            height: 60px;
+            background: rgba(79, 172, 254, 0.3);
+            border: 2px solid rgba(79, 172, 254, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tree-node.active {
+            background: rgba(245, 158, 11, 0.4);
+            border-color: rgba(245, 158, 11, 0.8);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+        }
+
+        .tree-node.computed {
+            background: rgba(16, 185, 129, 0.4);
+            border-color: rgba(16, 185, 129, 0.8);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+        }
+
+        .complexity-info {
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .complexity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .complexity-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .complexity-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+        }
+
+        .complexity-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #4CAF50;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+        }
+
+        .method-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .method-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .method-btn.active {
+            background: rgba(79, 172, 254, 0.3);
+            border-color: rgba(79, 172, 254, 0.6);
+        }
+
+        .method-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .algorithm-header h1 {
+                font-size: 2rem;
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dp-table {
+                gap: 5px;
+            }
+
+            .dp-cell {
+                min-width: 60px;
+                padding: 10px 5px;
+            }
+
+            .dp-value {
+                font-size: 1.2rem;
+            }
+
+            .fibonacci-info {
+                gap: 15px;
+            }
+
+            .info-item {
+                padding: 10px 15px;
+            }
+
+            .tree-node {
+                width: 50px;
+                height: 50px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+
+<body data-theme="{{ theme }}">
+    <div class="container">
+        <div class="algorithm-header">
+            <a href="/algorithms" class="back-button">← Back to Algorithms</a>
+            <h1>Fibonacci Dynamic Programming</h1>
+            <p class="algorithm-description">
+                Explore the Fibonacci sequence using Dynamic Programming techniques. Compare iterative DP with memoized recursion
+                to understand how DP optimizes overlapping subproblems and reduces time complexity from exponential to linear.
+            </p>
+        </div>
+
+        <div class="controls-section glass">
+            <div class="controls-grid">
+                <div class="control-group">
+                    <h3>🔢 Fibonacci Configuration</h3>
+                    <div class="input-group">
+                        <label for="fibonacciN">Calculate F(n) where n =</label>
+                        <input type="number" id="fibonacciN" min="1" max="20" value="8">
+                    </div>
+                    <div class="method-selector">
+                        <button class="method-btn active" data-method="iterative">Iterative DP</button>
+                        <button class="method-btn" data-method="recursive">Recursive + Memo</button>
+                    </div>
+                    <div class="button-group">
+                        <button id="startBtn" class="btn btn-primary">Start Calculation</button>
+                        <button id="resetBtn" class="btn btn-secondary">Reset</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>🎮 Animation Controls</h3>
+                    <div class="input-group">
+                        <label for="speedSlider">Animation Speed: <span id="speedValue">1000ms</span></label>
+                        <input type="range" id="speedSlider" min="300" max="2000" value="1000" class="speed-slider">
+                    </div>
+                    <div class="button-group">
+                        <button id="pauseBtn" class="btn btn-warning">Pause</button>
+                        <button id="stepBtn" class="btn btn-secondary">Step by Step</button>
+                        <button id="demoBtn" class="btn btn-secondary">Run Demo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="visualization-section glass">
+            <div class="fibonacci-info" id="fibonacciInfo">
+                <div class="info-item">
+                    <div class="info-label">Target</div>
+                    <div class="info-value" id="targetN">F(8)</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Method</div>
+                    <div class="info-value" id="currentMethod">Iterative DP</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Current Step</div>
+                    <div class="info-value" id="currentStep">0</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Result</div>
+                    <div class="info-value" id="fibResult">-</div>
+                </div>
+            </div>
+            
+            <div class="dp-table-container" id="dpTableContainer">
+                <div class="dp-table" id="dpTable">
+                    <!-- DP table cells will be generated here -->
+                </div>
+            </div>
+
+            <div class="step-info glass" id="stepInfo">
+                <div class="step-description">Fibonacci DP is ready to begin</div>
+                <div class="step-details">Choose a value of n and select either iterative DP or recursive with memoization to see how dynamic programming optimizes the Fibonacci calculation.</div>
+            </div>
+
+            <div class="recursion-tree" id="recursionTree">
+                <div class="tree-title">Recursion Call Tree</div>
+                <div class="tree-visualization" id="treeVisualization">
+                    <!-- Recursion tree will be generated here -->
+                </div>
+            </div>
+        </div>
+
+        <div class="complexity-info glass">
+            <h3 style="text-align: center; margin-bottom: 20px;">Fibonacci Algorithm Complexity</h3>
+            <div class="complexity-grid">
+                <div class="complexity-item">
+                    <div class="complexity-label">Naive Recursive</div>
+                    <div class="complexity-value">O(2^n)</div>
+                </div>
+                <div class="complexity-item">
+                    <div class="complexity-label">DP Iterative</div>
+                    <div class="complexity-value">O(n)</div>
+                </div>
+                <div class="complexity-item">
+                    <div class="complexity-label">DP Recursive + Memo</div>
+                    <div class="complexity-value">O(n)</div>
+                </div>
+                <div class="complexity-item">
+                    <div class="complexity-label">Space Complexity</div>
+                    <div class="complexity-value">O(n)</div>
+                </div>
+                <div class="complexity-item">
+                    <div class="complexity-label">Space Optimized</div>
+                    <div class="complexity-value">O(1)</div>
+                </div>
+                <div class="complexity-item">
+                    <div class="complexity-label">Mathematical</div>
+                    <div class="complexity-value">O(1)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Fibonacci JavaScript -->
+    <script src="{{ url_for('static', filename='js/fibonacci.js') }}"></script>
+
+    <script>
+        // Apply theme immediately to prevent flash
+        (function () {
+            const savedTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
+            
+            if (savedTheme === 'school') {
+                if (!document.querySelector('link[href*="school-theme.css"]')) {
+                    const schoolThemeLink = document.createElement('link');
+                    schoolThemeLink.rel = 'stylesheet';
+                    schoolThemeLink.href = '/static/css/school-theme.css';
+                    document.head.appendChild(schoolThemeLink);
+                }
+            }
+
+            document.body.classList.remove('college-theme', 'school-theme');
+            document.body.classList.add(savedTheme + '-theme');
+        })();
+
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(() => {
+                document.body.classList.add('theme-loaded');
+            }, 50);
+        });
+    </script>
+</body>
+
+</html>

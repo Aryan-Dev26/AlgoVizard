@@ -237,53 +237,207 @@
 
         .heap-visualization {
             margin-top: 30px;
-            padding: 20px;
+            padding: 25px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 15px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            display: block;
         }
 
         .heap-title {
             text-align: center;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             color: white;
         }
 
-        .heap-tree {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
+        .heap-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
         }
 
-        .heap-level {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
+        .heap-tree-svg {
+            width: 100%;
+            height: 100%;
         }
 
         .heap-node {
-            width: 50px;
-            height: 50px;
-            background: rgba(79, 172, 254, 0.3);
-            border: 2px solid rgba(79, 172, 254, 0.6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            color: white;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            cursor: pointer;
+            transition: all 0.4s ease;
         }
 
-        .heap-node.active {
-            background: rgba(255, 154, 158, 0.4);
-            border-color: rgba(255, 154, 158, 0.8);
-            box-shadow: 0 0 15px rgba(255, 154, 158, 0.5);
+        .heap-node-circle {
+            fill: rgba(79, 172, 254, 0.3);
+            stroke: rgba(79, 172, 254, 0.8);
+            stroke-width: 3;
+            transition: all 0.4s ease;
+        }
+
+        .heap-node-text {
+            fill: white;
+            font-size: 14px;
+            font-weight: 600;
+            text-anchor: middle;
+            dominant-baseline: central;
+            pointer-events: none;
+        }
+
+        .heap-node-index {
+            fill: rgba(255, 255, 255, 0.7);
+            font-size: 10px;
+            font-weight: 500;
+            text-anchor: middle;
+            pointer-events: none;
+        }
+
+        .heap-edge {
+            stroke: rgba(255, 255, 255, 0.4);
+            stroke-width: 2;
+            transition: all 0.4s ease;
+        }
+
+        .heap-node.comparing .heap-node-circle {
+            fill: rgba(245, 158, 11, 0.4);
+            stroke: rgba(245, 158, 11, 0.9);
+            stroke-width: 4;
+            filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.6));
+        }
+
+        .heap-node.swapping .heap-node-circle {
+            fill: rgba(239, 68, 68, 0.4);
+            stroke: rgba(239, 68, 68, 0.9);
+            stroke-width: 4;
+            filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.7));
+            animation: swapPulse 0.8s ease-in-out infinite;
+        }
+
+        .heap-node.sorted .heap-node-circle {
+            fill: rgba(16, 185, 129, 0.4);
+            stroke: rgba(16, 185, 129, 0.8);
+            stroke-width: 3;
+            filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5));
+        }
+
+        .heap-node.heap-root .heap-node-circle {
+            fill: rgba(255, 154, 158, 0.5);
+            stroke: rgba(255, 154, 158, 1);
+            stroke-width: 4;
+            filter: drop-shadow(0 0 12px rgba(255, 154, 158, 0.8));
+        }
+
+        .heap-edge.active {
+            stroke: rgba(245, 158, 11, 0.8);
+            stroke-width: 3;
+            filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.6));
+        }
+
+        .heap-edge.heap-property {
+            stroke: rgba(16, 185, 129, 0.6);
+            stroke-width: 3;
+        }
+
+        @keyframes swapPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .heap-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid;
+        }
+
+        .legend-comparing { background: rgba(245, 158, 11, 0.4); border-color: rgba(245, 158, 11, 0.9); }
+        .legend-swapping { background: rgba(239, 68, 68, 0.4); border-color: rgba(239, 68, 68, 0.9); }
+        .legend-sorted { background: rgba(16, 185, 129, 0.4); border-color: rgba(16, 185, 129, 0.8); }
+        .legend-root { background: rgba(255, 154, 158, 0.5); border-color: rgba(255, 154, 158, 1); }
+
+        .array-heap-sync {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .sync-indicator {
+            width: 8px;
+            height: 8px;
+            background: #4CAF50;
+            border-radius: 50%;
+            animation: syncPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes syncPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .sync-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .heap-node.path-highlight .heap-node-circle {
+            fill: rgba(138, 43, 226, 0.4);
+            stroke: rgba(138, 43, 226, 0.9);
+            stroke-width: 4;
+            filter: drop-shadow(0 0 12px rgba(138, 43, 226, 0.7));
+        }
+
+        .array-bar.highlighted {
+            background: linear-gradient(135deg, #8a2be2 0%, #9370db 100%) !important;
+            border-color: rgba(138, 43, 226, 0.8) !important;
+        }
+
+        .heap-info-panel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.85rem;
+            max-width: 200px;
+            display: none;
+        }
+
+        .heap-node:hover .heap-node-circle {
+            stroke-width: 4;
+            filter: drop-shadow(0 0 8px rgba(79, 172, 254, 0.8));
+        }
+
+        .array-bar:hover {
+            transform: translateY(-5px) !important;
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4) !important;
         }
 
         @media (max-width: 768px) {
@@ -391,10 +545,36 @@
                 <div class="step-details">Enter an array of numbers and click "Start Heap Sort" to see the algorithm in action. The visualization shows heap building and extraction phases.</div>
             </div>
 
-            <div class="heap-visualization" id="heapVisualization" style="display: none;">
-                <div class="heap-title">Binary Heap Structure</div>
-                <div class="heap-tree" id="heapTree">
-                    <!-- Heap tree visualization will be generated here -->
+            <div class="array-heap-sync" id="arrayHeapSync">
+                <div class="sync-indicator"></div>
+                <div class="sync-text">Array and Heap Tree are synchronized</div>
+                <div class="sync-indicator"></div>
+            </div>
+
+            <div class="heap-visualization" id="heapVisualization">
+                <div class="heap-title">Binary Heap Tree Structure</div>
+                <div class="heap-container">
+                    <svg class="heap-tree-svg" id="heapTreeSvg" viewBox="0 0 800 400">
+                        <!-- Heap tree will be dynamically generated here -->
+                    </svg>
+                </div>
+                <div class="heap-legend">
+                    <div class="legend-item">
+                        <div class="legend-color legend-comparing"></div>
+                        <span>Comparing</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-swapping"></div>
+                        <span>Swapping</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-root"></div>
+                        <span>Max Root</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-sorted"></div>
+                        <span>Sorted</span>
+                    </div>
                 </div>
             </div>
         </div>

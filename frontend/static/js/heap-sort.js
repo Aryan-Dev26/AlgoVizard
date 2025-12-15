@@ -327,10 +327,9 @@ class HeapSortVisualizer {
         
         this.renderArray(step.comparing, step.swapping, step.sorted);
         
-        // Show heap visualization during heap building
-        if (step.type === 'info' || step.type === 'heap_built' || step.type.includes('heapify')) {
-            this.renderHeapTree();
-        }
+        // Always show heap visualization with enhanced tree
+        this.renderHeapTree();
+        this.updateHeapTreeStates(step.comparing, step.swapping, step.sorted);
     }
 
     renderArray(comparing = [], swapping = [], sorted = []) {
@@ -343,6 +342,7 @@ class HeapSortVisualizer {
             const bar = document.createElement('div');
             bar.className = 'array-bar';
             bar.textContent = value;
+            bar.setAttribute('data-index', index);
             
             const height = (value / maxValue) * containerHeight;
             bar.style.height = height + 'px';
@@ -361,8 +361,40 @@ class HeapSortVisualizer {
                 bar.classList.add('heap-root');
             }
             
+            // Add click handler to sync with heap tree
+            bar.addEventListener('click', () => {
+                this.highlightNodePath(index);
+                this.highlightArrayBar(index);
+            });
+            
             this.arrayContainer.appendChild(bar);
         });
+        
+        // Update heap tree to match array state
+        this.renderHeapTree();
+        this.updateHeapTreeStates(comparing, swapping, sorted);
+    }
+
+    highlightArrayBar(index) {
+        // Remove previous highlights
+        document.querySelectorAll('.array-bar').forEach(bar => {
+            bar.classList.remove('highlighted');
+        });
+        
+        // Highlight selected bar
+        const selectedBar = document.querySelector(`[data-index="${index}"]`);
+        if (selectedBar) {
+            selectedBar.classList.add('highlighted');
+            selectedBar.style.transform = 'translateY(-10px) scale(1.05)';
+            selectedBar.style.boxShadow = '0 10px 25px rgba(79, 172, 254, 0.6)';
+            
+            // Remove highlight after 2 seconds
+            setTimeout(() => {
+                selectedBar.classList.remove('highlighted');
+                selectedBar.style.transform = '';
+                selectedBar.style.boxShadow = '';
+            }, 2000);
+        }
     }
 
     renderHeapTree() {
@@ -372,31 +404,212 @@ class HeapSortVisualizer {
         }
         
         this.heapVisualization.style.display = 'block';
-        this.heapTree.innerHTML = '';
+        const svg = document.getElementById('heapTreeSvg');
+        svg.innerHTML = '';
         
+        // Calculate tree dimensions
+        const svgWidth = 800;
+        const svgHeight = 400;
+        const nodeRadius = 25;
         const levels = Math.ceil(Math.log2(this.heapSize + 1));
         
-        for (let level = 0; level < levels; level++) {
-            const levelDiv = document.createElement('div');
-            levelDiv.className = 'heap-level';
+        // Calculate positions for each node
+        const positions = this.calculateNodePositions(svgWidth, svgHeight, nodeRadius, levels);
+        
+        // Draw edges first (so they appear behind nodes)
+        this.drawHeapEdges(svg, positions);
+        
+        // Draw nodes
+        this.drawHeapNodes(svg, positions, nodeRadius);
+    }
+
+    calculateNodePositions(svgWidth, svgHeight, nodeRadius, levels) {
+        const positions = {};
+        const levelHeight = (svgHeight - 2 * nodeRadius) / Math.max(1, levels - 1);
+        
+        for (let i = 0; i < this.heapSize; i++) {
+            const level = Math.floor(Math.log2(i + 1));
+            const positionInLevel = i - (Math.pow(2, level) - 1);
+            const nodesInLevel = Math.pow(2, level);
             
-            const startIndex = Math.pow(2, level) - 1;
-            const endIndex = Math.min(Math.pow(2, level + 1) - 1, this.heapSize);
+            // Calculate x position
+            const levelWidth = svgWidth - 2 * nodeRadius;
+            const spacing = levelWidth / Math.max(1, nodesInLevel - 1);
+            let x;
             
-            for (let i = startIndex; i < endIndex; i++) {
-                const node = document.createElement('div');
-                node.className = 'heap-node';
-                node.textContent = this.array[i];
-                
-                if (i === 0) {
-                    node.classList.add('active');
-                }
-                
-                levelDiv.appendChild(node);
+            if (nodesInLevel === 1) {
+                x = svgWidth / 2;
+            } else {
+                x = nodeRadius + positionInLevel * spacing;
             }
             
-            this.heapTree.appendChild(levelDiv);
+            // Calculate y position
+            const y = nodeRadius + level * levelHeight;
+            
+            positions[i] = { x, y, level };
         }
+        
+        return positions;
+    }
+
+    drawHeapEdges(svg, positions) {
+        for (let i = 0; i < this.heapSize; i++) {
+            const leftChild = 2 * i + 1;
+            const rightChild = 2 * i + 2;
+            
+            // Draw edge to left child
+            if (leftChild < this.heapSize) {
+                this.createEdge(svg, positions[i], positions[leftChild], `edge-${i}-${leftChild}`);
+            }
+            
+            // Draw edge to right child
+            if (rightChild < this.heapSize) {
+                this.createEdge(svg, positions[i], positions[rightChild], `edge-${i}-${rightChild}`);
+            }
+        }
+    }
+
+    createEdge(svg, parent, child, id) {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', parent.x);
+        line.setAttribute('y1', parent.y);
+        line.setAttribute('x2', child.x);
+        line.setAttribute('y2', child.y);
+        line.setAttribute('class', 'heap-edge');
+        line.setAttribute('id', id);
+        svg.appendChild(line);
+    }
+
+    drawHeapNodes(svg, positions, nodeRadius) {
+        for (let i = 0; i < this.heapSize; i++) {
+            const pos = positions[i];
+            
+            // Create node group
+            const nodeGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            nodeGroup.setAttribute('class', 'heap-node');
+            nodeGroup.setAttribute('id', `heap-node-${i}`);
+            
+            // Create circle
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', pos.x);
+            circle.setAttribute('cy', pos.y);
+            circle.setAttribute('r', nodeRadius);
+            circle.setAttribute('class', 'heap-node-circle');
+            
+            // Create value text
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', pos.x);
+            text.setAttribute('y', pos.y);
+            text.setAttribute('class', 'heap-node-text');
+            text.textContent = this.array[i];
+            
+            // Create index text (small number above)
+            const indexText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            indexText.setAttribute('x', pos.x);
+            indexText.setAttribute('y', pos.y - nodeRadius - 8);
+            indexText.setAttribute('class', 'heap-node-index');
+            indexText.textContent = i;
+            
+            nodeGroup.appendChild(circle);
+            nodeGroup.appendChild(text);
+            nodeGroup.appendChild(indexText);
+            
+            // Add click handler for educational purposes
+            nodeGroup.addEventListener('click', () => this.highlightNodePath(i));
+            
+            svg.appendChild(nodeGroup);
+        }
+    }
+
+    highlightNodePath(nodeIndex) {
+        // Clear previous highlights
+        document.querySelectorAll('.heap-node').forEach(node => {
+            node.classList.remove('path-highlight');
+        });
+        
+        // Highlight path from root to selected node
+        let current = nodeIndex;
+        while (current >= 0) {
+            const nodeElement = document.getElementById(`heap-node-${current}`);
+            if (nodeElement) {
+                nodeElement.classList.add('path-highlight');
+            }
+            
+            // Move to parent
+            current = Math.floor((current - 1) / 2);
+            if (current < 0) break;
+        }
+        
+        // Show node information
+        this.showNodeInfo(nodeIndex);
+    }
+
+    showNodeInfo(nodeIndex) {
+        const value = this.array[nodeIndex];
+        const parent = nodeIndex > 0 ? Math.floor((nodeIndex - 1) / 2) : null;
+        const leftChild = 2 * nodeIndex + 1 < this.heapSize ? 2 * nodeIndex + 1 : null;
+        const rightChild = 2 * nodeIndex + 2 < this.heapSize ? 2 * nodeIndex + 2 : null;
+        
+        let info = `Node ${nodeIndex}: ${value}`;
+        if (parent !== null) info += `\nParent: ${this.array[parent]}`;
+        if (leftChild !== null) info += `\nLeft Child: ${this.array[leftChild]}`;
+        if (rightChild !== null) info += `\nRight Child: ${this.array[rightChild]}`;
+        
+        // Update step info with node details
+        this.updateStepInfo(`Node ${nodeIndex} selected`, info);
+    }
+
+    updateHeapTreeStates(comparing = [], swapping = [], sorted = []) {
+        // Update node states in the tree
+        for (let i = 0; i < this.heapSize; i++) {
+            const nodeElement = document.getElementById(`heap-node-${i}`);
+            if (!nodeElement) continue;
+            
+            // Clear previous states
+            nodeElement.classList.remove('comparing', 'swapping', 'sorted', 'heap-root');
+            
+            // Apply current states
+            if (comparing.includes(i)) {
+                nodeElement.classList.add('comparing');
+            }
+            if (swapping.includes(i)) {
+                nodeElement.classList.add('swapping');
+            }
+            if (sorted.includes(i)) {
+                nodeElement.classList.add('sorted');
+            }
+            if (i === 0 && this.heapSize > 0) {
+                nodeElement.classList.add('heap-root');
+            }
+            
+            // Update node value
+            const textElement = nodeElement.querySelector('.heap-node-text');
+            if (textElement) {
+                textElement.textContent = this.array[i];
+            }
+        }
+        
+        // Highlight edges between comparing nodes
+        this.highlightActiveEdges(comparing, swapping);
+    }
+
+    highlightActiveEdges(comparing, swapping) {
+        // Clear previous edge highlights
+        document.querySelectorAll('.heap-edge').forEach(edge => {
+            edge.classList.remove('active', 'heap-property');
+        });
+        
+        // Highlight edges between active nodes
+        const activeNodes = [...comparing, ...swapping];
+        activeNodes.forEach(nodeIndex => {
+            const parent = Math.floor((nodeIndex - 1) / 2);
+            if (parent >= 0 && activeNodes.includes(parent)) {
+                const edge = document.getElementById(`edge-${parent}-${nodeIndex}`);
+                if (edge) {
+                    edge.classList.add('active');
+                }
+            }
+        });
     }
 
     getStepDetails(step) {
