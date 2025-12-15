@@ -7,6 +7,7 @@
     <title>Heap Sort Visualization - AlgoVizard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dual-view.css') }}">
     {% if theme == 'school' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
     {% endif %}
@@ -104,10 +105,11 @@
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            padding: 40px 20px;
-            min-height: 300px;
+            padding: 20px;
+            min-height: 250px;
             gap: 4px;
             flex-wrap: wrap;
+            width: 100%;
         }
 
         .array-bar {
@@ -255,8 +257,11 @@
         .heap-container {
             position: relative;
             width: 100%;
-            height: 400px;
+            height: 350px;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .heap-tree-svg {
@@ -545,35 +550,59 @@
                 <div class="step-details">Enter an array of numbers and click "Start Heap Sort" to see the algorithm in action. The visualization shows heap building and extraction phases.</div>
             </div>
 
-            <div class="array-heap-sync" id="arrayHeapSync">
+            <!-- Sync Indicator -->
+            <div class="sync-indicator-container">
                 <div class="sync-indicator"></div>
                 <div class="sync-text">Array and Heap Tree are synchronized</div>
                 <div class="sync-indicator"></div>
             </div>
 
-            <div class="heap-visualization" id="heapVisualization">
-                <div class="heap-title">Binary Heap Tree Structure</div>
-                <div class="heap-container">
-                    <svg class="heap-tree-svg" id="heapTreeSvg" viewBox="0 0 800 400">
-                        <!-- Heap tree will be dynamically generated here -->
-                    </svg>
+            <!-- Dual View Layout -->
+            <div class="dual-view-container">
+                <!-- Array Visualization View -->
+                <div class="array-view">
+                    <div class="view-header">
+                        <h3>📊 Array Representation</h3>
+                        <div class="view-subtitle">Heap as Array with Visual Bars</div>
+                    </div>
+                    <div class="view-content">
+                        <div class="array-container" id="arrayContainer">
+                            <!-- Array bars will be generated here -->
+                        </div>
+                    </div>
+                    <div class="view-controls">
+                        <div class="legend-item">
+                            <div class="legend-color legend-comparing"></div>
+                            <span>Comparing</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color legend-swapping"></div>
+                            <span>Swapping</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color legend-sorted"></div>
+                            <span>Sorted</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="heap-legend">
-                    <div class="legend-item">
-                        <div class="legend-color legend-comparing"></div>
-                        <span>Comparing</span>
+
+                <!-- Heap Tree Structure View -->
+                <div class="structure-view">
+                    <div class="view-header">
+                        <h3>🌳 Heap Tree Structure</h3>
+                        <div class="view-subtitle">Interactive Binary Heap Tree</div>
                     </div>
-                    <div class="legend-item">
-                        <div class="legend-color legend-swapping"></div>
-                        <span>Swapping</span>
+                    <div class="view-content">
+                        <div class="heap-container">
+                            <svg class="heap-tree-svg" id="heapTreeSvg" viewBox="0 0 800 400">
+                                <!-- Heap tree will be dynamically generated here -->
+                            </svg>
+                        </div>
                     </div>
-                    <div class="legend-item">
-                        <div class="legend-color legend-root"></div>
-                        <span>Max Root</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color legend-sorted"></div>
-                        <span>Sorted</span>
+                    <div class="view-controls">
+                        <button class="control-btn" id="showIndicesBtn">Show Indices</button>
+                        <button class="control-btn" id="showLevelsBtn">Show Levels</button>
+                        <button class="control-btn active" id="showValuesBtn">Show Values</button>
                     </div>
                 </div>
             </div>

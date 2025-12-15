@@ -40,6 +40,16 @@ class HeapSortVisualizer {
         this.heapVisualization = document.getElementById('heapVisualization');
         this.heapTree = document.getElementById('heapTree');
         
+        // Dual view control elements
+        this.showIndicesBtn = document.getElementById('showIndicesBtn');
+        this.showLevelsBtn = document.getElementById('showLevelsBtn');
+        this.showValuesBtn = document.getElementById('showValuesBtn');
+        
+        // Display options
+        this.showIndices = false;
+        this.showLevels = false;
+        this.showValues = true;
+        
         // Info elements
         this.currentPhase = document.getElementById('currentPhase');
         this.heapSizeDisplay = document.getElementById('heapSize');
@@ -65,6 +75,11 @@ class HeapSortVisualizer {
                 this.setCustomArray();
             }
         });
+
+        // Dual view control listeners
+        this.showIndicesBtn.addEventListener('click', () => this.toggleDisplay('indices'));
+        this.showLevelsBtn.addEventListener('click', () => this.toggleDisplay('levels'));
+        this.showValuesBtn.addEventListener('click', () => this.toggleDisplay('values'));
     }
 
     generateRandomArray() {
@@ -501,7 +516,15 @@ class HeapSortVisualizer {
             text.setAttribute('x', pos.x);
             text.setAttribute('y', pos.y);
             text.setAttribute('class', 'heap-node-text');
-            text.textContent = this.array[i];
+            
+            // Set text content based on display option
+            if (this.showIndices) {
+                text.textContent = i;
+            } else if (this.showLevels) {
+                text.textContent = `L${pos.level}`;
+            } else {
+                text.textContent = this.array[i];
+            }
             
             // Create index text (small number above)
             const indexText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -719,6 +742,27 @@ class HeapSortVisualizer {
         this.resetBtn.disabled = false;
         this.stepBtn.disabled = false;
         this.arrayInput.disabled = false;
+    }
+
+    toggleDisplay(type) {
+        // Reset all buttons
+        document.querySelectorAll('.view-controls .control-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Update display options
+        this.showIndices = type === 'indices';
+        this.showLevels = type === 'levels';
+        this.showValues = type === 'values';
+
+        // Update active button
+        if (type === 'indices') this.showIndicesBtn.classList.add('active');
+        if (type === 'levels') this.showLevelsBtn.classList.add('active');
+        if (type === 'values') this.showValuesBtn.classList.add('active');
+
+        // Re-render the heap tree with new display options
+        this.renderHeapTree();
+        this.updateHeapTreeStates();
     }
 
     sleep(ms) {

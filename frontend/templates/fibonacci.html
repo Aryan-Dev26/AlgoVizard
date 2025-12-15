@@ -7,6 +7,7 @@
     <title>Fibonacci DP Visualization - AlgoVizard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dual-view.css') }}">
     {% if theme == 'school' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
     {% endif %}
@@ -431,22 +432,51 @@
                 </div>
             </div>
             
-            <div class="dp-table-container" id="dpTableContainer">
-                <div class="dp-table" id="dpTable">
-                    <!-- DP table cells will be generated here -->
+            <!-- Dual View Layout -->
+            <div class="dual-view-container">
+                <!-- DP Table View -->
+                <div class="array-view">
+                    <div class="view-header">
+                        <h3>📊 DP Table</h3>
+                        <div class="view-subtitle">Dynamic Programming Memoization</div>
+                    </div>
+                    <div class="view-content">
+                        <div class="dp-table-container" id="dpTableContainer">
+                            <div class="dp-table" id="dpTable">
+                                <!-- DP table cells will be generated here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="view-controls">
+                        <button class="control-btn active" data-method="iterative">Iterative DP</button>
+                        <button class="control-btn" data-method="recursive">Recursive + Memo</button>
+                    </div>
+                </div>
+
+                <!-- Recursion Tree View -->
+                <div class="structure-view">
+                    <div class="view-header">
+                        <h3>🌳 Recursion Tree</h3>
+                        <div class="view-subtitle">Function Call Hierarchy</div>
+                    </div>
+                    <div class="view-content">
+                        <div class="recursion-tree" id="recursionTree">
+                            <div class="tree-visualization" id="treeVisualization">
+                                <!-- Recursion tree will be generated here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="view-controls">
+                        <button class="control-btn" id="showCallsBtn">Show Calls</button>
+                        <button class="control-btn" id="showMemoBtn">Show Memo</button>
+                        <button class="control-btn active" id="showBothBtn">Show Both</button>
+                    </div>
                 </div>
             </div>
 
             <div class="step-info glass" id="stepInfo">
                 <div class="step-description">Fibonacci DP is ready to begin</div>
                 <div class="step-details">Choose a value of n and select either iterative DP or recursive with memoization to see how dynamic programming optimizes the Fibonacci calculation.</div>
-            </div>
-
-            <div class="recursion-tree" id="recursionTree">
-                <div class="tree-title">Recursion Call Tree</div>
-                <div class="tree-visualization" id="treeVisualization">
-                    <!-- Recursion tree will be generated here -->
-                </div>
             </div>
         </div>
 
