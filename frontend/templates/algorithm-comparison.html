@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithm Comparison - AlgoVizard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
+    {% if theme == 'school' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cursors.css') }}">
+    {% endif %}
+    <style>
+        .comparison-page {
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .comparison-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .comparison-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .comparison-header h1 {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .comparison-header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .algorithm-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .selector-card {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .selector-card h3 {
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .algorithm-dropdown {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .algorithm-dropdown option {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .comparison-controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .algorithm-panel {
+            padding: 25px;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .algorithm-panel h3 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .visualization-area {
+            height: 300px;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .array-container {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+            height: 100%;
+        }
+
+        .array-bar {
+            min-width: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            padding-bottom: 5px;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stats-panel {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: white;
+        }
+
+        .performance-summary {
+            margin-top: 30px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .performance-summary h2 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .performance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .performance-card {
+            padding: 20px;
+            text-align: center;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .performance-card h4 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .performance-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4facfe;
+        }
+
+        .winner-badge {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .algorithm-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body data-theme="{{ theme }}">
+    <div class="comparison-page">
+        <div class="comparison-container">
+            <!-- Navigation -->
+            <div style="margin-bottom: 30px;">
+                <a href="/" class="back-button">← Back to Home</a>
+                <a href="/algorithms" class="back-button" style="margin-left: 15px;">All Algorithms</a>
+            </div>
+
+            <!-- Header -->
+            <div class="comparison-header">
+                <h1>Algorithm Comparison</h1>
+                <p>Compare sorting algorithms side-by-side to understand their performance differences and characteristics</p>
+            </div>
+
+            <!-- Algorithm Selection -->
+            <div class="algorithm-selector">
+                <div class="selector-card glass">
+                    <h3>Algorithm 1</h3>
+                    <select id="algorithm1" class="algorithm-dropdown">
+                        <option value="bubble">Bubble Sort</option>
+                        <option value="selection">Selection Sort</option>
+                        <option value="insertion">Insertion Sort</option>
+                        <option value="merge">Merge Sort</option>
+                    </select>
+                </div>
+                <div class="selector-card glass">
+                    <h3>Algorithm 2</h3>
+                    <select id="algorithm2" class="algorithm-dropdown">
+                        <option value="selection">Selection Sort</option>
+                        <option value="bubble">Bubble Sort</option>
+                        <option value="insertion">Insertion Sort</option>
+                        <option value="merge">Merge Sort</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="comparison-controls glass">
+                <button id="startComparison" class="btn btn-primary">Start Comparison</button>
+                <button id="resetComparison" class="btn btn-secondary">Reset</button>
+                <button id="generateArray" class="btn btn-warning">New Array</button>
+            </div>
+
+            <!-- Comparison Grid -->
+            <div class="comparison-grid">
+                <!-- Algorithm 1 Panel -->
+                <div class="algorithm-panel glass">
+                    <h3 id="algo1Name">Bubble Sort</h3>
+                    <div class="visualization-area" id="visualization1">
+                        <div class="array-container" id="arrayContainer1"></div>
+                    </div>
+                    <div class="stats-panel">
+                        <div class="stat-row">
+                            <span>Comparisons:</span>
+                            <span class="stat-value" id="comparisons1">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Swaps:</span>
+                            <span class="stat-value" id="swaps1">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Time:</span>
+                            <span class="stat-value" id="time1">0ms</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Status:</span>
+                            <span class="stat-value" id="status1">Ready</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Algorithm 2 Panel -->
+                <div class="algorithm-panel glass">
+                    <h3 id="algo2Name">Selection Sort</h3>
+                    <div class="visualization-area" id="visualization2">
+                        <div class="array-container" id="arrayContainer2"></div>
+                    </div>
+                    <div class="stats-panel">
+                        <div class="stat-row">
+                            <span>Comparisons:</span>
+                            <span class="stat-value" id="comparisons2">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Swaps:</span>
+                            <span class="stat-value" id="swaps2">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Time:</span>
+                            <span class="stat-value" id="time2">0ms</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Status:</span>
+                            <span class="stat-value" id="status2">Ready</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Summary -->
+            <div class="performance-summary glass">
+                <h2>Performance Analysis</h2>
+                <div class="performance-grid">
+                    <div class="performance-card">
+                        <h4>Faster Algorithm</h4>
+                        <div class="performance-value" id="fasterAlgo">-</div>
+                        <div id="timeWinner" class="winner-badge" style="display: none;">Winner</div>
+                    </div>
+                    <div class="performance-card">
+                        <h4>Fewer Comparisons</h4>
+                        <div class="performance-value" id="fewerComparisons">-</div>
+                        <div id="comparisonWinner" class="winner-badge" style="display: none;">Winner</div>
+                    </div>
+                    <div class="performance-card">
+                        <h4>Fewer Swaps</h4>
+                        <div class="performance-value" id="fewerSwaps">-</div>
+                        <div id="swapWinner" class="winner-badge" style="display: none;">Winner</div>
+                    </div>
+                    <div class="performance-card">
+                        <h4>Overall Winner</h4>
+                        <div class="performance-value" id="overallWinner">-</div>
+                        <div id="overallBadge" class="winner-badge" style="display: none;">Champion</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating programming symbols -->
+    <div class="floating-symbols">
+        <div class="code-symbol symbol-1">{}</div>
+        <div class="code-symbol symbol-2">&lt;/&gt;</div>
+        <div class="code-symbol symbol-3">[ ]</div>
+        <div class="code-symbol symbol-4">( )</div>
+        <div class="code-symbol symbol-5">;</div>
+        <div class="code-symbol symbol-6">=&gt;</div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/algorithm-comparison.js') }}"></script>
+</body>
+</html>

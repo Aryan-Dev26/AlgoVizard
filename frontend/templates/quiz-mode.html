@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Mode - AlgoVizard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
+    {% if theme == 'school' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cursors.css') }}">
+    {% endif %}
+    <style>
+        .quiz-page {
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .quiz-header h1 {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .quiz-header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .quiz-progress {
+            margin-bottom: 30px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            color: white;
+            font-weight: bold;
+        }
+
+        .score-display {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .score-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .quiz-content {
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .question-section {
+            margin-bottom: 30px;
+        }
+
+        .question-number {
+            color: #4CAF50;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            color: white;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .visualization-area {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 200px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .array-container {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .array-bar {
+            min-width: 35px;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            padding-bottom: 5px;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .array-bar.highlight {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            transform: scale(1.1);
+        }
+
+        .options-section {
+            margin-top: 30px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-button {
+            padding: 15px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .option-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .option-button.selected {
+            background: rgba(79, 172, 254, 0.3);
+            border-color: rgba(79, 172, 254, 0.6);
+        }
+
+        .option-button.correct {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: rgba(76, 175, 80, 0.6);
+        }
+
+        .option-button.incorrect {
+            background: rgba(244, 67, 54, 0.3);
+            border-color: rgba(244, 67, 54, 0.6);
+        }
+
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .hint-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 10px;
+            display: none;
+        }
+
+        .hint-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-style: italic;
+        }
+
+        .explanation-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 10px;
+            display: none;
+        }
+
+        .explanation-text {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+
+        .quiz-complete {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .final-score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .performance-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .badge-excellent {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .badge-good {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+        }
+
+        .badge-fair {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            color: white;
+        }
+
+        .badge-needs-improvement {
+            background: linear-gradient(135deg, #F44336, #D32F2F);
+            color: white;
+        }
+
+        .restart-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .score-display {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .quiz-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body data-theme="{{ theme }}">
+    <div class="quiz-page">
+        <div class="quiz-container">
+            <!-- Navigation -->
+            <div style="margin-bottom: 30px; text-align: center;">
+                <a href="/" class="btn btn-secondary">← Back to Home</a>
+                <a href="/algorithms" class="btn btn-secondary" style="margin-left: 15px;">All Algorithms</a>
+            </div>
+
+            <!-- Header -->
+            <div class="quiz-header">
+                <h1>Algorithm Quiz Mode</h1>
+                <p>Test your understanding of sorting algorithms with interactive questions and visualizations</p>
+            </div>
+
+            <!-- Progress Section -->
+            <div class="quiz-progress glass">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text">
+                    Question <span id="currentQuestion">1</span> of <span id="totalQuestions">10</span>
+                </div>
+                <div class="score-display">
+                    <div class="score-item">
+                        <div class="score-number" id="correctAnswers">0</div>
+                        <div class="score-label">Correct</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-number" id="currentScore">0</div>
+                        <div class="score-label">Score</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-number" id="streakCount">0</div>
+                        <div class="score-label">Streak</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Content -->
+            <div class="quiz-content glass" id="quizContent">
+                <div class="question-section">
+                    <div class="question-number" id="questionNumber">Question 1</div>
+                    <div class="question-text" id="questionText">Loading question...</div>
+                    
+                    <!-- Visualization Area -->
+                    <div class="visualization-area" id="visualizationArea">
+                        <div class="array-container" id="arrayContainer">
+                            <!-- Array bars will be generated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Options -->
+                <div class="options-section">
+                    <div class="options-grid" id="optionsGrid">
+                        <!-- Options will be generated here -->
+                    </div>
+                </div>
+
+                <!-- Hint Section -->
+                <div class="hint-section" id="hintSection">
+                    <strong>💡 Hint:</strong>
+                    <div class="hint-text" id="hintText"></div>
+                </div>
+
+                <!-- Explanation Section -->
+                <div class="explanation-section" id="explanationSection">
+                    <strong>✅ Explanation:</strong>
+                    <div class="explanation-text" id="explanationText"></div>
+                </div>
+
+                <!-- Controls -->
+                <div class="quiz-controls">
+                    <button id="hintButton" class="btn btn-warning">Show Hint</button>
+                    <div>
+                        <button id="submitAnswer" class="btn btn-primary" disabled>Submit Answer</button>
+                        <button id="nextQuestion" class="btn btn-secondary" style="display: none;">Next Question</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Complete Section -->
+            <div class="quiz-complete glass" id="quizComplete">
+                <h2 style="color: white; margin-bottom: 20px;">Quiz Complete!</h2>
+                <div class="final-score" id="finalScore">0%</div>
+                <div class="performance-badge" id="performanceBadge">Great Job!</div>
+                <div style="color: rgba(255, 255, 255, 0.9); margin-bottom: 30px;">
+                    <p>You answered <span id="finalCorrect">0</span> out of <span id="finalTotal">10</span> questions correctly.</p>
+                    <p>Your understanding of sorting algorithms is <span id="performanceLevel">excellent</span>!</p>
+                </div>
+                <div class="restart-buttons">
+                    <button id="retakeQuiz" class="btn btn-primary">Retake Quiz</button>
+                    <a href="/algorithms" class="btn btn-secondary">Explore Algorithms</a>
+                    <a href="/algorithm-comparison" class="btn btn-warning">Compare Algorithms</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating programming symbols -->
+    <div class="floating-symbols">
+        <div class="code-symbol symbol-1">{}</div>
+        <div class="code-symbol symbol-2">&lt;/&gt;</div>
+        <div class="code-symbol symbol-3">[ ]</div>
+        <div class="code-symbol symbol-4">( )</div>
+        <div class="code-symbol symbol-5">;</div>
+        <div class="code-symbol symbol-6">=&gt;</div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/quiz-mode.js') }}"></script>
+</body>
+</html>

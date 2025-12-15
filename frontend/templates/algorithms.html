@@ -246,7 +246,7 @@
             <h2>Platform Statistics</h2>
             <div class="stats-grid">
                 <div class="stat-item">
-                    <span class="stat-number" id="totalAlgorithms">2</span>
+                    <span class="stat-number" id="totalAlgorithms">5</span>
                     <span class="stat-label">Available Algorithms</span>
                 </div>
                 <div class="stat-item">
@@ -264,9 +264,37 @@
             </div>
         </div>
 
-        <div class="algorithm-grid">
-            <!-- Bubble Sort -->
-            <div class="algorithm-card glass">
+        <!-- Search and Filter Section -->
+        <div class="search-section glass" style="margin-bottom: 30px;">
+            <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap; justify-content: center;">
+                <div style="flex: 1; min-width: 300px; max-width: 500px;">
+                    <input type="text" id="searchInput" placeholder="Search algorithms..." 
+                           style="width: 100%; padding: 12px 20px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; font-size: 1rem;">
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <select id="categoryFilter" style="padding: 10px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
+                        <option value="all">All Categories</option>
+                        <option value="sorting">Sorting</option>
+                        <option value="searching">Searching</option>
+                        <option value="trees">Trees</option>
+                        <option value="graphs">Graphs</option>
+                        <option value="data-structures">Data Structures</option>
+                    </select>
+                    <select id="complexityFilter" style="padding: 10px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
+                        <option value="all">All Complexities</option>
+                        <option value="O(1)">O(1)</option>
+                        <option value="O(log n)">O(log n)</option>
+                        <option value="O(n)">O(n)</option>
+                        <option value="O(n log n)">O(n log n)</option>
+                        <option value="O(n²)">O(n²)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="algorithm-grid" id="algorithmGrid">
+            <!-- SORTING ALGORITHMS -->
+            <div class="algorithm-card glass" data-category="sorting" data-complexity="O(n²)" data-keywords="bubble sort comparison adjacent swap">
                 <div class="algorithm-icon">🫧</div>
                 <h3>Bubble Sort</h3>
                 <p class="algorithm-description">
@@ -290,8 +318,7 @@
                 <a href="/algorithms/bubble-sort" class="btn btn-primary algorithm-btn">Visualize Bubble Sort</a>
             </div>
 
-            <!-- Selection Sort -->
-            <div class="algorithm-card glass">
+            <div class="algorithm-card glass" data-category="sorting" data-complexity="O(n²)" data-keywords="selection sort minimum unsorted region">
                 <div class="algorithm-icon">🎯</div>
                 <h3>Selection Sort</h3>
                 <p class="algorithm-description">
@@ -315,8 +342,7 @@
                 <a href="/algorithms/selection-sort" class="btn btn-primary algorithm-btn">Visualize Selection Sort</a>
             </div>
 
-            <!-- Insertion Sort - Now Available -->
-            <div class="algorithm-card glass">
+            <div class="algorithm-card glass" data-category="sorting" data-complexity="O(n²)" data-keywords="insertion sort build sorted array">
                 <div class="algorithm-icon">📝</div>
                 <h3>Insertion Sort</h3>
                 <p class="algorithm-description">
@@ -340,13 +366,12 @@
                 <a href="/algorithms/insertion-sort" class="btn btn-primary algorithm-btn">Visualize Insertion Sort</a>
             </div>
 
-            <!-- Merge Sort - Coming Soon -->
-            <div class="algorithm-card glass coming-soon">
+            <div class="algorithm-card glass" data-category="sorting" data-complexity="O(n log n)" data-keywords="merge sort divide conquer recursive">
                 <div class="algorithm-icon">🔀</div>
                 <h3>Merge Sort</h3>
                 <p class="algorithm-description">
                     A divide-and-conquer algorithm that divides the array into halves, sorts them, and then merges the
-                    sorted halves.
+                    sorted halves. Excellent for understanding recursion!
                 </p>
                 <div class="algorithm-complexity">
                     <div class="complexity-item">
@@ -362,16 +387,15 @@
                         <span class="complexity-value">Yes</span>
                     </div>
                 </div>
-                <button class="btn btn-secondary algorithm-btn">Visualize Merge Sort</button>
+                <a href="/algorithms/merge-sort" class="btn btn-primary algorithm-btn">Visualize Merge Sort</a>
             </div>
 
-            <!-- Quick Sort - Coming Soon -->
-            <div class="algorithm-card glass coming-soon">
+            <div class="algorithm-card glass" data-category="sorting" data-complexity="O(n log n)" data-keywords="quick sort pivot partition divide conquer">
                 <div class="algorithm-icon">⚡</div>
                 <h3>Quick Sort</h3>
                 <p class="algorithm-description">
                     A highly efficient divide-and-conquer algorithm that picks a pivot element and partitions the array
-                    around it.
+                    around it. Average case O(n log n), worst case O(n²).
                 </p>
                 <div class="algorithm-complexity">
                     <div class="complexity-item">
@@ -387,38 +411,212 @@
                         <span class="complexity-value">No</span>
                     </div>
                 </div>
-                <button class="btn btn-secondary algorithm-btn">Visualize Quick Sort</button>
+                <a href="/algorithms/quick-sort" class="btn btn-primary algorithm-btn">Visualize Quick Sort</a>
             </div>
 
-            <!-- Heap Sort - Coming Soon -->
-            <div class="algorithm-card glass coming-soon">
-                <div class="algorithm-icon">🗻</div>
-                <h3>Heap Sort</h3>
+            <!-- SEARCHING ALGORITHMS -->
+            <!-- COMING SOON ALGORITHMS -->
+            <div class="algorithm-card glass coming-soon" data-category="searching" data-complexity="O(log n)" data-keywords="binary search sorted array divide">
+                <div class="algorithm-icon">🔍</div>
+                <h3>Binary Search</h3>
                 <p class="algorithm-description">
-                    Uses a binary heap data structure to sort elements. Builds a max heap and repeatedly extracts the
-                    maximum element.
+                    Efficiently searches a sorted array by repeatedly dividing the search interval in half. 
+                    Much faster than linear search for large datasets.
                 </p>
                 <div class="algorithm-complexity">
                     <div class="complexity-item">
                         <span class="complexity-label">Time</span>
-                        <span class="complexity-value">O(n log n)</span>
+                        <span class="complexity-value">O(log n)</span>
                     </div>
                     <div class="complexity-item">
                         <span class="complexity-label">Space</span>
                         <span class="complexity-value">O(1)</span>
                     </div>
                     <div class="complexity-item">
-                        <span class="complexity-label">Stable</span>
-                        <span class="complexity-value">No</span>
+                        <span class="complexity-label">Requirement</span>
+                        <span class="complexity-value">Sorted</span>
                     </div>
                 </div>
-                <button class="btn btn-secondary algorithm-btn">Visualize Heap Sort</button>
+                <button class="btn btn-secondary algorithm-btn">Coming Soon</button>
+            </div>
+
+            <div class="algorithm-card glass coming-soon" data-category="searching" data-complexity="O(n)" data-keywords="linear search sequential scan">
+                <div class="algorithm-icon">📏</div>
+                <h3>Linear Search</h3>
+                <p class="algorithm-description">
+                    Searches for an element by checking every element in the array sequentially. 
+                    Simple but inefficient for large datasets.
+                </p>
+                <div class="algorithm-complexity">
+                    <div class="complexity-item">
+                        <span class="complexity-label">Time</span>
+                        <span class="complexity-value">O(n)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Space</span>
+                        <span class="complexity-value">O(1)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Requirement</span>
+                        <span class="complexity-value">None</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary algorithm-btn">Coming Soon</button>
+            </div>
+
+            <!-- TREE ALGORITHMS -->
+            <div class="algorithm-card glass coming-soon" data-category="trees" data-complexity="O(log n)" data-keywords="binary search tree bst insert delete">
+                <div class="algorithm-icon">🌳</div>
+                <h3>Binary Search Tree</h3>
+                <p class="algorithm-description">
+                    A tree data structure where each node has at most two children, and left child < parent < right child.
+                    Supports efficient insertion, deletion, and search operations.
+                </p>
+                <div class="algorithm-complexity">
+                    <div class="complexity-item">
+                        <span class="complexity-label">Search</span>
+                        <span class="complexity-value">O(log n)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Insert</span>
+                        <span class="complexity-value">O(log n)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Delete</span>
+                        <span class="complexity-value">O(log n)</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary algorithm-btn">Coming Soon</button>
+            </div>
+
+            <!-- GRAPH ALGORITHMS -->
+            <div class="algorithm-card glass coming-soon" data-category="graphs" data-complexity="O(n)" data-keywords="depth first search dfs traversal stack">
+                <div class="algorithm-icon">🕸️</div>
+                <h3>Graph DFS</h3>
+                <p class="algorithm-description">
+                    Depth-First Search explores as far as possible along each branch before backtracking.
+                    Uses a stack (or recursion) to traverse the graph.
+                </p>
+                <div class="algorithm-complexity">
+                    <div class="complexity-item">
+                        <span class="complexity-label">Time</span>
+                        <span class="complexity-value">O(V + E)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Space</span>
+                        <span class="complexity-value">O(V)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Structure</span>
+                        <span class="complexity-value">Stack</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary algorithm-btn">Coming Soon</button>
+            </div>
+
+            <div class="algorithm-card glass coming-soon" data-category="graphs" data-complexity="O(n)" data-keywords="breadth first search bfs traversal queue level">
+                <div class="algorithm-icon">🌊</div>
+                <h3>Graph BFS</h3>
+                <p class="algorithm-description">
+                    Breadth-First Search explores all neighbors at the current depth before moving to nodes at the next depth.
+                    Uses a queue to traverse the graph level by level.
+                </p>
+                <div class="algorithm-complexity">
+                    <div class="complexity-item">
+                        <span class="complexity-label">Time</span>
+                        <span class="complexity-value">O(V + E)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Space</span>
+                        <span class="complexity-value">O(V)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Structure</span>
+                        <span class="complexity-value">Queue</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary algorithm-btn">Coming Soon</button>
+            </div>
+
+            <!-- DATA STRUCTURE OPERATIONS -->
+            <div class="algorithm-card glass coming-soon" data-category="data-structures" data-complexity="O(1)" data-keywords="stack push pop lifo last in first out">
+                <div class="algorithm-icon">📚</div>
+                <h3>Stack Operations</h3>
+                <p class="algorithm-description">
+                    LIFO (Last In, First Out) data structure. Elements are added and removed from the same end (top).
+                    Essential for function calls, expression evaluation, and backtracking.
+                </p>
+                <div class="algorithm-complexity">
+                    <div class="complexity-item">
+                        <span class="complexity-label">Push</span>
+                        <span class="complexity-value">O(1)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Pop</span>
+                        <span class="complexity-value">O(1)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Peek</span>
+                        <span class="complexity-value">O(1)</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary algorithm-btn">Coming Soon</button>
+            </div>
+
+            <div class="algorithm-card glass coming-soon" data-category="data-structures" data-complexity="O(1)" data-keywords="queue enqueue dequeue fifo first in first out">
+                <div class="algorithm-icon">🚶‍♂️</div>
+                <h3>Queue Operations</h3>
+                <p class="algorithm-description">
+                    FIFO (First In, First Out) data structure. Elements are added at the rear and removed from the front.
+                    Used in scheduling, buffering, and breadth-first search.
+                </p>
+                <div class="algorithm-complexity">
+                    <div class="complexity-item">
+                        <span class="complexity-label">Enqueue</span>
+                        <span class="complexity-value">O(1)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Dequeue</span>
+                        <span class="complexity-value">O(1)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Front</span>
+                        <span class="complexity-value">O(1)</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary algorithm-btn">Coming Soon</button>
+            </div>
+
+            <!-- SPECIAL FEATURES -->
+            <div class="algorithm-card glass" style="border: 2px solid #4CAF50;" data-category="tools" data-complexity="all" data-keywords="algorithm comparison performance analysis">
+                <div class="algorithm-icon" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">⚖️</div>
+                <h3>Algorithm Comparison</h3>
+                <p class="algorithm-description">
+                    Compare sorting algorithms side-by-side to understand their performance differences and 
+                    characteristics in real-time. Perfect for learning efficiency trade-offs.
+                </p>
+                <div class="algorithm-complexity">
+                    <div class="complexity-item">
+                        <span class="complexity-label">Algorithms</span>
+                        <span class="complexity-value">5</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Metrics</span>
+                        <span class="complexity-value">Live</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Analysis</span>
+                        <span class="complexity-value">Real-time</span>
+                    </div>
+                </div>
+                <a href="/algorithm-comparison" class="btn btn-primary algorithm-btn">Compare Algorithms</a>
             </div>
         </div>
 
         <div class="bottom-section glass">
             <a href="/" class="btn btn-secondary">🏠 Back to Home</a>
-            <a href="/api/analytics" class="btn btn-secondary" target="_blank">📊 View Analytics</a>
+            <a href="/dashboard" class="btn btn-warning">📊 Analytics Dashboard</a>
+            <a href="/quiz-mode" class="btn btn-primary">🧠 Take Quiz</a>
         </div>
     </div>
 

@@ -1,31 +1,35 @@
-/* /* AlgoVizard - College Professional Theme */
+/* AlgoVizard - Minimalist Professional College Theme */
 /* Author: Aryan Pravin Sahu */
 
+/* Ultra-clean, minimalist design with perfect contrast and professional aesthetics */
+
 body {
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #3498db 100%);
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 30%, #16213e 70%, #0f1419 100%);
     min-height: 100vh;
     position: relative;
-    color: white;
+    color: #f8f9fa;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
 }
 
-/* Animated background elements - Exactly like reference */
+/* Minimal geometric background pattern */
 body::before {
     content: '';
     position: fixed;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background:
-        radial-gradient(circle at 25% 25%, rgba(0, 255, 204, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 75% 75%, rgba(0, 204, 255, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 50% 50%, rgba(102, 255, 178, 0.05) 0%, transparent 50%);
-    animation: float 20s ease-in-out infinite;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 25% 75%, rgba(99, 102, 241, 0.02) 0%, transparent 40%),
+        radial-gradient(circle at 75% 25%, rgba(16, 185, 129, 0.015) 0%, transparent 40%),
+        linear-gradient(135deg, transparent 49%, rgba(255, 255, 255, 0.005) 50%, transparent 51%);
     pointer-events: none;
     z-index: -1;
 }
 
-/* Better floating programming elements */
+/* Subtle floating code elements */
 .floating-symbols {
     position: fixed;
     top: 0;
@@ -39,293 +43,188 @@ body::before {
 
 .code-symbol {
     position: absolute;
-    color: rgba(255, 255, 255, 0.15);
-    font-family: 'Courier New', monospace;
-    font-weight: bold;
-    animation: floatSymbol 8s ease-in-out infinite;
-}
-
-.symbol-1 {
-    top: 10%;
-    left: 10%;
-    font-size: 3rem;
-    animation-delay: 0s;
-}
-
-.symbol-2 {
-    top: 20%;
-    right: 15%;
-    font-size: 2.5rem;
-    animation-delay: 1s;
-}
-
-.symbol-3 {
-    bottom: 25%;
-    left: 20%;
-    font-size: 3.5rem;
-    animation-delay: 2s;
-}
-
-.symbol-4 {
-    top: 50%;
-    right: 25%;
-    font-size: 2rem;
-    animation-delay: 3s;
-}
-
-.symbol-5 {
-    bottom: 15%;
-    right: 20%;
-    font-size: 4rem;
-    animation-delay: 4s;
-}
-
-.symbol-6 {
-    top: 70%;
-    left: 60%;
-    font-size: 2.8rem;
-    animation-delay: 5s;
-}
-
-@keyframes floatSymbol {
-    0% {
-        transform: translateY(0px) translateX(0px) rotate(0deg);
-        opacity: 0.15;
-    }
-
-    25% {
-        transform: translateY(-20px) translateX(10px) rotate(2deg);
-        opacity: 0.25;
-    }
-
-    50% {
-        transform: translateY(-40px) translateX(-5px) rotate(-1deg);
-        opacity: 0.2;
-    }
-
-    75% {
-        transform: translateY(-20px) translateX(15px) rotate(1deg);
-        opacity: 0.18;
-    }
-
-    100% {
-        transform: translateY(0px) translateX(0px) rotate(0deg);
-        opacity: 0.15;
-    }
-}
-
-@keyframes floatCode {
-
-    0%,
-    100% {
-        transform: translateY(0px) rotate(0deg);
-        opacity: 1;
-    }
-
-    25% {
-        transform: translateY(-10px) rotate(1deg);
-        opacity: 0.8;
-    }
-
-    50% {
-        transform: translateY(-20px) rotate(-1deg);
-        opacity: 0.6;
-    }
-
-    75% {
-        transform: translateY(-10px) rotate(0.5deg);
-        opacity: 0.8;
-    }
-}
-
-/* Additional floating symbols */
-.floating-symbols {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
-}
-
-.code-symbol {
-    position: absolute;
-    color: rgba(255, 255, 255, 0.1);
-    font-family: 'Courier New', monospace;
-    font-weight: bold;
-    animation: floatSymbol 12s ease-in-out infinite;
+    color: rgba(255, 255, 255, 0.03);
+    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+    font-weight: 400;
+    animation: floatSymbol 20s ease-in-out infinite;
 }
 
 .symbol-1 {
     top: 15%;
-    left: 15%;
+    left: 8%;
     font-size: 2rem;
     animation-delay: 0s;
 }
 
 .symbol-2 {
     top: 25%;
-    right: 20%;
-    font-size: 1.5rem;
-    animation-delay: 2s;
+    right: 12%;
+    font-size: 1.8rem;
+    animation-delay: 3s;
 }
 
 .symbol-3 {
     bottom: 30%;
-    left: 25%;
-    font-size: 1.8rem;
-    animation-delay: 4s;
+    left: 15%;
+    font-size: 2.2rem;
+    animation-delay: 6s;
 }
 
 .symbol-4 {
     top: 60%;
-    right: 15%;
-    font-size: 1.3rem;
-    animation-delay: 6s;
+    right: 20%;
+    font-size: 1.6rem;
+    animation-delay: 9s;
 }
 
 .symbol-5 {
     bottom: 20%;
-    right: 30%;
-    font-size: 2.2rem;
-    animation-delay: 8s;
+    right: 25%;
+    font-size: 2.4rem;
+    animation-delay: 12s;
+}
+
+.symbol-6 {
+    top: 75%;
+    left: 65%;
+    font-size: 1.9rem;
+    animation-delay: 15s;
 }
 
 @keyframes floatSymbol {
-
-    0%,
-    100% {
-        transform: translateY(0px) rotate(0deg);
-        opacity: 0.1;
+    0%, 100% {
+        transform: translateY(0px) translateX(0px);
+        opacity: 0.03;
     }
-
     50% {
-        transform: translateY(-15px) rotate(5deg);
-        opacity: 0.05;
+        transform: translateY(-15px) translateX(8px);
+        opacity: 0.06;
     }
 }
 
-@keyframes float {
 
-    0%,
-    100% {
-        transform: translateY(0px) rotate(0deg);
-    }
 
-    50% {
-        transform: translateY(-20px) rotate(2deg);
-    }
-}
-
-/* Header styling - Updated to match reference */
-h1,
-h2,
-h3 {
-    font-weight: 700;
-    margin-bottom: 1rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* Clean typography */
+h1, h2, h3 {
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #ffffff;
+    letter-spacing: -0.025em;
 }
 
 h1 {
-    font-size: 2.8rem;
-    color: white;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ffffff;
 }
 
-/* Highlight text - Like reference */
+h2 {
+    font-size: 2rem;
+    color: #e2e8f0;
+}
+
+h3 {
+    font-size: 1.5rem;
+    color: #cbd5e1;
+}
+
+/* Accent text */
 .highlight {
-    background: linear-gradient(135deg, rgba(102, 255, 178, 0.9), rgba(0, 255, 204, 0.8));
+    background: linear-gradient(135deg, #10b981 0%, #06d6a0 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    font-weight: 600;
 }
 
-/* Navigation - Updated to match reference */
+/* Clean navigation */
 .navbar {
     position: fixed;
-    top: 20px;
+    top: 24px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 100;
-    padding: 15px 30px;
+    padding: 16px 32px;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
 }
 
 .nav-content {
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 32px;
 }
 
 .logo {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: white;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: -0.025em;
 }
 
 .nav-links {
     display: flex;
-    gap: 20px;
+    gap: 24px;
 }
 
 .nav-link {
-    color: rgba(255, 255, 255, 0.9);
+    color: #cbd5e1;
     text-decoration: none;
     font-weight: 500;
+    font-size: 0.9rem;
     padding: 8px 16px;
-    border-radius: 10px;
-    transition: all 0.3s ease;
+    border-radius: 8px;
+    transition: all 0.2s ease;
 }
 
 .nav-link:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.06);
 }
 
-/* Enhanced visualization area - Updated */
+/* Clean visualization area */
 .visualization-area {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
     position: relative;
     overflow: hidden;
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .visualization-area::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    animation: shimmer 3s infinite;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(16, 185, 129, 0.3) 50%, 
+        transparent 100%);
 }
 
-@keyframes shimmer {
-    0% {
-        left: -100%;
-    }
-
-    100% {
-        left: 100%;
-    }
-}
-
-/* Professional array bar styling - Exactly like reference */
+/* Minimalist array bars */
 .array-bar {
-    min-width: 45px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 8px 8px 0 0;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
+    min-width: 50px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 6px 6px 0 0;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #f8f9fa;
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    font-weight: 600;
-    padding-bottom: 10px;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding-bottom: 8px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(12px);
     position: relative;
     overflow: hidden;
 }
@@ -336,39 +235,40 @@ h1 {
     top: 0;
     left: 0;
     right: 0;
-    height: 50%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent);
-    border-radius: 8px 8px 0 0;
+    height: 40%;
+    background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        transparent 100%);
+    border-radius: 6px 6px 0 0;
 }
 
-/* Selection sort specific styling - Updated */
+/* Clean algorithm states */
 .array-bar.sorted {
-    background: rgba(0, 200, 150, 0.4) !important;
-    border-color: rgba(0, 200, 150, 0.6) !important;
-    box-shadow: 0 4px 15px rgba(0, 200, 150, 0.3);
+    background: rgba(16, 185, 129, 0.2) !important;
+    border-color: rgba(16, 185, 129, 0.4) !important;
+    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.3);
 }
 
 .array-bar.current-min {
-    background: rgba(255, 107, 107, 0.4) !important;
-    border-color: rgba(255, 107, 107, 0.6) !important;
-    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
-    transform: scale(1.1);
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+    transform: scale(1.05);
+}
+
+.array-bar.comparing {
+    background: rgba(99, 102, 241, 0.2) !important;
+    border-color: rgba(99, 102, 241, 0.4) !important;
+    box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.3);
 }
 
 .array-bar.swapped {
-    animation: swapAnimation 0.6s ease;
+    animation: swapAnimation 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes swapAnimation {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-10px);
-    }
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
 }
 
 /* Professional speed slider - Updated */
@@ -393,98 +293,120 @@ h1 {
     cursor: pointer;
 }
 
-/* Step info professional styling - Updated */
+/* Clean step information */
 .step-info {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
 }
 
 .step-description {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 500;
-    color: white;
-    min-height: 50px;
+    color: #f8f9fa;
+    min-height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
+    line-height: 1.5;
 }
 
 .step-counter {
-    color: rgba(255, 255, 255, 0.9);
-    font-family: 'Courier New', monospace;
-    font-weight: 600;
+    color: #cbd5e1;
+    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+    font-weight: 500;
+    font-size: 0.9rem;
 }
 
-/* Algorithm cards - Updated to match reference */
+/* Minimalist algorithm cards */
 .algorithm-card {
-    padding: 30px;
+    padding: 32px;
     text-decoration: none;
-    color: white;
-    transition: all 0.3s ease;
+    color: #f8f9fa;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
     display: block;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .algorithm-card::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    transition: left 0.5s ease;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(16, 185, 129, 0.4) 50%, 
+        transparent 100%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.algorithm-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
 }
 
 .algorithm-card:hover::before {
-    left: 100%;
+    opacity: 1;
 }
 
 .card-icon {
-    font-size: 3rem;
-    margin-bottom: 20px;
+    font-size: 2.5rem;
+    margin-bottom: 24px;
     display: block;
+    opacity: 0.9;
 }
 
 .card-title {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 600;
-    margin-bottom: 15px;
+    margin-bottom: 16px;
+    color: #ffffff;
+    letter-spacing: -0.025em;
 }
 
 .card-description {
-    color: rgba(255, 255, 255, 0.9);
+    color: #cbd5e1;
     line-height: 1.6;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    font-size: 0.95rem;
 }
 
 .card-status {
     display: inline-block;
-    padding: 6px 12px;
-    border-radius: 15px;
+    padding: 8px 16px;
+    border-radius: 20px;
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 500;
+    letter-spacing: 0.025em;
 }
 
 .status-available {
-    background: rgba(0, 200, 150, 0.3);
-    color: #00c896;
-    border: 1px solid rgba(0, 200, 150, 0.3);
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 .status-coming-soon {
-    background: rgba(255, 193, 7, 0.3);
-    color: #ffc107;
-    border: 1px solid rgba(255, 193, 7, 0.3);
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.2);
 }
 
-/* Algorithm complexity styling */
+/* Clean complexity display */
 .algorithm-complexity {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 25px;
-    font-size: 0.9rem;
+    margin-bottom: 28px;
+    font-size: 0.85rem;
 }
 
 .complexity-item {
@@ -492,15 +414,17 @@ h1 {
 }
 
 .complexity-label {
-    color: rgba(255, 255, 255, 0.6);
+    color: #94a3b8;
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
+    font-weight: 500;
 }
 
 .complexity-value {
-    color: rgba(255, 255, 255, 0.95);
-    font-weight: bold;
-    font-family: 'Courier New', monospace;
+    color: #e2e8f0;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+    font-size: 0.9rem;
 }
 
 /* Loading animation */
