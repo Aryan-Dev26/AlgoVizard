@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <title>Page Not Found - AlgoVizard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
     {% if theme == 'school' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
+    {% else %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
     {% endif %}
     <style>
         .error-container {

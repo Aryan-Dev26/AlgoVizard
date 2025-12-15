@@ -49,12 +49,96 @@ class AlgorithmComparison {
 
     getAlgorithmDisplayName(algorithm) {
         const names = {
+            // Sorting Algorithms
             'bubble': 'Bubble Sort',
             'selection': 'Selection Sort',
             'insertion': 'Insertion Sort',
-            'merge': 'Merge Sort'
+            'merge': 'Merge Sort',
+            'quick': 'Quick Sort',
+            'heap': 'Heap Sort',
+
+            // Searching Algorithms
+            'binary-search': 'Binary Search',
+            'linear-search': 'Linear Search',
+            // Tree Operations
+            'binary-search-tree': 'Binary Search Tree',
+            // Graph Algorithms
+            'graph-dfs': 'Graph DFS',
+            'graph-bfs': 'Graph BFS',
+            // Data Structures
+            'stack-operations': 'Stack Operations',
+            'queue-operations': 'Queue Operations'
         };
         return names[algorithm] || algorithm;
+    }
+
+    getAlgorithmConfig(algorithmType) {
+        // Sorting algorithms use array input
+        const sortingAlgorithms = ['bubble', 'selection', 'insertion', 'merge', 'quick', 'heap'];
+        
+        if (sortingAlgorithms.includes(algorithmType)) {
+            return {
+                endpoint: `/api/${algorithmType}-sort`,
+                payload: { array: [...this.currentArray] }
+            };
+        }
+        
+        // Searching algorithms use array and target
+        if (algorithmType === 'binary-search' || algorithmType === 'linear-search') {
+            const target = this.currentArray[Math.floor(Math.random() * this.currentArray.length)];
+            return {
+                endpoint: `/api/${algorithmType}`,
+                payload: { array: [...this.currentArray], target: target }
+            };
+        }
+        
+        // Tree operations use values array
+        if (algorithmType === 'binary-search-tree') {
+            return {
+                endpoint: `/api/${algorithmType}?operation=insert`,
+                payload: { values: [...this.currentArray] }
+            };
+        }
+        
+        // Graph algorithms use default parameters
+        if (algorithmType === 'graph-dfs' || algorithmType === 'graph-bfs') {
+            return {
+                endpoint: `/api/${algorithmType}`,
+                payload: {}
+            };
+        }
+        
+        // Data structure operations use sample operations
+        if (algorithmType === 'stack-operations' || algorithmType === 'queue-operations') {
+            const operations = this.generateSampleOperations(algorithmType);
+            return {
+                endpoint: `/api/${algorithmType}`,
+                payload: { operations: operations }
+            };
+        }
+        
+        // Default fallback
+        return {
+            endpoint: `/api/${algorithmType}`,
+            payload: { array: [...this.currentArray] }
+        };
+    }
+
+    generateSampleOperations(type) {
+        const operations = [];
+        const values = this.currentArray.slice(0, 5); // Use first 5 values
+        
+        if (type === 'stack-operations') {
+            values.forEach(val => operations.push({ type: 'push', value: val }));
+            operations.push({ type: 'pop' });
+            operations.push({ type: 'pop' });
+        } else if (type === 'queue-operations') {
+            values.forEach(val => operations.push({ type: 'enqueue', value: val }));
+            operations.push({ type: 'dequeue' });
+            operations.push({ type: 'dequeue' });
+        }
+        
+        return operations;
     }
 
     updateAlgorithmName(panelNumber, name) {
@@ -102,6 +186,87 @@ class AlgorithmComparison {
         });
     }
 
+    renderTree(panelNumber, treeData, highlighted = []) {
+        const container = document.getElementById(`arrayContainer${panelNumber}`);
+        container.innerHTML = '<div class="tree-visualization">Tree visualization (simplified for comparison)</div>';
+        
+        // For now, show a simplified representation
+        if (treeData && treeData.nodes) {
+            const nodeList = document.createElement('div');
+            nodeList.className = 'tree-nodes';
+            nodeList.innerHTML = `<strong>Tree Nodes:</strong> ${treeData.nodes.join(', ')}`;
+            container.appendChild(nodeList);
+        }
+    }
+
+    renderGraph(panelNumber, graphData, visited = [], current = []) {
+        const container = document.getElementById(`arrayContainer${panelNumber}`);
+        container.innerHTML = '<div class="graph-visualization">Graph visualization (simplified for comparison)</div>';
+        
+        // For now, show a simplified representation
+        if (graphData && graphData.vertices) {
+            const vertexList = document.createElement('div');
+            vertexList.className = 'graph-vertices';
+            vertexList.innerHTML = `<strong>Vertices:</strong> ${graphData.vertices.join(', ')}<br>`;
+            vertexList.innerHTML += `<strong>Visited:</strong> ${visited.join(', ')}`;
+            container.appendChild(vertexList);
+        }
+    }
+
+    renderDataStructure(panelNumber, stepData) {
+        const container = document.getElementById(`arrayContainer${panelNumber}`);
+        container.innerHTML = '';
+
+        if (stepData.stack) {
+            // Render stack
+            const stackContainer = document.createElement('div');
+            stackContainer.className = 'stack-visualization';
+            stackContainer.innerHTML = '<strong>Stack:</strong>';
+            
+            const stackItems = document.createElement('div');
+            stackItems.className = 'stack-items';
+            stackItems.style.display = 'flex';
+            stackItems.style.flexDirection = 'column-reverse';
+            stackItems.style.gap = '5px';
+            
+            stepData.stack.forEach((item, index) => {
+                const stackItem = document.createElement('div');
+                stackItem.className = 'stack-item array-bar';
+                stackItem.textContent = item;
+                stackItem.style.height = '40px';
+                stackItem.style.minWidth = '60px';
+                stackItems.appendChild(stackItem);
+            });
+            
+            stackContainer.appendChild(stackItems);
+            container.appendChild(stackContainer);
+        }
+
+        if (stepData.queue) {
+            // Render queue
+            const queueContainer = document.createElement('div');
+            queueContainer.className = 'queue-visualization';
+            queueContainer.innerHTML = '<strong>Queue:</strong>';
+            
+            const queueItems = document.createElement('div');
+            queueItems.className = 'queue-items';
+            queueItems.style.display = 'flex';
+            queueItems.style.gap = '5px';
+            
+            stepData.queue.forEach((item, index) => {
+                const queueItem = document.createElement('div');
+                queueItem.className = 'queue-item array-bar';
+                queueItem.textContent = item;
+                queueItem.style.height = '40px';
+                queueItem.style.minWidth = '60px';
+                queueItems.appendChild(queueItem);
+            });
+            
+            queueContainer.appendChild(queueItems);
+            container.appendChild(queueContainer);
+        }
+    }
+
     async startComparison() {
         if (this.isRunning) return;
         
@@ -134,18 +299,24 @@ class AlgorithmComparison {
         const startTime = performance.now();
         
         try {
+            // Determine the correct API endpoint and payload
+            const { endpoint, payload } = this.getAlgorithmConfig(algorithmType);
+            
             // Fetch algorithm steps from backend
-            const response = await fetch(`/api/${algorithmType}-sort`, {
+            const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ array: [...this.currentArray] })
+                body: JSON.stringify(payload)
             });
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const steps = await response.json();
+            const responseData = await response.json();
+            
+            // Handle different response formats
+            const steps = responseData.steps || responseData;
             
             // Execute visualization
             await this.visualizeSteps(panelNumber, steps);
@@ -167,22 +338,38 @@ class AlgorithmComparison {
         for (let i = 0; i < steps.length; i++) {
             const step = steps[i];
             
-            // Count operations for statistics
+            // Count operations for statistics (flexible for different algorithm types)
             if (step.comparing && step.comparing.length > 0) {
                 this.stats[`algo${panelNumber}`].comparisons++;
             }
             
-            if (step.swapped) {
+            if (step.swapped || step.swapping) {
                 this.stats[`algo${panelNumber}`].swaps++;
             }
 
-            // Render the step
-            this.renderArray(
-                panelNumber, 
-                step.array, 
-                step.comparing || [], 
-                step.swapped ? step.comparing : []
-            );
+            // Handle different visualization types
+            if (step.array) {
+                // Array-based algorithms (sorting, searching)
+                this.renderArray(
+                    panelNumber, 
+                    step.array, 
+                    step.comparing || step.current || [], 
+                    step.swapped ? step.comparing : (step.swapping || [])
+                );
+            } else if (step.tree) {
+                // Tree-based algorithms
+                this.renderTree(panelNumber, step.tree, step.highlighted || []);
+            } else if (step.graph) {
+                // Graph-based algorithms
+                this.renderGraph(panelNumber, step.graph, step.visited || [], step.current || []);
+            } else if (step.stack || step.queue) {
+                // Data structure operations
+                this.renderDataStructure(panelNumber, step);
+            } else {
+                // Fallback: try to render as array if possible
+                const arrayData = step.data || this.currentArray;
+                this.renderArray(panelNumber, arrayData, [], []);
+            }
 
             // Update real-time stats
             this.updateStats(panelNumber);

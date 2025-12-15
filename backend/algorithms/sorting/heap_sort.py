@@ -1,99 +1,107 @@
 """
 Heap Sort Algorithm Implementation
 Author: Aryan Pravin Sahu
+A simple and clean implementation of heap sort with step-by-step visualization
 """
 
 def heap_sort_steps(arr):
     """
     Generate step-by-step heap sort visualization data
+    Returns a list of steps showing the sorting process
     """
     steps = []
     n = len(arr)
     array = arr.copy()
     
-    # Build max heap
+    # Step 1: Build max heap
     steps.append({
-        'type': 'info',
-        'message': 'Building max heap from array',
+        'type': 'start',
+        'message': 'Starting Heap Sort - Building max heap',
         'array': array.copy(),
-        'heap_size': n,
         'comparing': [],
         'swapping': [],
-        'sorted': []
+        'sorted': [],
+        'heap_size': n
     })
     
     # Build heap (rearrange array)
     for i in range(n // 2 - 1, -1, -1):
-        heapify_steps = heapify(array, n, i, steps)
-        steps.extend(heapify_steps)
+        heapify_steps = heapify(array, n, i)
+        for step in heapify_steps:
+            step['heap_size'] = n
+            steps.append(step)
     
     steps.append({
         'type': 'heap_built',
-        'message': 'Max heap built successfully',
+        'message': 'Max heap built successfully! Now extracting elements one by one.',
         'array': array.copy(),
-        'heap_size': n,
         'comparing': [],
         'swapping': [],
-        'sorted': []
+        'sorted': [],
+        'heap_size': n
     })
     
-    # Extract elements from heap one by one
+    # Step 2: Extract elements from heap one by one
     for i in range(n - 1, 0, -1):
         # Move current root to end
         steps.append({
-            'type': 'extract_max',
+            'type': 'extract',
             'message': f'Moving maximum element {array[0]} to sorted position',
             'array': array.copy(),
-            'heap_size': i + 1,
             'comparing': [],
             'swapping': [0, i],
-            'sorted': list(range(i + 1, n))
+            'sorted': list(range(i + 1, n)),
+            'heap_size': i + 1
         })
         
+        # Swap
         array[i], array[0] = array[0], array[i]
         
         steps.append({
             'type': 'swapped',
-            'message': f'Swapped {array[i]} to position {i}',
+            'message': f'Element {array[i]} is now in its final sorted position',
             'array': array.copy(),
-            'heap_size': i,
             'comparing': [],
             'swapping': [],
-            'sorted': list(range(i, n))
+            'sorted': list(range(i, n)),
+            'heap_size': i
         })
         
         # Call heapify on the reduced heap
-        heapify_steps = heapify(array, i, 0, steps)
-        steps.extend(heapify_steps)
+        heapify_steps = heapify(array, i, 0)
+        for step in heapify_steps:
+            step['sorted'] = list(range(i, n))
+            step['heap_size'] = i
+            steps.append(step)
     
     steps.append({
         'type': 'completed',
-        'message': 'Heap sort completed!',
+        'message': 'Heap sort completed! Array is now fully sorted.',
         'array': array.copy(),
-        'heap_size': 0,
         'comparing': [],
         'swapping': [],
-        'sorted': list(range(n))
+        'sorted': list(range(n)),
+        'heap_size': 0
     })
     
     return steps
 
-def heapify(arr, n, i, steps):
+def heapify(arr, n, i):
     """
-    Heapify a subtree rooted with node i which is an index in arr[]
+    Heapify a subtree rooted with node i
+    Returns steps for visualization
     """
-    heapify_steps = []
+    steps = []
     largest = i  # Initialize largest as root
-    left = 2 * i + 1     # left = 2*i + 1
-    right = 2 * i + 2    # right = 2*i + 2
+    left = 2 * i + 1     # left child
+    right = 2 * i + 2    # right child
     
-    # See if left child of root exists and is greater than root
+    # See if left child exists and is greater than root
     if left < n:
-        heapify_steps.append({
+        steps.append({
             'type': 'comparing',
             'message': f'Comparing parent {arr[i]} with left child {arr[left]}',
             'array': arr.copy(),
-            'heap_size': n,
             'comparing': [i, left],
             'swapping': [],
             'sorted': []
@@ -102,13 +110,12 @@ def heapify(arr, n, i, steps):
         if arr[left] > arr[largest]:
             largest = left
     
-    # See if right child of root exists and is greater than largest so far
+    # See if right child exists and is greater than largest so far
     if right < n:
-        heapify_steps.append({
+        steps.append({
             'type': 'comparing',
-            'message': f'Comparing largest {arr[largest]} with right child {arr[right]}',
+            'message': f'Comparing {arr[largest]} with right child {arr[right]}',
             'array': arr.copy(),
-            'heap_size': n,
             'comparing': [largest, right],
             'swapping': [],
             'sorted': []
@@ -119,65 +126,33 @@ def heapify(arr, n, i, steps):
     
     # Change root, if needed
     if largest != i:
-        heapify_steps.append({
-            'type': 'heapify_swap',
+        steps.append({
+            'type': 'swap_needed',
             'message': f'Swapping {arr[i]} with {arr[largest]} to maintain heap property',
             'array': arr.copy(),
-            'heap_size': n,
             'comparing': [],
             'swapping': [i, largest],
             'sorted': []
         })
         
-        arr[i], arr[largest] = arr[largest], arr[i]  # swap
+        # Swap
+        arr[i], arr[largest] = arr[largest], arr[i]
         
-        heapify_steps.append({
-            'type': 'heapify_swapped',
-            'message': f'Swapped successfully, continuing heapify',
+        steps.append({
+            'type': 'swapped',
+            'message': f'Swapped! Continuing to heapify subtree at position {largest}',
             'array': arr.copy(),
-            'heap_size': n,
             'comparing': [],
             'swapping': [],
             'sorted': []
         })
         
         # Recursively heapify the affected sub-tree
-        recursive_steps = heapify(arr, n, largest, steps)
-        heapify_steps.extend(recursive_steps)
+        recursive_steps = heapify(arr, n, largest)
+        steps.extend(recursive_steps)
     
-    return heapify_steps
+    return steps
 
-def heap_sort(arr):
-    """
-    Simple heap sort implementation without steps
-    """
-    n = len(arr)
-    
-    # Build a maxheap
-    for i in range(n // 2 - 1, -1, -1):
-        heapify_simple(arr, n, i)
-    
-    # Extract elements one by one
-    for i in range(n - 1, 0, -1):
-        arr[i], arr[0] = arr[0], arr[i]  # swap
-        heapify_simple(arr, i, 0)
-    
-    return arr
-
-def heapify_simple(arr, n, i):
-    """
-    Simple heapify without step tracking
-    """
-    largest = i
-    left = 2 * i + 1
-    right = 2 * i + 2
-    
-    if left < n and arr[left] > arr[largest]:
-        largest = left
-    
-    if right < n and arr[right] > arr[largest]:
-        largest = right
-    
-    if largest != i:
-        arr[i], arr[largest] = arr[largest], arr[i]
-        heapify_simple(arr, n, largest)
+def get_sample_data():
+    """Return sample data for heap sort demonstration"""
+    return [64, 34, 25, 12, 22, 11, 90]

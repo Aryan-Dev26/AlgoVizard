@@ -14,10 +14,15 @@ class AlgoVizardHome {
     applyTheme(theme) {
         console.log('Applying theme:', theme);
         
-        // Remove existing school theme
-        const existingSchoolTheme = document.getElementById('school-theme');
+        // Remove existing theme CSS
+        const existingSchoolTheme = document.getElementById('school-theme') || document.querySelector('link[href*="school-theme.css"]');
+        const existingCollegeTheme = document.getElementById('college-theme') || document.querySelector('link[href*="college-theme.css"]');
+        
         if (existingSchoolTheme) {
             existingSchoolTheme.remove();
+        }
+        if (existingCollegeTheme) {
+            existingCollegeTheme.remove();
         }
         
         if (theme === 'school') {
@@ -27,6 +32,13 @@ class AlgoVizardHome {
             schoolThemeLink.href = '/static/css/school-theme.css';
             schoolThemeLink.id = 'school-theme';
             document.head.appendChild(schoolThemeLink);
+        } else {
+            // Add college theme CSS
+            const collegeThemeLink = document.createElement('link');
+            collegeThemeLink.rel = 'stylesheet';
+            collegeThemeLink.href = '/static/css/college-theme.css';
+            collegeThemeLink.id = 'college-theme';
+            document.head.appendChild(collegeThemeLink);
         }
         
         // Update body class

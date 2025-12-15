@@ -34,6 +34,8 @@ from algorithms.sorting.selection_sort import selection_sort_steps
 from algorithms.sorting.insertion_sort import insertion_sort_steps
 from algorithms.sorting.merge_sort import merge_sort_steps
 from algorithms.sorting.quick_sort import quick_sort_steps
+from algorithms.sorting.heap_sort import heap_sort_steps
+
 from algorithms.searching.binary_search import binary_search_steps, linear_search_steps, get_sample_data as get_search_data, get_sample_target
 from algorithms.trees.binary_search_tree import BinarySearchTree, get_sample_data as get_bst_data, get_sample_search_target
 from algorithms.graphs.graph_traversal import create_sample_graph, get_sample_start_vertex
@@ -223,6 +225,9 @@ def heap_sort_page():
     theme = get_user_theme()
     log_interaction('heap_sort', 'page_view')
     return render_template('heap-sort.html', theme=theme)
+
+
+
 
 
 @app.route('/api/bubble-sort', methods=['GET', 'POST'])
@@ -453,18 +458,20 @@ def heap_sort_api():
     if request.method == 'POST':
         data = request.get_json(silent=True)
         if data and 'array' in data:
-            array = data['array']
-            if isinstance(array, list) and len(array) <= 15:
-                from backend.algorithms.sorting.heap_sort import heap_sort_steps
-                steps = heap_sort_steps(array)
-                log_interaction('heap_sort', 'custom_array_sorted', {'array_size': len(array)})
-                return jsonify({'steps': steps})
+            custom_array = data['array']
+            if isinstance(custom_array, list) and len(custom_array) <= 10:
+                steps = heap_sort_steps(custom_array)
+                log_interaction('heap_sort', 'custom_array_used', {'array_size': len(custom_array)})
+                return jsonify(steps)
 
-    # Default array for demonstration
-    default_array = [64, 34, 25, 12, 22, 11, 90]
-    from backend.algorithms.sorting.heap_sort import heap_sort_steps
-    steps = heap_sort_steps(default_array)
-    return jsonify({'steps': steps})
+    sample_data = get_sample_data()
+    steps = heap_sort_steps(sample_data)
+    return jsonify(steps)
+
+
+
+
+
 
 
 @app.route('/api/analytics')

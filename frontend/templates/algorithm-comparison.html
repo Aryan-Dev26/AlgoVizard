@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <title>Algorithm Comparison - AlgoVizard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
     {% if theme == 'school' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/cursors.css') }}">
+    {% else %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
     {% endif %}
     <style>
         .comparison-page {
@@ -61,7 +63,7 @@
             padding: 12px;
             border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
+            background: #2c3e50;
             color: white;
             font-size: 1rem;
         }
@@ -69,6 +71,14 @@
         .algorithm-dropdown option {
             background: #2c3e50;
             color: white;
+            padding: 8px;
+        }
+
+        .algorithm-dropdown optgroup {
+            background: #34495e;
+            color: #ecf0f1;
+            font-weight: bold;
+            padding: 5px;
         }
 
         .comparison-controls {
@@ -226,19 +236,57 @@
                 <div class="selector-card glass">
                     <h3>Algorithm 1</h3>
                     <select id="algorithm1" class="algorithm-dropdown">
-                        <option value="bubble">Bubble Sort</option>
-                        <option value="selection">Selection Sort</option>
-                        <option value="insertion">Insertion Sort</option>
-                        <option value="merge">Merge Sort</option>
+                        <optgroup label="Sorting Algorithms">
+                            <option value="bubble">Bubble Sort</option>
+                            <option value="selection">Selection Sort</option>
+                            <option value="insertion">Insertion Sort</option>
+                            <option value="merge">Merge Sort</option>
+                            <option value="quick">Quick Sort</option>
+                            <option value="heap">Heap Sort</option>
+                        </optgroup>
+                        <optgroup label="Searching Algorithms">
+                            <option value="binary-search">Binary Search</option>
+                            <option value="linear-search">Linear Search</option>
+                        </optgroup>
+                        <optgroup label="Tree Operations">
+                            <option value="binary-search-tree">Binary Search Tree</option>
+                        </optgroup>
+                        <optgroup label="Graph Algorithms">
+                            <option value="graph-dfs">Graph DFS</option>
+                            <option value="graph-bfs">Graph BFS</option>
+                        </optgroup>
+                        <optgroup label="Data Structures">
+                            <option value="stack-operations">Stack Operations</option>
+                            <option value="queue-operations">Queue Operations</option>
+                        </optgroup>
                     </select>
                 </div>
                 <div class="selector-card glass">
                     <h3>Algorithm 2</h3>
                     <select id="algorithm2" class="algorithm-dropdown">
-                        <option value="selection">Selection Sort</option>
-                        <option value="bubble">Bubble Sort</option>
-                        <option value="insertion">Insertion Sort</option>
-                        <option value="merge">Merge Sort</option>
+                        <optgroup label="Sorting Algorithms">
+                            <option value="selection">Selection Sort</option>
+                            <option value="bubble">Bubble Sort</option>
+                            <option value="insertion">Insertion Sort</option>
+                            <option value="merge">Merge Sort</option>
+                            <option value="quick">Quick Sort</option>
+                            <option value="heap">Heap Sort</option>
+                        </optgroup>
+                        <optgroup label="Searching Algorithms">
+                            <option value="binary-search">Binary Search</option>
+                            <option value="linear-search">Linear Search</option>
+                        </optgroup>
+                        <optgroup label="Tree Operations">
+                            <option value="binary-search-tree">Binary Search Tree</option>
+                        </optgroup>
+                        <optgroup label="Graph Algorithms">
+                            <option value="graph-dfs">Graph DFS</option>
+                            <option value="graph-bfs">Graph BFS</option>
+                        </optgroup>
+                        <optgroup label="Data Structures">
+                            <option value="stack-operations">Stack Operations</option>
+                            <option value="queue-operations">Queue Operations</option>
+                        </optgroup>
                     </select>
                 </div>
             </div>

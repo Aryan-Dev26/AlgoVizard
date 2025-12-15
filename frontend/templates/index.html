@@ -4,13 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <title>AlgoVizard - Learn Through Interactive Visualization</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
     {% if theme == 'school' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/cursors.css') }}">
     <script src="{{ url_for('static', filename='js/theme-manager.js') }}"></script>
+    {% else %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
     {% endif %}
     <style>
         /* Prevent flash of unstyled content */
@@ -35,13 +38,22 @@
             max-width: 800px;
         }
 
-        .hero-title {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .hero-logo {
+            margin-bottom: 30px;
+        }
+
+        .main-logo {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+            transition: filter 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .main-logo:hover {
+            filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.4)) brightness(1.1);
         }
 
         .hero-subtitle {
@@ -388,8 +400,8 @@
         }
 
         @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
+            .main-logo {
+                max-width: 350px;
             }
 
             .hero-subtitle {
@@ -419,7 +431,9 @@
 <body data-theme="{{ theme }}">
     <section class="hero-section">
         <div class="hero-content">
-            <h1 class="hero-title">AlgoVizard</h1>
+            <div class="hero-logo">
+                <img src="{{ url_for('static', filename='logo-working.svg') }}" alt="AlgoVizard" class="main-logo">
+            </div>
             <p class="hero-subtitle">
                 Master sorting algorithms through interactive visualizations. Watch step-by-step how algorithms work,
                 understand their complexity, and build your computer science foundation.
@@ -597,14 +611,35 @@
             const savedTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
             console.log('Pre-load theme detection:', savedTheme);
 
+            // Remove any existing theme CSS
+            const existingCollegeTheme = document.querySelector('link[href*="college-theme.css"]');
+            const existingSchoolTheme = document.querySelector('link[href*="school-theme.css"]');
+            
             if (savedTheme === 'school') {
-                // Add school theme CSS immediately if not already present
-                if (!document.querySelector('link[href*="school-theme.css"]')) {
+                // Remove college theme if present
+                if (existingCollegeTheme) {
+                    existingCollegeTheme.remove();
+                }
+                // Add school theme CSS if not already present
+                if (!existingSchoolTheme) {
                     const schoolThemeLink = document.createElement('link');
                     schoolThemeLink.rel = 'stylesheet';
                     schoolThemeLink.href = '/static/css/school-theme.css';
                     schoolThemeLink.id = 'school-theme-preload';
                     document.head.appendChild(schoolThemeLink);
+                }
+            } else {
+                // Remove school theme if present
+                if (existingSchoolTheme) {
+                    existingSchoolTheme.remove();
+                }
+                // Add college theme CSS if not already present
+                if (!existingCollegeTheme) {
+                    const collegeThemeLink = document.createElement('link');
+                    collegeThemeLink.rel = 'stylesheet';
+                    collegeThemeLink.href = '/static/css/college-theme.css';
+                    collegeThemeLink.id = 'college-theme-preload';
+                    document.head.appendChild(collegeThemeLink);
                 }
             }
 

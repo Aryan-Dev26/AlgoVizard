@@ -4,13 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <title>Algorithm Selection - AlgoVizard</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
     {% if theme == 'school' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/cursors.css') }}">
     <script src="{{ url_for('static', filename='js/theme-manager.js') }}"></script>
+    {% else %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
     {% endif %}
     <style>
         /* Prevent flash of unstyled content */
@@ -33,9 +36,20 @@
             margin-bottom: 50px;
         }
 
-        .page-header h1 {
-            font-size: 3rem;
-            margin-bottom: 15px;
+        .page-logo {
+            margin-bottom: 20px;
+        }
+
+        .header-logo {
+            width: 100%;
+            max-width: 350px;
+            height: auto;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
+            transition: filter 0.3s ease;
+        }
+
+        .header-logo:hover {
+            filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3)) brightness(1.05);
         }
 
         .page-header p {
@@ -205,8 +219,8 @@
         }
 
         @media (max-width: 768px) {
-            .page-header h1 {
-                font-size: 2.5rem;
+            .header-logo {
+                max-width: 280px;
             }
 
             .navigation-buttons {
@@ -237,7 +251,9 @@
                     <a href="/" class="btn btn-secondary">🏠 Back to Home</a>
                 </div>
             </div>
-            <h1>AlgoVizard</h1>
+            <div class="page-logo">
+                <img src="{{ url_for('static', filename='logo-working.svg') }}" alt="AlgoVizard" class="header-logo">
+            </div>
             <p>Explore and understand sorting algorithms through interactive visualizations. Perfect for students and
                 developers learning computer science fundamentals.</p>
         </div>
@@ -272,21 +288,21 @@
                            style="width: 100%; padding: 12px 20px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; font-size: 1rem;">
                 </div>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <select id="categoryFilter" style="padding: 10px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
-                        <option value="all">All Categories</option>
-                        <option value="sorting">Sorting</option>
-                        <option value="searching">Searching</option>
-                        <option value="trees">Trees</option>
-                        <option value="graphs">Graphs</option>
-                        <option value="data-structures">Data Structures</option>
+                    <select id="categoryFilter" style="padding: 10px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); background: #2c3e50; color: white;">
+                        <option value="all" style="background: #2c3e50; color: white;">All Categories</option>
+                        <option value="sorting" style="background: #2c3e50; color: white;">Sorting</option>
+                        <option value="searching" style="background: #2c3e50; color: white;">Searching</option>
+                        <option value="trees" style="background: #2c3e50; color: white;">Trees</option>
+                        <option value="graphs" style="background: #2c3e50; color: white;">Graphs</option>
+                        <option value="data-structures" style="background: #2c3e50; color: white;">Data Structures</option>
                     </select>
-                    <select id="complexityFilter" style="padding: 10px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
-                        <option value="all">All Complexities</option>
-                        <option value="O(1)">O(1)</option>
-                        <option value="O(log n)">O(log n)</option>
-                        <option value="O(n)">O(n)</option>
-                        <option value="O(n log n)">O(n log n)</option>
-                        <option value="O(n²)">O(n²)</option>
+                    <select id="complexityFilter" style="padding: 10px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); background: #2c3e50; color: white;">
+                        <option value="all" style="background: #2c3e50; color: white;">All Complexities</option>
+                        <option value="O(1)" style="background: #2c3e50; color: white;">O(1)</option>
+                        <option value="O(log n)" style="background: #2c3e50; color: white;">O(log n)</option>
+                        <option value="O(n)" style="background: #2c3e50; color: white;">O(n)</option>
+                        <option value="O(n log n)" style="background: #2c3e50; color: white;">O(n log n)</option>
+                        <option value="O(n²)" style="background: #2c3e50; color: white;">O(n²)</option>
                     </select>
                 </div>
             </div>
@@ -437,6 +453,8 @@
                 </div>
                 <a href="/algorithms/heap-sort" class="btn btn-primary algorithm-btn">Visualize Heap Sort</a>
             </div>
+
+
 
             <!-- SEARCHING ALGORITHMS -->
             <div class="algorithm-card glass" data-category="searching" data-complexity="O(log n)" data-keywords="binary search sorted array divide">

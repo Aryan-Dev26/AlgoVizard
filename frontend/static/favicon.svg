@@ -1,0 +1,44 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wizardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
+    </linearGradient>
+    
+    <radialGradient id="orbGradient">
+      <stop offset="0%" style="stop-color:#fde047;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.3" />
+    </radialGradient>
+    
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Wizard Hat -->
+  <path d="M 50 80 L 25 25 L 75 25 Z" 
+        fill="url(#wizardGradient)" 
+        stroke="#4338ca" 
+        stroke-width="2"
+        filter="url(#glow)"/>
+  
+  <!-- Hat brim -->
+  <ellipse cx="50" cy="80" rx="30" ry="8" 
+           fill="#4338ca" 
+           stroke="#6366f1" 
+           stroke-width="1.5"/>
+  
+  <!-- Magical orb -->
+  <circle cx="50" cy="45" r="8" fill="url(#orbGradient)" filter="url(#glow)"/>
+  <circle cx="50" cy="45" r="5" fill="#fde047" opacity="0.9"/>
+  
+  <!-- Small stars -->
+  <path d="M 30 35 L 32 40 L 37 42 L 32 44 L 30 49 L 28 44 L 23 42 L 28 40 Z" fill="#fbbf24" opacity="0.8"/>
+  <path d="M 70 38 L 72 43 L 77 45 L 72 47 L 70 52 L 68 47 L 63 45 L 68 43 Z" fill="#3b82f6" opacity="0.8"/>
+</svg>

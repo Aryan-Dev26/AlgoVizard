@@ -1,0 +1,260 @@
+<svg viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Dark mode gradient (for college theme) -->
+    <linearGradient id="darkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- School mode gradient (chalkboard vibes) -->
+    <linearGradient id="schoolGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fde047;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Universal glow that works on both themes -->
+    <filter id="universalGlow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Stronger glow -->
+    <filter id="strongGlow">
+      <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Animated gradient that shifts colors -->
+    <linearGradient id="magicGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3b82f6">
+        <animate attributeName="stop-color" values="#3b82f6;#8b5cf6;#f59e0b;#3b82f6" dur="6s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="50%" style="stop-color:#8b5cf6">
+        <animate attributeName="stop-color" values="#8b5cf6;#f59e0b;#3b82f6;#8b5cf6" dur="6s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" style="stop-color:#f59e0b">
+        <animate attributeName="stop-color" values="#f59e0b;#3b82f6;#8b5cf6;#f59e0b" dur="6s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+    
+    <!-- Radial gradient for magic orb -->
+    <radialGradient id="orbCore">
+      <stop offset="0%" style="stop-color:#fde047;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.3" />
+    </radialGradient>
+    
+    <!-- Chalk dust effect -->
+    <filter id="chalkDust">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0" result="desaturatedNoise"/>
+      <feComponentTransfer in="desaturatedNoise" result="theNoise">
+        <feFuncA type="table" tableValues="0 0 0.2 0"/>
+      </feComponentTransfer>
+      <feBlend in="SourceGraphic" in2="theNoise" mode="overlay"/>
+    </filter>
+  </defs>
+  
+  <!-- Magical aura circles -->
+  <circle cx="70" cy="70" r="50" fill="url(#magicGradient)" opacity="0.15">
+    <animate attributeName="r" values="50;55;50" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  
+  <circle cx="70" cy="70" r="42" fill="none" stroke="url(#magicGradient)" stroke-width="2" opacity="0.4" filter="url(#universalGlow)">
+    <animateTransform attributeName="transform" type="rotate" from="0 70 70" to="360 70 70" dur="15s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Wizard Hat - Central Icon -->
+  <g transform="translate(35, 25)">
+    <!-- Hat shadow for depth -->
+    <path d="M 35 60 L 18 15 L 52 15 Z" fill="#000000" opacity="0.2" transform="translate(2, 2)"/>
+    
+    <!-- Main hat with gradient -->
+    <path d="M 35 60 L 18 15 L 52 15 Z" 
+          fill="url(#darkGradient)" 
+          stroke="url(#magicGradient)" 
+          stroke-width="2.5"
+          filter="url(#universalGlow)"/>
+    
+    <!-- Hat brim -->
+    <ellipse cx="35" cy="60" rx="25" ry="6" 
+             fill="#4338ca" 
+             stroke="url(#magicGradient)" 
+             stroke-width="2"
+             filter="url(#universalGlow)"/>
+    
+    <!-- Shine on brim -->
+    <ellipse cx="35" cy="59" rx="25" ry="2.5" 
+             fill="url(#magicGradient)" 
+             opacity="0.4"/>
+    
+    <!-- Central magical orb -->
+    <circle cx="35" cy="32" r="7" fill="url(#orbCore)" filter="url(#strongGlow)">
+      <animate attributeName="r" values="7;8.5;7" dur="2.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.8;1;0.8" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- Inner orb core -->
+    <circle cx="35" cy="32" r="4" fill="#fde047" opacity="0.8">
+      <animate attributeName="r" values="4;5;4" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- Orbiting energy particles -->
+    <circle cx="35" cy="32" r="3" fill="#3b82f6" filter="url(#strongGlow)">
+      <animateTransform attributeName="transform" type="rotate" from="0 35 32" to="360 35 32" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0.3;1" dur="3s" repeatCount="indefinite"/>
+      <animateMotion path="M 0,0 m -12,0 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    
+    <circle cx="35" cy="32" r="3" fill="#fbbf24" filter="url(#strongGlow)">
+      <animateTransform attributeName="transform" type="rotate" from="180 35 32" to="540 35 32" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0.3;1" dur="3s" repeatCount="indefinite"/>
+      <animateMotion path="M 0,0 m -12,0 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0" dur="3s" begin="1.5s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- Chalk-style decorative elements -->
+    <path d="M 23 38 Q 26 35 29 38 Q 26 41 23 38" 
+          fill="#fde047" 
+          opacity="0.9" 
+          filter="url(#chalkDust)"/>
+    
+    <path d="M 41 42 Q 44 39 47 42 Q 44 45 41 42" 
+          fill="#fbbf24" 
+          opacity="0.9" 
+          filter="url(#chalkDust)"/>
+    
+    <!-- Animated magical stars -->
+    <g filter="url(#strongGlow)">
+      <path d="M 20 25 L 21.5 29 L 25.5 30.5 L 21.5 32 L 20 36 L 18.5 32 L 14.5 30.5 L 18.5 29 Z" fill="#fbbf24">
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="rotate" from="0 20 30.5" to="360 20 30.5" dur="8s" repeatCount="indefinite"/>
+      </path>
+      
+      <path d="M 50 28 L 51.5 32 L 55.5 33.5 L 51.5 35 L 50 39 L 48.5 35 L 44.5 33.5 L 48.5 32 Z" fill="#3b82f6">
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" begin="0.7s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="rotate" from="0 50 33.5" to="360 50 33.5" dur="6s" repeatCount="indefinite"/>
+      </path>
+      
+      <path d="M 28 52 L 29.5 56 L 33.5 57.5 L 29.5 59 L 28 63 L 26.5 59 L 22.5 57.5 L 26.5 56 Z" fill="#8b5cf6">
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" begin="1.4s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="rotate" from="0 28 57.5" to="360 28 57.5" dur="10s" repeatCount="indefinite"/>
+      </path>
+    </g>
+  </g>
+  
+  <!-- Algorithm visualization nodes -->
+  <g transform="translate(48, 30)">
+    <!-- Glowing connection lines -->
+    <line x1="48" y1="50" x2="62" y2="35" stroke="url(#magicGradient)" stroke-width="2.5" opacity="0.7" filter="url(#universalGlow)">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" repeatCount="indefinite"/>
+    </line>
+    <line x1="48" y1="50" x2="62" y2="65" stroke="url(#magicGradient)" stroke-width="2.5" opacity="0.7" filter="url(#universalGlow)">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+    </line>
+    <line x1="62" y1="35" x2="76" y2="35" stroke="url(#magicGradient)" stroke-width="2.5" opacity="0.7" filter="url(#universalGlow)">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" begin="1s" repeatCount="indefinite"/>
+    </line>
+    <line x1="62" y1="65" x2="76" y2="65" stroke="url(#magicGradient)" stroke-width="2.5" opacity="0.7" filter="url(#universalGlow)">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" begin="1.5s" repeatCount="indefinite"/>
+    </line>
+    
+    <!-- Pulsing nodes with dual color scheme -->
+    <circle cx="48" cy="50" r="5" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2" filter="url(#universalGlow)">
+      <animate attributeName="r" values="5;6;5" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="62" cy="35" r="5" fill="#3b82f6" stroke="#60a5fa" stroke-width="2" filter="url(#universalGlow)">
+      <animate attributeName="r" values="5;6;5" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="62" cy="65" r="5" fill="#f59e0b" stroke="#fbbf24" stroke-width="2" filter="url(#universalGlow)">
+      <animate attributeName="r" values="5;6;5" dur="2s" begin="1s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="76" cy="35" r="5" fill="#3b82f6" stroke="#60a5fa" stroke-width="2" filter="url(#universalGlow)">
+      <animate attributeName="r" values="5;6;5" dur="2s" begin="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="76" cy="65" r="5" fill="#f59e0b" stroke="#fbbf24" stroke-width="2" filter="url(#universalGlow)">
+      <animate attributeName="r" values="5;6;5" dur="2s" begin="2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Code brackets with animated gradient -->
+  <path d="M 30 35 L 22 35 Q 14 35 14 43 L 14 97 Q 14 105 22 105 L 30 105" 
+        stroke="url(#magicGradient)" 
+        stroke-width="4" 
+        fill="none" 
+        stroke-linecap="round"
+        filter="url(#universalGlow)"/>
+  
+  <path d="M 110 35 L 118 35 Q 126 35 126 43 L 126 97 Q 126 105 118 105 L 110 105" 
+        stroke="url(#magicGradient)" 
+        stroke-width="4" 
+        fill="none" 
+        stroke-linecap="round"
+        filter="url(#universalGlow)"/>
+  
+  <!-- AlgoVizard Text -->
+  <text x="165" y="68" font-family="'Poppins', 'Montserrat', sans-serif" font-size="44" font-weight="800" fill="#ffffff" filter="url(#universalGlow)">
+    Algo<tspan fill="url(#magicGradient)">Vizard</tspan>
+  </text>
+  
+  <!-- Chalk underline effect -->
+  <path d="M 165 75 Q 250 73 335 75 Q 420 77 480 75" 
+        stroke="url(#magicGradient)" 
+        stroke-width="3" 
+        fill="none" 
+        opacity="0.6"
+        filter="url(#chalkDust)"
+        stroke-linecap="round"/>
+  
+  <!-- Subtitle -->
+  <text x="165" y="92" font-family="'Poppins', 'Montserrat', sans-serif" font-size="13" font-weight="600" fill="url(#magicGradient)" letter-spacing="2.5" opacity="0.95">
+    ALGORITHM VISUALIZER
+  </text>
+  
+  <!-- Floating sparkles (visible on both themes) -->
+  <g filter="url(#strongGlow)">
+    <path d="M 150 30 L 153 38 L 161 41 L 153 44 L 150 52 L 147 44 L 139 41 L 147 38 Z" fill="#fbbf24">
+      <animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite"/>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-6; 0,0" dur="3s" repeatCount="indefinite"/>
+    </path>
+    
+    <path d="M 470 50 L 473 58 L 481 61 L 473 64 L 470 72 L 467 64 L 459 61 L 467 58 Z" fill="#3b82f6">
+      <animate attributeName="opacity" values="0;1;0" dur="3s" begin="1s" repeatCount="indefinite"/>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-6; 0,0" dur="3s" begin="1s" repeatCount="indefinite"/>
+    </path>
+    
+    <path d="M 445 105 L 448 113 L 456 116 L 448 119 L 445 127 L 442 119 L 434 116 L 442 113 Z" fill="#8b5cf6">
+      <animate attributeName="opacity" values="0;1;0" dur="3s" begin="2s" repeatCount="indefinite"/>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-6; 0,0" dur="3s" begin="2s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  
+  <!-- Twinkling micro stars -->
+  <circle cx="155" cy="100" r="2" fill="#fde047">
+    <animate attributeName="opacity" values="0.2;1;0.2" dur="1.8s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="475" cy="85" r="2" fill="#60a5fa">
+    <animate attributeName="opacity" values="0.2;1;0.2" dur="1.8s" begin="0.6s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="430" cy="38" r="2" fill="#c084fc">
+    <animate attributeName="opacity" values="0.2;1;0.2" dur="1.8s" begin="1.2s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Code symbols -->
+  <text x="148" y="115" font-family="'Courier New', monospace" font-size="15" fill="#fbbf24" opacity="0.7" font-weight="bold" filter="url(#chalkDust)">
+    &lt;/&gt;
+    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="4s" repeatCount="indefinite"/>
+  </text>
+  
+  <text x="460" y="33" font-family="'Courier New', monospace" font-size="15" fill="#3b82f6" opacity="0.7" font-weight="bold">
+    { }
+    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="4s" begin="1s" repeatCount="indefinite"/>
+  </text>
+</svg>

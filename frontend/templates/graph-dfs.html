@@ -4,11 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <title>Graph DFS Visualization - AlgoVizard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
     {% if theme == 'school' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
+    {% else %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
     {% endif %}
     <style>
         /* Prevent flash of unstyled content */
@@ -81,9 +83,14 @@
             padding: 10px;
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
+            background: #2c3e50;
             color: white;
             font-size: 1rem;
+        }
+
+        .input-group select option {
+            background: #2c3e50;
+            color: white;
         }
 
         .input-group input::placeholder {
