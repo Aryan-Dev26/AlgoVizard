@@ -445,6 +445,112 @@
             box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4) !important;
         }
 
+        /* Force dual view layout */
+        .dual-view-container {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 20px !important;
+            margin: 20px 0 !important;
+            min-height: 500px !important;
+            width: 100% !important;
+            max-width: none !important;
+        }
+
+        .array-view, .structure-view {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border-radius: 15px !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            padding: 20px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            min-width: 0 !important; /* Prevent overflow */
+        }
+
+        .view-header {
+            text-align: center !important;
+            margin-bottom: 15px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+            padding-bottom: 10px !important;
+        }
+
+        .view-header h3 {
+            font-size: 1.2rem !important;
+            color: white !important;
+            margin: 0 0 5px 0 !important;
+        }
+
+        .view-subtitle {
+            font-size: 0.9rem !important;
+            color: rgba(255, 255, 255, 0.7) !important;
+            margin: 0 !important;
+        }
+
+        .view-content {
+            flex: 1 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-height: 300px !important;
+        }
+
+        .view-controls {
+            display: flex !important;
+            gap: 10px !important;
+            justify-content: center !important;
+            margin-top: 15px !important;
+            padding-top: 15px !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+            flex-wrap: wrap !important;
+        }
+
+        .control-btn {
+            padding: 8px 16px !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            border-radius: 20px !important;
+            color: white !important;
+            font-size: 0.9rem !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2) !important;
+            border-color: rgba(255, 255, 255, 0.5) !important;
+        }
+
+        .control-btn.active {
+            background: rgba(79, 172, 254, 0.3) !important;
+            border-color: rgba(79, 172, 254, 0.6) !important;
+        }
+
+        .legend-btn {
+            display: flex !important;
+            align-items: center !important;
+            cursor: default !important;
+            background: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        .legend-btn:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        /* Responsive behavior */
+        @media (min-width: 1025px) {
+            .dual-view-container {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .dual-view-container {
+                display: flex !important;
+                flex-direction: column !important;
+                grid-template-columns: none !important;
+            }
+        }
+
         @media (max-width: 768px) {
             .algorithm-header h1 {
                 font-size: 2rem;
@@ -571,18 +677,18 @@
                         </div>
                     </div>
                     <div class="view-controls">
-                        <div class="legend-item">
-                            <div class="legend-color legend-comparing"></div>
-                            <span>Comparing</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color legend-swapping"></div>
-                            <span>Swapping</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color legend-sorted"></div>
-                            <span>Sorted</span>
-                        </div>
+                        <button class="control-btn legend-btn">
+                            <div class="legend-color legend-comparing" style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 5px; background: rgba(245, 158, 11, 0.4); border: 2px solid rgba(245, 158, 11, 0.9);"></div>
+                            Comparing
+                        </button>
+                        <button class="control-btn legend-btn">
+                            <div class="legend-color legend-swapping" style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 5px; background: rgba(239, 68, 68, 0.4); border: 2px solid rgba(239, 68, 68, 0.9);"></div>
+                            Swapping
+                        </button>
+                        <button class="control-btn legend-btn">
+                            <div class="legend-color legend-sorted" style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 5px; background: rgba(16, 185, 129, 0.4); border: 2px solid rgba(16, 185, 129, 0.8);"></div>
+                            Sorted
+                        </button>
                     </div>
                 </div>
 
