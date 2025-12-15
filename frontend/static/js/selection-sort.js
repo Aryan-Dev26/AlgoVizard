@@ -123,7 +123,11 @@ class SelectionSortVisualizer {
 
                 // Play comparison sound
                 if (step.comparing && step.comparing.length > 0) {
-                    this.shared.playCompareSound();
+                    const value1 = step.array[step.comparing[0]];
+                    const value2 = step.comparing.length > 1 ? step.array[step.comparing[1]] : value1;
+                    if (window.heavenlyAudio) {
+                        window.heavenlyAudio.playCompareSound(value1, value2);
+                    }
                 }
 
                 // Special animation for new minimum found
@@ -144,7 +148,14 @@ class SelectionSortVisualizer {
                         await this.shared.sleep(this.shared.getSpeed() / 2);
                     }
 
-                    this.shared.playSwapSound();
+                    // Play swap sound
+                    if (step.comparing && step.comparing.length >= 2) {
+                        const value1 = step.array[step.comparing[0]];
+                        const value2 = step.array[step.comparing[1]];
+                        if (window.heavenlyAudio) {
+                            window.heavenlyAudio.playSwapSound(value1, value2);
+                        }
+                    }
                 }
 
                 this.currentStep = i;
@@ -165,6 +176,11 @@ class SelectionSortVisualizer {
                 const currentTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
                 if (currentTheme === 'school') {
                     await this.celebrateCompletion();
+                }
+                
+                // Play completion sound
+                if (window.heavenlyAudio) {
+                    window.heavenlyAudio.playCompletionSound();
                 }
                 
                 this.shared.logInteraction(this.algorithmName, 'visualization_completed');

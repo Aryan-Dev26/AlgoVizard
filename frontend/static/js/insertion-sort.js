@@ -130,7 +130,11 @@ class InsertionSortVisualizer {
 
                 // Play comparison sound
                 if (step.comparing && step.comparing.length > 0) {
-                    this.shared.playCompareSound();
+                    const value1 = step.array[step.comparing[0]];
+                    const value2 = step.comparing.length > 1 ? step.array[step.comparing[1]] : value1;
+                    if (window.heavenlyAudio) {
+                        window.heavenlyAudio.playCompareSound(value1, value2);
+                    }
                 }
 
                 await this.shared.sleep(this.shared.getSpeed());
@@ -151,7 +155,14 @@ class InsertionSortVisualizer {
                         await this.shared.sleep(this.shared.getSpeed() / 2);
                     }
 
-                    this.shared.playSwapSound();
+                    // Play swap sound
+                    if (step.comparing && step.comparing.length >= 1) {
+                        const value1 = step.array[step.comparing[0]];
+                        const value2 = step.comparing.length > 1 ? step.array[step.comparing[1]] : value1;
+                        if (window.heavenlyAudio) {
+                            window.heavenlyAudio.playSwapSound(value1, value2);
+                        }
+                    }
                 }
 
                 this.currentStep = i;
@@ -167,6 +178,11 @@ class InsertionSortVisualizer {
                     bar.classList.remove('comparing', 'current-element');
                     bar.classList.add('sorted');
                 });
+                
+                // Play completion sound
+                if (window.heavenlyAudio) {
+                    window.heavenlyAudio.playCompletionSound();
+                }
                 
                 this.shared.logInteraction(this.algorithmName, 'visualization_completed');
             }

@@ -56,6 +56,7 @@ class AlgorithmComparison {
             'merge': 'Merge Sort',
             'quick': 'Quick Sort',
             'heap': 'Heap Sort',
+            'radix': 'Radix Sort',
 
             // Searching Algorithms
             'binary-search': 'Binary Search',
@@ -74,7 +75,7 @@ class AlgorithmComparison {
 
     getAlgorithmConfig(algorithmType) {
         // Sorting algorithms use array input
-        const sortingAlgorithms = ['bubble', 'selection', 'insertion', 'merge', 'quick', 'heap'];
+        const sortingAlgorithms = ['bubble', 'selection', 'insertion', 'merge', 'quick', 'heap', 'radix'];
         
         if (sortingAlgorithms.includes(algorithmType)) {
             return {
@@ -338,6 +339,11 @@ class AlgorithmComparison {
         for (let i = 0; i < steps.length; i++) {
             const step = steps[i];
             
+            // Play heavenly sounds for this step (only for panel 1 to avoid audio overlap)
+            if (panelNumber === 1) {
+                this.playComparisonStepSound(step);
+            }
+            
             // Count operations for statistics (flexible for different algorithm types)
             if (step.comparing && step.comparing.length > 0) {
                 this.stats[`algo${panelNumber}`].comparisons++;
@@ -475,6 +481,44 @@ class AlgorithmComparison {
                 data: analyticsData
             })
         }).catch(error => console.error('Analytics error:', error));
+    }
+
+    playComparisonStepSound(step) {
+        // Only play sounds if audio engine is available
+        if (!window.heavenlyAudio) return;
+
+        // Handle different step types
+        if (step.comparing && step.comparing.length > 0) {
+            // Play comparison sound
+            const value1 = step.array ? step.array[step.comparing[0]] : step.comparing[0];
+            const value2 = step.comparing.length > 1 ? 
+                (step.array ? step.array[step.comparing[1]] : step.comparing[1]) : value1;
+            window.heavenlyAudio.playCompareSound(value1, value2);
+        }
+
+        if (step.swapped || step.swapping) {
+            // Play swap sound
+            const swapIndices = step.swapping || step.comparing || [];
+            if (swapIndices.length >= 2 && step.array) {
+                const value1 = step.array[swapIndices[0]];
+                const value2 = step.array[swapIndices[1]];
+                window.heavenlyAudio.playSwapSound(value1, value2);
+            }
+        }
+
+        // Handle radix sort specific sounds
+        if (step.type === 'placing_in_bucket' && step.processing_number !== undefined) {
+            window.heavenlyAudio.playBucketSound(step.processing_number, step.current_digit || 0);
+        }
+
+        if (step.type === 'collecting_from_bucket' && step.collecting_number !== undefined) {
+            window.heavenlyAudio.playCollectSound(step.collecting_number);
+        }
+
+        // Play completion sound for final steps
+        if (step.message && step.message.toLowerCase().includes('complete')) {
+            window.heavenlyAudio.playCompletionSound();
+        }
     }
 
     sleep(ms) {

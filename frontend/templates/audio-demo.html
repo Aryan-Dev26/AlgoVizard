@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <title>Heavenly Audio Demo - AlgoVizard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
+    {% if theme == 'school' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cursors.css') }}">
+    {% else %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
+    {% endif %}
+    <style>
+        body {
+            visibility: hidden;
+        }
+
+        body.theme-loaded {
+            visibility: visible;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .demo-header {
+            margin-bottom: 50px;
+        }
+
+        .demo-logo {
+            width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
+        }
+
+        .demo-title {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .demo-description {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .sound-demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .sound-card {
+            padding: 30px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .sound-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .sound-card.playing {
+            background: rgba(76, 175, 80, 0.2);
+            border-color: #4CAF50;
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.3);
+        }
+
+        .sound-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .sound-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .sound-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .play-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .play-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .sequence-demo {
+            margin-top: 50px;
+            padding: 40px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sequence-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .sequence-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .sequence-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sequence-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .sequence-btn.active {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .info-section {
+            margin-top: 50px;
+            padding: 30px;
+            text-align: left;
+        }
+
+        .info-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0.9;
+        }
+
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+
+        .back-section {
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .sound-demo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sequence-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body data-theme="{{ theme }}">
+    <div class="container">
+        <!-- Header -->
+        <div class="demo-header">
+            <img src="{{ url_for('static', filename='logo.svg') }}" alt="AlgoVizard" class="demo-logo">
+            <h1 class="demo-title">🎵 Heavenly Audio System</h1>
+            <p class="demo-description">
+                Experience the magic of algorithm visualization with beautiful rain-like sounds that make learning a sensory delight.
+                Each sorting action creates harmonious tones that transform data structures into musical experiences.
+            </p>
+        </div>
+
+        <!-- Individual Sound Demos -->
+        <div class="sound-demo-grid">
+            <div class="sound-card" data-sound="compare">
+                <span class="sound-icon">🌧️</span>
+                <h3 class="sound-title">Compare</h3>
+                <p class="sound-description">Gentle rain drops when elements are compared</p>
+                <button class="play-btn">Play Sound</button>
+            </div>
+
+            <div class="sound-card" data-sound="swap">
+                <span class="sound-icon">💧</span>
+                <h3 class="sound-title">Swap</h3>
+                <p class="sound-description">Harmonious droplets merging when elements swap</p>
+                <button class="play-btn">Play Sound</button>
+            </div>
+
+            <div class="sound-card" data-sound="bucket">
+                <span class="sound-icon">🎵</span>
+                <h3 class="sound-title">Bucket Place</h3>
+                <p class="sound-description">Melodic chimes for radix sort bucket operations</p>
+                <button class="play-btn">Play Sound</button>
+            </div>
+
+            <div class="sound-card" data-sound="collect">
+                <span class="sound-icon">🌊</span>
+                <h3 class="sound-title">Collect</h3>
+                <p class="sound-description">Flowing water sounds when collecting from buckets</p>
+                <button class="play-btn">Play Sound</button>
+            </div>
+
+            <div class="sound-card" data-sound="complete">
+                <span class="sound-icon">✨</span>
+                <h3 class="sound-title">Complete</h3>
+                <p class="sound-description">Heavenly chord when sorting is finished</p>
+                <button class="play-btn">Play Sound</button>
+            </div>
+        </div>
+
+        <!-- Sequence Demo -->
+        <div class="sequence-demo glass">
+            <h2 class="sequence-title">🎼 Algorithm Sound Sequences</h2>
+            <div class="sequence-controls">
+                <button class="sequence-btn" data-sequence="bubble">Bubble Sort Sequence</button>
+                <button class="sequence-btn" data-sequence="radix">Radix Sort Sequence</button>
+                <button class="sequence-btn" data-sequence="random">Random Harmony</button>
+                <button class="sequence-btn" id="stopSequence">Stop</button>
+            </div>
+            <p style="opacity: 0.8; text-align: center;">
+                Listen to how different algorithms create unique musical patterns through their sorting operations.
+            </p>
+        </div>
+
+        <!-- Information Section -->
+        <div class="info-section glass">
+            <h2 class="info-title">🎹 Audio System Features</h2>
+            <ul class="info-list">
+                <li><strong>Pentatonic Scale Mapping:</strong> Numbers are mapped to pleasant musical notes using pentatonic scales</li>
+                <li><strong>Reverb & Filters:</strong> Each sound includes reverb and filtering for a heavenly, ethereal quality</li>
+                <li><strong>Context-Aware Sounds:</strong> Different algorithm operations trigger appropriate sound types</li>
+                <li><strong>Volume Control:</strong> Adjustable volume with mute option in the floating control panel</li>
+                <li><strong>Browser Compatibility:</strong> Uses Web Audio API for high-quality sound synthesis</li>
+                <li><strong>Performance Optimized:</strong> Efficient audio generation that doesn't impact visualization performance</li>
+            </ul>
+        </div>
+
+        <!-- Back Navigation -->
+        <div class="back-section">
+            <a href="/algorithms" class="btn btn-primary">← Back to Algorithms</a>
+            <a href="/" class="btn btn-secondary">🏠 Home</a>
+        </div>
+    </div>
+
+    <!-- Include Audio Engine -->
+    <script src="{{ url_for('static', filename='js/audio-engine.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/audio-controls.js') }}"></script>
+
+    <script>
+        // Apply theme immediately
+        (function () {
+            const savedTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
+            document.body.classList.remove('college-theme', 'school-theme');
+            document.body.classList.add(savedTheme + '-theme');
+        })();
+
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(() => {
+                document.body.classList.add('theme-loaded');
+            }, 50);
+
+            let currentSequence = null;
+
+            // Individual sound card demos
+            document.querySelectorAll('.sound-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const soundType = this.dataset.sound;
+                    playDemoSound(soundType);
+                    
+                    // Visual feedback
+                    this.classList.add('playing');
+                    setTimeout(() => {
+                        this.classList.remove('playing');
+                    }, 500);
+                });
+            });
+
+            // Sequence demos
+            document.querySelectorAll('.sequence-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const sequence = this.dataset.sequence;
+                    if (sequence) {
+                        playSequence(sequence);
+                        
+                        // Update active state
+                        document.querySelectorAll('.sequence-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                    }
+                });
+            });
+
+            document.getElementById('stopSequence').addEventListener('click', function() {
+                if (currentSequence) {
+                    clearInterval(currentSequence);
+                    currentSequence = null;
+                }
+                document.querySelectorAll('.sequence-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+
+            function playDemoSound(type) {
+                if (!window.heavenlyAudio) return;
+
+                switch (type) {
+                    case 'compare':
+                        window.heavenlyAudio.playCompareSound(45, 75);
+                        break;
+                    case 'swap':
+                        window.heavenlyAudio.playSwapSound(30, 90);
+                        break;
+                    case 'bucket':
+                        window.heavenlyAudio.playBucketSound(150, Math.floor(Math.random() * 10));
+                        break;
+                    case 'collect':
+                        window.heavenlyAudio.playCollectSound(80);
+                        break;
+                    case 'complete':
+                        window.heavenlyAudio.playCompletionSound();
+                        break;
+                }
+            }
+
+            function playSequence(type) {
+                if (currentSequence) {
+                    clearInterval(currentSequence);
+                }
+
+                switch (type) {
+                    case 'bubble':
+                        playBubbleSortSequence();
+                        break;
+                    case 'radix':
+                        playRadixSortSequence();
+                        break;
+                    case 'random':
+                        playRandomHarmony();
+                        break;
+                }
+            }
+
+            function playBubbleSortSequence() {
+                const values = [64, 34, 25, 12, 22, 11, 90];
+                let step = 0;
+                
+                currentSequence = setInterval(() => {
+                    if (step < values.length - 1) {
+                        window.heavenlyAudio.playCompareSound(values[step], values[step + 1]);
+                        if (values[step] > values[step + 1]) {
+                            setTimeout(() => {
+                                window.heavenlyAudio.playSwapSound(values[step], values[step + 1]);
+                            }, 200);
+                        }
+                        step++;
+                    } else {
+                        window.heavenlyAudio.playCompletionSound();
+                        clearInterval(currentSequence);
+                        currentSequence = null;
+                        document.querySelectorAll('.sequence-btn').forEach(b => b.classList.remove('active'));
+                    }
+                }, 600);
+            }
+
+            function playRadixSortSequence() {
+                const values = [170, 45, 75, 90, 2, 802, 24, 66];
+                let step = 0;
+                
+                currentSequence = setInterval(() => {
+                    if (step < values.length) {
+                        const bucket = step % 10;
+                        window.heavenlyAudio.playBucketSound(values[step % values.length], bucket);
+                        setTimeout(() => {
+                            window.heavenlyAudio.playCollectSound(values[step % values.length]);
+                        }, 300);
+                        step++;
+                    } else {
+                        window.heavenlyAudio.playCompletionSound();
+                        clearInterval(currentSequence);
+                        currentSequence = null;
+                        document.querySelectorAll('.sequence-btn').forEach(b => b.classList.remove('active'));
+                    }
+                }, 700);
+            }
+
+            function playRandomHarmony() {
+                currentSequence = setInterval(() => {
+                    const randomValue1 = Math.floor(Math.random() * 100) + 10;
+                    const randomValue2 = Math.floor(Math.random() * 100) + 10;
+                    const soundType = Math.random();
+                    
+                    if (soundType < 0.4) {
+                        window.heavenlyAudio.playCompareSound(randomValue1, randomValue2);
+                    } else if (soundType < 0.7) {
+                        window.heavenlyAudio.playBucketSound(randomValue1, Math.floor(Math.random() * 10));
+                    } else {
+                        window.heavenlyAudio.playCollectSound(randomValue1);
+                    }
+                }, 400);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -262,7 +262,7 @@
             <h2>Platform Statistics</h2>
             <div class="stats-grid">
                 <div class="stat-item">
-                    <span class="stat-number" id="totalAlgorithms">13</span>
+                    <span class="stat-number" id="totalAlgorithms">14</span>
                     <span class="stat-label">Available Algorithms</span>
                 </div>
                 <div class="stat-item">
@@ -452,6 +452,30 @@
                     </div>
                 </div>
                 <a href="/algorithms/heap-sort" class="btn btn-primary algorithm-btn">Visualize Heap Sort</a>
+            </div>
+
+            <div class="algorithm-card glass" data-category="sorting" data-complexity="O(d × (n + k))" data-keywords="radix sort non-comparison digit bucket counting">
+                <div class="algorithm-icon">🔢</div>
+                <h3>Radix Sort</h3>
+                <p class="algorithm-description">
+                    Non-comparison sorting algorithm that sorts integers by processing individual digits.
+                    Uses counting sort as subroutine to sort by each digit position from least to most significant.
+                </p>
+                <div class="algorithm-complexity">
+                    <div class="complexity-item">
+                        <span class="complexity-label">Time</span>
+                        <span class="complexity-value">O(d×(n+k))</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Space</span>
+                        <span class="complexity-value">O(n + k)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Stable</span>
+                        <span class="complexity-value">Yes</span>
+                    </div>
+                </div>
+                <a href="/algorithms/radix-sort" class="btn btn-primary algorithm-btn">Visualize Radix Sort</a>
             </div>
 
 
@@ -656,6 +680,7 @@
 
         <div class="bottom-section glass">
             <a href="/" class="btn btn-secondary">🏠 Back to Home</a>
+            <a href="/audio-demo" class="btn btn-primary">🎵 Audio Demo</a>
             <a href="/dashboard" class="btn btn-warning">📊 Analytics Dashboard</a>
             <a href="/quiz-mode" class="btn btn-primary">🧠 Take Quiz</a>
         </div>
@@ -671,6 +696,10 @@
         <div class="code-symbol symbol-6">=&gt;</div>
     </div>
 
+    <!-- Include Audio Engine -->
+    <script src="{{ url_for('static', filename='js/audio-engine.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/audio-controls.js') }}"></script>
+    
     <!-- Include algorithms page JavaScript -->
     <script src="{{ url_for('static', filename='js/algorithms.js') }}"></script>
 

@@ -182,6 +182,9 @@ class HeapSortVisualizer {
             const step = this.steps[i];
             this.currentStep = i;
 
+            // Play heavenly sounds for this step
+            this.playStepSound(step);
+            
             // Update array visualization
             this.renderArrayStep(step);
             
@@ -288,6 +291,37 @@ class HeapSortVisualizer {
 
     updateTreeVisualization(description) {
         this.treeContainer.innerHTML = `<p>${description}</p>`;
+    }
+
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    playStepSound(step) {
+        // Only play sounds if audio engine is available
+        if (!window.heavenlyAudio) return;
+
+        // Extract values from step for sound generation
+        const comparing = step.comparing || [];
+        const swapping = step.swapping || [];
+
+        if (comparing.length > 0) {
+            // Play comparison sound
+            const value1 = step.array[comparing[0]] || comparing[0];
+            const value2 = comparing.length > 1 ? (step.array[comparing[1]] || comparing[1]) : value1;
+            window.heavenlyAudio.playCompareSound(value1, value2);
+        }
+
+        if (swapping.length > 0) {
+            // Play swap sound
+            const value1 = step.array[swapping[0]] || swapping[0];
+            const value2 = swapping.length > 1 ? (step.array[swapping[1]] || swapping[1]) : value1;
+            window.heavenlyAudio.playSwapSound(value1, value2);
+        }
+
+        // Play completion sound for final step
+        if (step.message && step.message.toLowerCase().includes('complete')) {
+            window.heavenlyAudio.playCompletionSound();
+        }
     }
 
     sleep(ms) {

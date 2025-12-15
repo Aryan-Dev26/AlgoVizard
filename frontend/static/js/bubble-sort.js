@@ -63,6 +63,15 @@ class BubbleSortVisualizer {
             for (let i = 0; i < this.algorithmSteps.length && !this.shared.shouldStop; i++) {
                 const step = this.algorithmSteps[i];
 
+                // Play comparison sound
+                if (step.comparing && step.comparing.length >= 2) {
+                    const value1 = workingArray[step.comparing[0]];
+                    const value2 = workingArray[step.comparing[1]];
+                    if (window.heavenlyAudio) {
+                        window.heavenlyAudio.playCompareSound(value1, value2);
+                    }
+                }
+
                 // Display comparison
                 this.displayArray(workingArray, step.comparing, false);
                 this.shared.updateStepDescription(step.description);
@@ -81,6 +90,15 @@ class BubbleSortVisualizer {
                     if (currentTheme === 'school') {
                         await this.shared.animateSwap(step.comparing[0], step.comparing[1]);
                     } else {
+                        // Play swap sound
+                        if (step.comparing && step.comparing.length >= 2) {
+                            const value1 = step.array[step.comparing[0]];
+                            const value2 = step.array[step.comparing[1]];
+                            if (window.heavenlyAudio) {
+                                window.heavenlyAudio.playSwapSound(value1, value2);
+                            }
+                        }
+
                         // Regular animation for college theme
                         this.displayArray(step.array, step.comparing, true);
                         await this.shared.sleep(this.shared.getSpeed() / 2);
@@ -101,6 +119,11 @@ class BubbleSortVisualizer {
                 // Mark all as sorted
                 const bars = document.querySelectorAll('.array-bar');
                 bars.forEach(bar => bar.classList.add('sorted'));
+                
+                // Play completion sound
+                if (window.heavenlyAudio) {
+                    window.heavenlyAudio.playCompletionSound();
+                }
                 
                 this.shared.logInteraction(this.algorithmName, 'visualization_completed');
             }

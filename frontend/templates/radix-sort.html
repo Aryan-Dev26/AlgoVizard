@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
-    <title>Heap Sort Visualization - AlgoVizard</title>
+    <title>Radix Sort Visualization - AlgoVizard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
     {% if theme == 'school' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
@@ -23,7 +23,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 40px 20px;
         }
@@ -49,7 +49,7 @@
         .algorithm-description {
             font-size: 1.1rem;
             opacity: 0.9;
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto 30px;
             line-height: 1.6;
         }
@@ -112,6 +112,7 @@
             background: rgba(255, 255, 255, 0.2);
             outline: none;
             -webkit-appearance: none;
+            appearance: none;
         }
 
         .speed-slider::-webkit-slider-thumb {
@@ -187,6 +188,13 @@
             opacity: 0.8;
         }
 
+        .digit-info {
+            margin-top: 10px;
+            font-size: 1.1rem;
+            color: #FFA726;
+            font-weight: 600;
+        }
+
         /* Visualization Area */
         .visualization-section {
             margin-bottom: 40px;
@@ -206,7 +214,7 @@
         }
 
         .array-bar {
-            min-width: 50px;
+            min-width: 60px;
             background: rgba(255, 255, 255, 0.8);
             border-radius: 6px 6px 0 0;
             color: #333;
@@ -217,49 +225,103 @@
             padding-bottom: 8px;
             transition: all 0.3s ease;
             position: relative;
+            font-size: 1rem;
         }
 
-        .array-bar.comparing {
+        .array-bar.processing {
             background: #FFA726;
             color: white;
             transform: scale(1.1);
             box-shadow: 0 4px 12px rgba(255, 167, 38, 0.4);
         }
 
-        .array-bar.swapping {
-            background: #EF5350;
-            color: white;
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(239, 83, 80, 0.4);
-        }
-
-        .array-bar.sorted {
+        .array-bar.in-bucket {
             background: #66BB6A;
             color: white;
             box-shadow: 0 4px 12px rgba(102, 187, 106, 0.4);
         }
 
-        /* Heap Tree Visualization */
-        .heap-tree {
+        /* Buckets Visualization */
+        .buckets-section {
             padding: 30px;
-            text-align: center;
             border-radius: 15px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .heap-tree h3 {
+        .buckets-title {
+            text-align: center;
             margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
             color: white;
         }
 
-        .tree-container {
-            min-height: 300px;
+        .buckets-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .bucket {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px 10px;
+            min-height: 120px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        .bucket.active {
+            border-color: #FFA726;
+            background: rgba(255, 167, 38, 0.2);
+            box-shadow: 0 4px 12px rgba(255, 167, 38, 0.3);
+        }
+
+        .bucket-label {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: white;
             font-size: 1.1rem;
+        }
+
+        .bucket-items {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: center;
+            flex: 1;
+        }
+
+        .bucket-item {
+            background: #4CAF50;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            min-width: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .bucket-item.new {
+            background: #FFA726;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         /* Algorithm Info */
@@ -307,12 +369,22 @@
             }
 
             .array-bar {
-                min-width: 40px;
+                min-width: 50px;
                 font-size: 0.9rem;
+            }
+
+            .buckets-container {
+                grid-template-columns: repeat(2, 1fr);
             }
 
             .complexity-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .buckets-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -330,10 +402,11 @@
 
         <!-- Algorithm Header -->
         <div class="algorithm-header">
-            <h1>🏔️ Heap Sort Visualization</h1>
+            <h1>🔢 Radix Sort Visualization</h1>
             <p class="algorithm-description">
-                Heap Sort uses a binary heap data structure to sort elements. It first builds a max heap from the array,
-                then repeatedly extracts the maximum element to create a sorted array. It's guaranteed O(n log n) performance!
+                Radix Sort is a non-comparison sorting algorithm that sorts integers by processing individual digits.
+                It uses counting sort as a subroutine to sort digits from least significant to most significant.
+                Perfect for sorting large numbers efficiently!
             </p>
         </div>
 
@@ -343,10 +416,10 @@
                 <div class="control-group">
                     <h3>📊 Array Input</h3>
                     <div class="input-group">
-                        <label for="arrayInput">Enter numbers (comma-separated):</label>
+                        <label for="arrayInput">Enter positive integers (comma-separated):</label>
                         <input type="text" id="arrayInput" class="array-input" 
-                               placeholder="e.g., 64, 34, 25, 12, 22, 11, 90" 
-                               value="64, 34, 25, 12, 22, 11, 90">
+                               placeholder="e.g., 170, 45, 75, 90, 2, 802, 24, 66" 
+                               value="170, 45, 75, 90, 2, 802, 24, 66">
                     </div>
                     <div class="control-buttons">
                         <button id="setArrayBtn" class="btn btn-secondary">Set Array</button>
@@ -365,7 +438,7 @@
                         </div>
                     </div>
                     <div class="control-buttons">
-                        <button id="startBtn" class="btn btn-primary">Start Heap Sort</button>
+                        <button id="startBtn" class="btn btn-primary">Start Radix Sort</button>
                         <button id="pauseBtn" class="btn btn-secondary" disabled>Pause</button>
                         <button id="resetBtn" class="btn btn-secondary">Reset</button>
                     </div>
@@ -375,10 +448,11 @@
 
         <!-- Step Information -->
         <div class="step-info glass">
-            <div class="step-description" id="stepDescription">Ready to start Heap Sort</div>
+            <div class="step-description" id="stepDescription">Ready to start Radix Sort</div>
             <div class="step-details" id="stepDetails">
-                Enter an array of numbers and click "Start Heap Sort" to see the algorithm in action.
+                Enter an array of positive integers and click "Start Radix Sort" to see the algorithm in action.
             </div>
+            <div class="digit-info" id="digitInfo"></div>
         </div>
 
         <!-- Visualization Section -->
@@ -388,44 +462,47 @@
                 <!-- Array bars will be generated here -->
             </div>
 
-            <!-- Heap Tree Visualization -->
-            <div class="heap-tree glass">
-                <h3>🌳 Binary Heap Tree Structure</h3>
-                <div class="tree-container" id="treeContainer">
-                    <p>Tree visualization will appear here during sorting</p>
+            <!-- Buckets Visualization -->
+            <div class="buckets-section glass">
+                <h3 class="buckets-title">🗂️ Digit Buckets (0-9)</h3>
+                <div class="buckets-container" id="bucketsContainer">
+                    <!-- Buckets will be generated here -->
                 </div>
             </div>
         </div>
 
         <!-- Algorithm Information -->
         <div class="algorithm-info glass">
-            <h3>Heap Sort Algorithm Complexity</h3>
+            <h3>Radix Sort Algorithm Complexity</h3>
             <div class="complexity-grid">
                 <div class="complexity-item">
                     <div class="complexity-label">Best Case</div>
-                    <div class="complexity-value">O(n log n)</div>
+                    <div class="complexity-value">O(d × (n + k))</div>
                 </div>
                 <div class="complexity-item">
                     <div class="complexity-label">Average Case</div>
-                    <div class="complexity-value">O(n log n)</div>
+                    <div class="complexity-value">O(d × (n + k))</div>
                 </div>
                 <div class="complexity-item">
                     <div class="complexity-label">Worst Case</div>
-                    <div class="complexity-value">O(n log n)</div>
+                    <div class="complexity-value">O(d × (n + k))</div>
                 </div>
                 <div class="complexity-item">
                     <div class="complexity-label">Space Complexity</div>
-                    <div class="complexity-value">O(1)</div>
+                    <div class="complexity-value">O(n + k)</div>
                 </div>
                 <div class="complexity-item">
                     <div class="complexity-label">Stability</div>
-                    <div class="complexity-value">No</div>
-                </div>
-                <div class="complexity-item">
-                    <div class="complexity-label">In-Place</div>
                     <div class="complexity-value">Yes</div>
                 </div>
+                <div class="complexity-item">
+                    <div class="complexity-label">Type</div>
+                    <div class="complexity-value">Non-comparison</div>
+                </div>
             </div>
+            <p style="margin-top: 20px; opacity: 0.8; font-size: 0.9rem;">
+                Where d = number of digits, n = number of elements, k = range of digits (10 for decimal)
+            </p>
         </div>
     </div>
 
@@ -433,8 +510,8 @@
     <script src="{{ url_for('static', filename='js/audio-engine.js') }}"></script>
     <script src="{{ url_for('static', filename='js/audio-controls.js') }}"></script>
     
-    <!-- Include Heap Sort JavaScript -->
-    <script src="{{ url_for('static', filename='js/heap-sort.js') }}"></script>
+    <!-- Include Radix Sort JavaScript -->
+    <script src="{{ url_for('static', filename='js/radix-sort.js') }}"></script>
 
     <script>
         // Apply theme immediately to prevent flash

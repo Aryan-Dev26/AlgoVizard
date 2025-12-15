@@ -13,10 +13,30 @@ AlgoVizard is an advanced educational platform designed to help students and dev
 ## ✨ Features
 
 ### 🎯 Core Visualizations
+
+#### Sorting Algorithms (7)
 - **Bubble Sort**: Step-by-step comparison and swapping visualization
 - **Selection Sort**: Minimum element selection and placement tracking
 - **Insertion Sort**: Element insertion into sorted portion visualization
 - **Merge Sort**: Divide-and-conquer with recursive tree visualization
+- **Quick Sort**: Pivot-based partitioning with recursive visualization
+- **Heap Sort**: Binary heap construction and extraction visualization
+- **Radix Sort**: Non-comparison digit-based sorting with bucket visualization
+
+#### Searching Algorithms (2)
+- **Binary Search**: Efficient search in sorted arrays with interval halving
+- **Linear Search**: Sequential search with step-by-step progression
+
+#### Tree Operations (1)
+- **Binary Search Tree**: Insert, delete, and search operations with tree visualization
+
+#### Graph Algorithms (2)
+- **Depth-First Search (DFS)**: Stack-based graph traversal visualization
+- **Breadth-First Search (BFS)**: Queue-based level-order traversal
+
+#### Data Structures (2)
+- **Stack Operations**: LIFO operations with push, pop, and peek
+- **Queue Operations**: FIFO operations with enqueue, dequeue, and front
 
 ### 🆚 Algorithm Comparison
 - **Side-by-Side Comparison**: Run multiple algorithms simultaneously
@@ -42,10 +62,18 @@ AlgoVizard is an advanced educational platform designed to help students and dev
 
 ### 📱 Enhanced User Experience
 - **Responsive Design**: Optimized for desktop, tablet, and mobile devices
-- **Sound Effects**: Audio feedback for comparisons, swaps, and completions
+- **🎵 Heavenly Audio System**: Beautiful rain-like sounds that transform algorithms into musical experiences
+- **Compact Audio Controls**: Minimalist bottom-left audio panel with volume control
 - **Custom Arrays**: Input your own data for personalized learning
 - **Speed Controls**: Adjustable visualization speed (1x to 10x)
 - **Progress Tracking**: Comprehensive analytics and session management
+
+### 🎵 Heavenly Audio Features
+- **Rain-like Sound Generation**: Ethereal audio using Web Audio API
+- **Pentatonic Scale Mapping**: Numbers mapped to pleasant musical notes
+- **Context-Aware Sounds**: Different operations trigger appropriate audio types
+- **Audio Activity Indicator**: Visual feedback with pulse animations
+- **Persistent Settings**: User preferences saved across sessions
 
 ## 🛠️ Technology Stack
 
@@ -200,10 +228,28 @@ AlgoVizard/
 ## 🔧 API Endpoints
 
 ### Algorithm APIs
+
+#### Sorting Algorithms
 - `GET/POST /api/bubble-sort` - Bubble sort visualization steps
 - `GET/POST /api/selection-sort` - Selection sort visualization steps
 - `GET/POST /api/insertion-sort` - Insertion sort visualization steps
 - `GET/POST /api/merge-sort` - Merge sort visualization steps
+- `GET/POST /api/quick-sort` - Quick sort visualization steps
+- `GET/POST /api/heap-sort` - Heap sort visualization steps
+- `GET/POST /api/radix-sort` - Radix sort visualization steps
+
+#### Searching Algorithms
+- `GET/POST /api/binary-search` - Binary search visualization steps
+- `GET/POST /api/linear-search` - Linear search visualization steps
+
+#### Tree & Graph Algorithms
+- `GET/POST /api/binary-search-tree` - BST operations visualization
+- `GET/POST /api/graph-dfs` - Depth-first search visualization
+- `GET/POST /api/graph-bfs` - Breadth-first search visualization
+
+#### Data Structure Operations
+- `GET/POST /api/stack-operations` - Stack operations visualization
+- `GET/POST /api/queue-operations` - Queue operations visualization
 
 ### Analytics APIs
 - `GET /api/analytics` - Platform usage statistics
@@ -214,6 +260,7 @@ AlgoVizard/
 - `/` - Home page with theme selection
 - `/algorithms` - Algorithm selection page
 - `/algorithm-comparison` - Side-by-side comparison tool
+- `/audio-demo` - Interactive heavenly audio system showcase
 - `/quiz-mode` - Interactive quiz system
 - `/algorithms/{algorithm-name}` - Individual algorithm visualizations
 
@@ -240,8 +287,10 @@ AlgoVizard/
 ## 🚀 Future Enhancements
 
 ### Planned Features
-- **Additional Algorithms**: Quick Sort, Heap Sort, Radix Sort
-- **Data Structures**: Trees, Graphs, Hash Tables
+- **Additional Sorting**: Counting Sort, Bucket Sort, Shell Sort
+- **Dynamic Programming**: Fibonacci, Knapsack, LCS algorithms
+- **Advanced Data Structures**: Hash Tables, AVL Trees, Red-Black Trees
+- **Graph Algorithms**: Dijkstra's, A*, Minimum Spanning Tree
 - **Advanced Analytics**: Predictive learning models
 - **Collaborative Features**: Shared sessions and discussions
 - **Mobile App**: Native iOS and Android applications
@@ -281,7 +330,8 @@ We welcome contributions from the community! Here's how you can help:
 ## 📊 Performance Metrics
 
 ### Current Statistics
-- **4 Sorting Algorithms**: Bubble, Selection, Insertion, Merge
+- **14 Algorithms**: Sorting, Searching, Trees, Graphs, Data Structures
+- **🎵 Heavenly Audio System**: Rain-like sounds for immersive learning
 - **3 Learning Modes**: Visualization, Comparison, Quiz
 - **2 Visual Themes**: College and School modes
 - **4 Learner Types**: ML-based classification
@@ -301,8 +351,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Aryan Pravin Sahu**
 - GitHub: [@Aryan-Dev26](https://github.com/Aryan-Dev26)
-- Email: [aryansahu2626@gmail.com](mailto:aryansahu2626@gmail.com)
-- LinkedIn: [Aryan Sahu](https://linkedin.com/in/aryan-sahu)
+- Email: [aryan.cse26@gmail.com](mailto:aryan.cse26@gmail.com)
+- LinkedIn: [Aryan Sahu](https://www.linkedin.com/in/aryansahu2891)
 
 ## 🙏 Acknowledgments
 

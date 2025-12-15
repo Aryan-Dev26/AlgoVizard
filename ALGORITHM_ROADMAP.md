@@ -1,15 +1,16 @@
 # AlgoVizard Algorithm Expansion Roadmap
 
-## 🎯 **Current Status: 13 Algorithms Implemented**
+## 🎯 **Current Status: 14 Algorithms Implemented**
 
-### ✅ **Completed Algorithms (13)**
+### ✅ **Completed Algorithms (14)**
 1. **Bubble Sort** - O(n²) comparison-based sorting
 2. **Selection Sort** - O(n²) minimum selection sorting  
 3. **Insertion Sort** - O(n²) incremental sorting
 4. **Merge Sort** - O(n log n) divide-and-conquer sorting
 5. **Quick Sort** - O(n log n) pivot-based sorting
-6. **Heap Sort** - O(n log n) binary heap sorting ⭐ *NEW*
-7. **Binary Search** - O(log n) sorted array search
+6. **Heap Sort** - O(n log n) binary heap sorting
+7. **Radix Sort** - O(d×(n+k)) non-comparison digit sorting ⭐ *NEW*
+8. **Binary Search** - O(log n) sorted array search
 8. **Linear Search** - O(n) sequential search
 9. **Binary Search Tree** - O(log n) tree operations
 10. **Graph DFS** - O(V + E) depth-first traversal
@@ -22,7 +23,7 @@
 ## 🚀 **Expansion Plan: Target 50+ Algorithms**
 
 ### **Phase 1: Advanced Sorting (Priority: HIGH)**
-- 🔄 **Radix Sort** - Non-comparison integer sorting (Backend Ready)
+- ✅ **Radix Sort** - Non-comparison integer sorting (COMPLETED)
 - 🔄 **Counting Sort** - Integer sorting for limited range
 - 🔄 **Bucket Sort** - Distribution-based sorting
 - 🔄 **Shell Sort** - Gap-based insertion sort improvement

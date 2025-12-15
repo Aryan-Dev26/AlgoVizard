@@ -442,6 +442,7 @@
             <div class="hero-buttons">
                 <a href="/algorithms" class="btn btn-primary hero-btn">Start Learning</a>
                 <a href="/algorithm-comparison" class="btn btn-warning hero-btn">Compare Algorithms</a>
+                <a href="/audio-demo" class="btn btn-secondary hero-btn">🎵 Audio Demo</a>
                 <a href="/quiz-mode" class="btn btn-secondary hero-btn">Take Quiz</a>
             </div>
 
@@ -557,7 +558,7 @@
         <h2>Platform Impact</h2>
         <div class="stats-container">
             <div class="stat-item">
-                <span class="stat-number">13</span>
+                <span class="stat-number">14</span>
                 <span class="stat-label">Algorithms Available</span>
             </div>
             <div class="stat-item">
@@ -602,6 +603,10 @@
         <p>&copy; 2025 AlgoVizard. Created by Aryan Pravin Sahu for educational purposes.</p>
     </footer>
 
+    <!-- Include Audio Engine -->
+    <script src="{{ url_for('static', filename='js/audio-engine.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/audio-controls.js') }}"></script>
+    
     <!-- Include homepage JavaScript -->
     <script src="{{ url_for('static', filename='js/home.js') }}"></script>
 
