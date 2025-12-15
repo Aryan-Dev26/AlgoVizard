@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queue Operations Visualization - AlgoVizard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/college-theme.css') }}">
+    {% if theme == 'school' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/school-theme.css') }}">
+    {% endif %}
+    <style>
+        /* Prevent flash of unstyled content */
+        body {
+            visibility: hidden;
+        }
+
+        body.theme-loaded {
+            visibility: visible;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .algorithm-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .algorithm-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .algorithm-description {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        .controls-section {
+            margin-bottom: 30px;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            padding: 20px;
+        }
+
+        .control-group h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .visualization-section {
+            margin-bottom: 30px;
+        }
+
+        .queue-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            min-height: 300px;
+            position: relative;
+        }
+
+        .queue-visualization {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            min-width: 600px;
+            position: relative;
+            padding: 20px;
+        }
+
+        .queue-element {
+            width: 80px;
+            height: 60px;
+            background: rgba(99, 102, 241, 0.3);
+            border: 2px solid rgba(99, 102, 241, 0.6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: white;
+            transition: all 0.4s ease;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .queue-element.front {
+            background: rgba(16, 185, 129, 0.3);
+            border-color: rgba(16, 185, 129, 0.6);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .queue-element.rear {
+            background: rgba(245, 158, 11, 0.3);
+            border-color: rgba(245, 158, 11, 0.6);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .queue-element.enqueuing {
+            animation: enqueueAnimation 0.6s ease;
+        }
+
+        .queue-element.dequeuing {
+            animation: dequeueAnimation 0.6s ease;
+        }
+
+        @keyframes enqueueAnimation {
+            0% {
+                transform: translateX(100px) scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                transform: translateX(50px) scale(1.1);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes dequeueAnimation {
+            0% {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translateX(-50px) scale(1.1);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateX(-100px) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        .queue-pointer {
+            position: absolute;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 15px;
+            color: white;
+        }
+
+        .front-pointer {
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+        }
+
+        .rear-pointer {
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(245, 158, 11, 0.3);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+        }
+
+        .queue-arrows {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .arrow {
+            position: absolute;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .enqueue-arrow {
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .dequeue-arrow {
+            left: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .queue-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .step-info {
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .step-description {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .step-details {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+
+        .complexity-info {
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .complexity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .complexity-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .complexity-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+        }
+
+        .complexity-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #10b981;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+        }
+
+        .empty-queue {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100px;
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+            font-size: 1.1rem;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            min-width: 300px;
+        }
+
+        @media (max-width: 768px) {
+            .algorithm-header h1 {
+                font-size: 2rem;
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .queue-container {
+                padding: 20px 10px;
+            }
+
+            .queue-visualization {
+                min-width: 300px;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .queue-element {
+                width: 60px;
+                height: 50px;
+                font-size: 1rem;
+            }
+
+            .button-group {
+                justify-content: center;
+            }
+
+            .queue-info {
+                gap: 15px;
+            }
+
+            .info-item {
+                padding: 10px 15px;
+            }
+
+            .empty-queue {
+                min-width: 250px;
+            }
+        }
+    </style>
+</head>
+
+<body data-theme="{{ theme }}">
+    <div class="container">
+        <div class="algorithm-header">
+            <a href="/algorithms" class="back-button">← Back to Algorithms</a>
+            <h1>Queue Operations Visualization</h1>
+            <p class="algorithm-description">
+                A Queue is a First-In-First-Out (FIFO) data structure where elements are added at the rear and removed from the front.
+                Think of it like a line of people - the first person in line is the first to be served!
+            </p>
+        </div>
+
+        <div class="controls-section glass">
+            <div class="controls-grid">
+                <div class="control-group">
+                    <h3>🚶‍♂️ Queue Operations</h3>
+                    <div class="input-group">
+                        <label for="enqueueInput">Value to Enqueue:</label>
+                        <input type="text" id="enqueueInput" placeholder="Enter value" value="">
+                    </div>
+                    <div class="button-group">
+                        <button id="enqueueBtn" class="btn btn-primary">Enqueue</button>
+                        <button id="dequeueBtn" class="btn btn-warning">Dequeue</button>
+                        <button id="frontBtn" class="btn btn-secondary">Front</button>
+                        <button id="clearBtn" class="btn btn-warning">Clear Queue</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>⚡ Quick Actions</h3>
+                    <div class="input-group">
+                        <label for="multiInput">Multiple Values (comma-separated):</label>
+                        <input type="text" id="multiInput" placeholder="1, 2, 3, 4, 5" value="A, B, C, D">
+                    </div>
+                    <div class="button-group">
+                        <button id="enqueueMultipleBtn" class="btn btn-primary">Enqueue Multiple</button>
+                        <button id="demoBtn" class="btn btn-secondary">Run Demo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="visualization-section glass">
+            <div class="queue-info" id="queueInfo">
+                <div class="info-item">
+                    <div class="info-label">Queue Size</div>
+                    <div class="info-value" id="queueSize">0</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Front Element</div>
+                    <div class="info-value" id="frontElement">Empty</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Rear Element</div>
+                    <div class="info-value" id="rearElement">Empty</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Status</div>
+                    <div class="info-value" id="queueStatus">Empty</div>
+                </div>
+            </div>
+            
+            <div class="queue-container" id="queueContainer">
+                <div class="queue-visualization" id="queueVisualization">
+                    <div class="empty-queue" id="emptyMessage">Queue is empty</div>
+                    <div class="queue-arrows">
+                        <div class="arrow dequeue-arrow">←</div>
+                        <div class="arrow enqueue-arrow">→</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-info glass" id="stepInfo">
+                <div class="step-description">Queue is ready for operations</div>
+                <div class="step-details">Use Enqueue to add elements to the rear, Dequeue to remove from the front, or Front to view the front element without removing it.</div>
+            </div>
+        </div>
+
+        <div class="complexity-info glass">
+            <h3 style="text-align: center; margin-bottom: 20px;">Queue Operations Complexity</h3>
+            <div class="complexity-grid">
+                <div class="complexity-item">
+                    <div class="complexity-label">Enqueue Operation</div>
+                    <div class="complexity-value">O(1)</div>
+                </div>
+                <div class="complexity-item">
+                    <div class="complexity-label">Dequeue Operation</div>
+                    <div class="complexity-value">O(1)</div>
+                </div>
+                <div class="complexity-item">
+                    <div class="complexity-label">Front Operation</div>
+                    <div class="complexity-value">O(1)</div>
+                </div>
+                <div class="complexity-item">
+                    <div class="complexity-label">Space Complexity</div>
+                    <div class="complexity-value">O(n)</div>
+                </div>
+                <div class="complexity-item">
+                    <div class="complexity-label">Access Pattern</div>
+                    <div class="complexity-value">FIFO</div>
+                </div>
+                <div class="complexity-item">
+                    <div class="complexity-label">Use Cases</div>
+                    <div class="complexity-value">BFS, Scheduling</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include queue operations JavaScript -->
+    <script src="{{ url_for('static', filename='js/queue-operations.js') }}"></script>
+
+    <script>
+        // Apply theme immediately to prevent flash
+        (function () {
+            const savedTheme = localStorage.getItem('algorithmVisualizerTheme') || 'college';
+            
+            if (savedTheme === 'school') {
+                if (!document.querySelector('link[href*="school-theme.css"]')) {
+                    const schoolThemeLink = document.createElement('link');
+                    schoolThemeLink.rel = 'stylesheet';
+                    schoolThemeLink.href = '/static/css/school-theme.css';
+                    document.head.appendChild(schoolThemeLink);
+                }
+            }
+
+            document.body.classList.remove('college-theme', 'school-theme');
+            document.body.classList.add(savedTheme + '-theme');
+        })();
+
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(() => {
+                document.body.classList.add('theme-loaded');
+            }, 50);
+        });
+    </script>
+</body>
+
+</html>
