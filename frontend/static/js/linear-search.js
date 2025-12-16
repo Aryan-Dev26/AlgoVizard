@@ -158,12 +158,21 @@ class LinearSearchVisualizer {
             this.comparisons++;
             this.updateProgress();
             
+            // Play comparison sound
+            if (window.heavenlyAudio) {
+                window.heavenlyAudio.playCompareSound(this.target, this.array[i]);
+            }
+            
             // Wait for animation
             await this.sleep(this.animationSpeed);
             
             // Check if target found
             if (this.array[i] === this.target) {
                 this.highlightElement(i, 'target');
+                // Play completion sound when found
+                if (window.heavenlyAudio) {
+                    window.heavenlyAudio.playCompletionSound();
+                }
                 return { found: true, index: i };
             } else {
                 // Mark as checked

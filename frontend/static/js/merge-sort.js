@@ -286,30 +286,46 @@ class MergeSortVisualizer {
     }
 
     playStepSound(step) {
-        if (!this.isAudioEnabled) return;
+        // Use new heavenly audio system
+        if (!window.heavenlyAudio) return;
         
         switch (step.operation) {
             case 'compare':
-                this.playSound(800, 0.1);
+                if (step.comparing && step.comparing.length >= 2) {
+                    const value1 = step.array[step.comparing[0]];
+                    const value2 = step.array[step.comparing[1]];
+                    window.heavenlyAudio.playCompareSound(value1, value2);
+                }
                 break;
             case 'merge_place':
-                this.playSound(600, 0.15);
+                if (step.merging && step.merging.length > 0) {
+                    const value = step.array[step.merging[0]];
+                    window.heavenlyAudio.playCollectSound(value);
+                }
                 break;
             case 'divide':
-                this.playSound(400, 0.2);
+                // Play a gentle comparison sound for division
+                if (step.array && step.array.length > 0) {
+                    const midValue = step.array[Math.floor(step.array.length / 2)];
+                    window.heavenlyAudio.playCompareSound(midValue, midValue);
+                }
                 break;
             case 'merge_complete':
-                this.playSound(1000, 0.3);
+                // Play swap sound for merge completion
+                if (step.array && step.array.length >= 2) {
+                    const value1 = step.array[0];
+                    const value2 = step.array[step.array.length - 1];
+                    window.heavenlyAudio.playSwapSound(value1, value2);
+                }
                 break;
         }
     }
 
     playCompleteSound() {
-        if (!this.isAudioEnabled) return;
-        
-        setTimeout(() => this.playSound(523, 0.2), 0);
-        setTimeout(() => this.playSound(659, 0.2), 200);
-        setTimeout(() => this.playSound(784, 0.4), 400);
+        // Use new heavenly audio system for completion
+        if (window.heavenlyAudio) {
+            window.heavenlyAudio.playCompletionSound();
+        }
     }
 
     renderArray() {

@@ -4,6 +4,10 @@
 class GraphBFSVisualizer {
     constructor() {
         this.graph = new Map();
+        
+        // Audio system
+        this.audioContext = null;
+        this.isAudioEnabled = true;
         this.nodes = new Map();
         this.edges = [];
         this.visited = new Set();
@@ -18,6 +22,7 @@ class GraphBFSVisualizer {
         this.initializeElements();
         this.setupEventListeners();
         this.generateGraph('simple');
+        this.initializeAudio();
     }
 
     initializeElements() {

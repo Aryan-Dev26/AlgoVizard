@@ -5,6 +5,15 @@
 ![Flask](https://img.shields.io/badge/Flask-3.1.2-red?style=flat-square)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-purple?style=flat-square)
+![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=flat-square&logo=vercel)
+
+## 🌐 Live Demo
+**🚀 [Visit AlgoVizard Live](https://algo-vizard.vercel.app)**
+
+### API Endpoints
+- **Main API**: https://algo-vizard.vercel.app
+- **Health Check**: https://algo-vizard.vercel.app/health
+- **Bubble Sort**: https://algo-vizard.vercel.app/api/bubble-sort
 
 ## 🚀 Overview
 
@@ -95,14 +104,20 @@ AlgoVizard is an advanced educational platform designed to help students and dev
 - **Knowledge Retention Modeling**: Forgetting curve estimation
 - **Session Analytics**: Comprehensive interaction logging
 
-## 📦 Installation
+## 📦 Installation & Deployment
 
-### Prerequisites
+### 🌐 Live Version (Recommended)
+**No installation required!** Visit the live version at:
+**🚀 [https://algo-vizard.vercel.app](https://algo-vizard.vercel.app)**
+
+### 💻 Local Development
+
+#### Prerequisites
 - Python 3.8 or higher
 - pip package manager
 - Modern web browser (Chrome, Firefox, Safari, Edge)
 
-### Quick Start
+#### Quick Start
 
 1. **Clone the repository**
 ```bash
@@ -123,9 +138,33 @@ python backend/app.py
 4. **Open your browser**
 Navigate to `http://localhost:5000`
 
-### Production Deployment
+### 🚀 Production Deployment Options
 
-For production deployment with Gunicorn:
+#### Vercel (Current Deployment)
+```bash
+npm install -g vercel
+vercel --prod
+```
+
+#### Heroku
+```bash
+heroku create your-app-name
+git push heroku main
+```
+
+#### Docker
+```bash
+docker build -t algovizard .
+docker run -p 5000:5000 algovizard
+```
+
+#### Render
+```bash
+# Push to GitHub and connect at render.com
+# Uses render.yaml configuration
+```
+
+#### Traditional Server (Gunicorn)
 ```bash
 gunicorn -w 4 -b 0.0.0.0:5000 backend.app:app
 ```
@@ -374,6 +413,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Interactive quiz mode
 - Machine learning analytics
 - Mobile responsiveness
+
+### Phase 2.5: Production Deployment ✅
+- **Vercel Deployment**: Live at https://algo-vizard.vercel.app
+- **Multi-platform Support**: Docker, Heroku, Render configurations
+- **CI/CD Ready**: Automated deployment pipeline
+- **Production Optimized**: Serverless architecture
 
 ### Phase 3: Advanced Features (In Progress)
 - Additional algorithms (Quick Sort, Heap Sort)

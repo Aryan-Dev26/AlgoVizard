@@ -185,6 +185,10 @@ class BinarySearchVisualizer {
     async executeSearchSteps() {
         for (let i = 0; i < this.searchSteps.length; i++) {
             const step = this.searchSteps[i];
+            
+            // Play heavenly sounds based on step action
+            this.playStepSound(step);
+            
             await this.visualizeStep(step, i + 1);
             
             if (step.action === 'found' || step.action === 'not_found') {
@@ -307,6 +311,31 @@ class BinarySearchVisualizer {
         this.resultSection.style.display = 'none';
         this.currentStep = 0;
         this.searchSteps = [];
+    }
+
+    playStepSound(step) {
+        // Use heavenly audio system for binary search
+        if (!window.heavenlyAudio) return;
+
+        switch (step.action) {
+            case 'search_left':
+            case 'search_right':
+                // Play comparison sound for search operations
+                if (step.midValue !== null && step.target !== null) {
+                    window.heavenlyAudio.playCompareSound(step.target, step.midValue);
+                }
+                break;
+            case 'found':
+                // Play completion sound when target is found
+                window.heavenlyAudio.playCompletionSound();
+                break;
+            case 'not_found':
+                // Play a gentle comparison sound for not found
+                if (step.target !== null) {
+                    window.heavenlyAudio.playCompareSound(step.target, step.target);
+                }
+                break;
+        }
     }
 
     sleep(ms) {

@@ -18,11 +18,16 @@ class BSTVisualizer {
         this.isAnimating = false;
         this.nodeSize = 50;
         this.levelHeight = 80;
+        
+        // Audio system
+        this.audioContext = null;
+        this.isAudioEnabled = true;
         this.nodeSpacing = 60;
         
         this.initializeElements();
         this.setupEventListeners();
         this.updateVisualization();
+        this.initializeAudio();
     }
 
     initializeElements() {
@@ -134,8 +139,17 @@ class BSTVisualizer {
     async insertNode(node, value) {
         if (node === null) {
             const newNode = new TreeNode(value);
+            // Play bucket sound for new node insertion
+            if (window.heavenlyAudio) {
+                window.heavenlyAudio.playBucketSound(value, 0);
+            }
             await this.animateNodeInsertion(newNode);
             return newNode;
+        }
+
+        // Play comparison sound for tree navigation
+        if (window.heavenlyAudio) {
+            window.heavenlyAudio.playCompareSound(value, node.value);
         }
 
         if (value < node.value) {
@@ -197,6 +211,11 @@ class BSTVisualizer {
             return false;
         }
 
+        // Play comparison sound for search
+        if (window.heavenlyAudio) {
+            window.heavenlyAudio.playCompareSound(value, node.value);
+        }
+
         // Highlight current node
         if (node.element) {
             node.element.classList.add('searching');
@@ -204,7 +223,10 @@ class BSTVisualizer {
         }
 
         if (value === node.value) {
-            // Found the value
+            // Found the value - play completion sound
+            if (window.heavenlyAudio) {
+                window.heavenlyAudio.playCompletionSound();
+            }
             if (node.element) {
                 node.element.classList.remove('searching');
                 node.element.classList.add('found');
@@ -790,6 +812,101 @@ class BSTVisualizer {
 
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    // ==================== AUDIO SYSTEM ====================
+    
+    initializeAudio() {
+        try {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            this.masterGain = this.audioContext.createGain();
+            this.masterGain.connect(this.audioContext.destination);
+            this.masterGain.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+        } catch (error) {
+            console.warn('Audio not supported:', error);
+            this.isAudioEnabled = false;
+        }
+    }
+
+    playHeavenlySound(frequency, duration = 0.2, type = 'compare') {
+        if (!this.isAudioEnabled || !this.audioContext) return;
+
+        try {
+            // Create oscillator for the main tone
+            const oscillator = this.audioContext.createOscillator();
+            const gainNode = this.audioContext.createGain();
+            
+            // Create reverb effect
+            const convolver = this.audioContext.createConvolver();
+            const impulseBuffer = this.createReverbImpulse(2, 2, false);
+            convolver.buffer = impulseBuffer;
+            
+            // Set up audio routing
+            oscillator.connect(gainNode);
+            gainNode.connect(convolver);
+            convolver.connect(this.masterGain);
+            
+            // Configure oscillator
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+            
+            // Configure gain envelope
+            const now = this.audioContext.currentTime;
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.1, now + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+            
+            // Start and stop
+            oscillator.start(now);
+            oscillator.stop(now + duration);
+            
+        } catch (error) {
+            console.warn('Audio playback error:', error);
+        }
+    }
+
+    createReverbImpulse(duration, decay, reverse) {
+        const sampleRate = this.audioContext.sampleRate;
+        const length = sampleRate * duration;
+        const impulse = this.audioContext.createBuffer(2, length, sampleRate);
+        
+        for (let channel = 0; channel < 2; channel++) {
+            const channelData = impulse.getChannelData(channel);
+            for (let i = 0; i < length; i++) {
+                const n = reverse ? length - i : i;
+                channelData[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
+            }
+        }
+        
+        return impulse;
+    }
+
+    // Map tree operations to frequencies (pentatonic scale)
+    getFrequencyForOperation(operation, value = 0) {
+        const baseFreq = 220; // A3
+        const pentatonic = [1, 9/8, 5/4, 3/2, 5/3]; // Pentatonic ratios
+        
+        switch (operation) {
+            case 'insert':
+                return baseFreq * pentatonic[value % 5] * 2;
+            case 'search':
+                return baseFreq * pentatonic[(value % 5)] * 1.5;
+            case 'delete':
+                return baseFreq * pentatonic[value % 5] * 0.75;
+            case 'traverse':
+                return baseFreq * pentatonic[value % 5] * 1.25;
+            default:
+                return baseFreq * pentatonic[0];
+        }
+    }
+
+    toggleSound() {
+        if (!this.audioContext) this.initializeAudio();
+        this.isAudioEnabled = !this.isAudioEnabled;
+        const soundToggle = document.getElementById('soundToggle');
+        if (soundToggle) {
+            soundToggle.textContent = this.isAudioEnabled ? '🔊' : '🔇';
+        }
     }
 }
 

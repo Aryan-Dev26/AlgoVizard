@@ -1,0 +1,23 @@
+{
+  "name": "AlgoVizard",
+  "description": "Interactive Algorithm Visualization Platform",
+  "repository": "https://github.com/Aryan-Dev26/AlgoVizard",
+  "logo": "https://img.shields.io/badge/AlgoVizard-Educational%20Platform-blue?style=for-the-badge",
+  "keywords": ["python", "flask", "algorithms", "education", "visualization"],
+  "env": {
+    "FLASK_ENV": {
+      "description": "Flask environment",
+      "value": "production"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ]
+}

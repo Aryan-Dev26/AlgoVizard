@@ -4,6 +4,10 @@
 class GraphDFSVisualizer {
     constructor() {
         this.graph = new Map();
+        
+        // Audio system
+        this.audioContext = null;
+        this.isAudioEnabled = true;
         this.nodes = new Map();
         this.edges = [];
         this.visited = new Set();
@@ -16,6 +20,7 @@ class GraphDFSVisualizer {
         this.initializeElements();
         this.setupEventListeners();
         this.generateGraph('simple');
+        this.initializeAudio();
     }
 
     initializeElements() {
@@ -234,6 +239,12 @@ class GraphDFSVisualizer {
             this.visited.add(currentNode);
             this.traversalPath.push(currentNode);
             
+            // Play bucket sound for visiting a node
+            if (window.heavenlyAudio) {
+                const nodeValue = parseInt(currentNode) || currentNode.charCodeAt(0);
+                window.heavenlyAudio.playBucketSound(nodeValue, this.visited.size % 10);
+            }
+            
             // Highlight current node
             const nodeElement = this.nodes.get(currentNode).element;
             nodeElement.classList.add('visiting');
@@ -401,6 +412,82 @@ class GraphDFSVisualizer {
 
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    // ==================== AUDIO SYSTEM ====================
+    
+    initializeAudio() {
+        try {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            this.masterGain = this.audioContext.createGain();
+            this.masterGain.connect(this.audioContext.destination);
+            this.masterGain.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+        } catch (error) {
+            console.warn('Audio not supported:', error);
+            this.isAudioEnabled = false;
+        }
+    }
+
+    playHeavenlySound(frequency, duration = 0.2, type = 'compare') {
+        if (!this.isAudioEnabled || !this.audioContext) return;
+
+        try {
+            const oscillator = this.audioContext.createOscillator();
+            const gainNode = this.audioContext.createGain();
+            const convolver = this.audioContext.createConvolver();
+            const impulseBuffer = this.createReverbImpulse(2, 2, false);
+            convolver.buffer = impulseBuffer;
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(convolver);
+            convolver.connect(this.masterGain);
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+            
+            const now = this.audioContext.currentTime;
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.1, now + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+            
+            oscillator.start(now);
+            oscillator.stop(now + duration);
+            
+        } catch (error) {
+            console.warn('Audio playback error:', error);
+        }
+    }
+
+    createReverbImpulse(duration, decay, reverse) {
+        const sampleRate = this.audioContext.sampleRate;
+        const length = sampleRate * duration;
+        const impulse = this.audioContext.createBuffer(2, length, sampleRate);
+        
+        for (let channel = 0; channel < 2; channel++) {
+            const channelData = impulse.getChannelData(channel);
+            for (let i = 0; i < length; i++) {
+                const n = reverse ? length - i : i;
+                channelData[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
+            }
+        }
+        
+        return impulse;
+    }
+
+    getFrequencyForNode(nodeId) {
+        const baseFreq = 220; // A3
+        const pentatonic = [1, 9/8, 5/4, 3/2, 5/3];
+        const nodeValue = parseInt(nodeId) || nodeId.charCodeAt(0);
+        return baseFreq * pentatonic[nodeValue % 5] * 1.5;
+    }
+
+    toggleSound() {
+        if (!this.audioContext) this.initializeAudio();
+        this.isAudioEnabled = !this.isAudioEnabled;
+        const soundToggle = document.getElementById('soundToggle');
+        if (soundToggle) {
+            soundToggle.textContent = this.isAudioEnabled ? '🔊' : '🔇';
+        }
     }
 }
 
