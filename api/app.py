@@ -1,12 +1,19 @@
 """
-Minimal AlgoVizard Flask app for Vercel deployment
+Full AlgoVizard Flask app for Vercel deployment
 """
 from flask import Flask, render_template, jsonify, request
 import os
 import json
 from datetime import datetime
 
-app = Flask(__name__)
+# Configure Flask app with proper template and static folders
+template_dir = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'templates')
+static_dir = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'static')
+
+app = Flask(__name__, 
+           template_folder=template_dir,
+           static_folder=static_dir,
+           static_url_path='/static')
 
 # Simple bubble sort implementation
 def bubble_sort_steps(arr):
@@ -43,15 +50,52 @@ def bubble_sort_steps(arr):
 
 @app.route('/')
 def home():
-    return jsonify({
-        'message': 'AlgoVizard API - Interactive Algorithm Visualization Platform',
-        'status': 'running',
-        'algorithms': ['bubble-sort', 'selection-sort', 'insertion-sort'],
-        'endpoints': {
-            'bubble_sort': '/api/bubble-sort',
-            'health': '/health'
-        }
-    })
+    """Main landing page"""
+    try:
+        return render_template('index.html', theme='college')
+    except:
+        # Fallback if template not found
+        return jsonify({
+            'message': 'AlgoVizard - Interactive Algorithm Visualization Platform',
+            'status': 'running',
+            'note': 'Frontend templates not found, API only mode',
+            'algorithms': ['bubble-sort'],
+            'endpoints': {
+                'bubble_sort': '/api/bubble-sort',
+                'health': '/health',
+                'algorithms': '/algorithms'
+            }
+        })
+
+@app.route('/algorithms')
+def algorithms_page():
+    """Algorithm selection page"""
+    try:
+        return render_template('algorithms.html', theme='college')
+    except:
+        return jsonify({
+            'available_algorithms': [
+                {
+                    'name': 'Bubble Sort',
+                    'endpoint': '/api/bubble-sort',
+                    'page': '/algorithms/bubble-sort',
+                    'description': 'Simple comparison-based sorting algorithm'
+                }
+            ]
+        })
+
+@app.route('/algorithms/bubble-sort')
+def bubble_sort_page():
+    """Bubble sort visualization page"""
+    try:
+        return render_template('bubble-sort.html', theme='college')
+    except:
+        return jsonify({
+            'algorithm': 'Bubble Sort',
+            'description': 'Step-by-step bubble sort visualization',
+            'api_endpoint': '/api/bubble-sort',
+            'note': 'Template not found - use API endpoint for data'
+        })
 
 @app.route('/health')
 def health():
@@ -70,17 +114,7 @@ def bubble_sort_api():
     sample_data = [64, 34, 25, 12, 22, 11, 90]
     return jsonify(bubble_sort_steps(sample_data))
 
-@app.route('/algorithms')
-def algorithms():
-    return jsonify({
-        'available_algorithms': [
-            {
-                'name': 'Bubble Sort',
-                'endpoint': '/api/bubble-sort',
-                'description': 'Simple comparison-based sorting algorithm'
-            }
-        ]
-    })
+# Remove duplicate /algorithms route since it's defined above
 
 # Error handlers
 @app.errorhandler(404)
